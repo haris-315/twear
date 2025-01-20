@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/screens/dashboard/post_product.dart';
@@ -10,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => ThemeCubit())],
+      providers: [BlocProvider(create: (_) => ThemeCubit()),BlocProvider(create: (_) => HomeBloc())],
       child: BlocBuilder<ThemeCubit, CTheme>(
         builder: (context, themeMode) {
           return DefaultTextStyle(

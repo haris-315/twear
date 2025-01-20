@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart';
+import 'package:t_wear/models/failure.dart';
 import 'package:t_wear/models/product_model.dart';
 
 List<Map<String, dynamic>> productsMaps = [
@@ -52,9 +54,14 @@ List<Map<String, dynamic>> productsMaps = [
   }
 ];
 
-List<Product> getProducts() {
-  List<Product> products =
-      productsMaps.map((element) => Product.fromMap(element)).toList();
+Future<Either<Failure, List<Product>>> getProducts() async {
+  await Future.delayed(const Duration(seconds: 8));
+  try {
+    List<Product> products =
+        productsMaps.map((element) => Product.fromMap(element)).toList();
 
-  return products;
+    return right(products);
+  } catch (e) {
+    return left(Failure(message: e.toString(), st: StackTrace.current));
+  }
 }

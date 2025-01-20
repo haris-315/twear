@@ -12,6 +12,7 @@ abstract class CTheme {
   Color? shadowColor;
   Color? oppositeTextColor;
   Color? iconColor;
+  Color? oppositeShimmerColor;
 
   ThemeData getTheme();
   ThemeType getThemeType() => ThemeType();

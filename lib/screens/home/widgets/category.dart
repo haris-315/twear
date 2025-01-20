@@ -1,69 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/category.dart';
-import 'package:t_wear/screens/global_widgets/glowing_container.dart';
 
-class CategoryItem extends StatelessWidget {
+class CategoryItem extends StatefulWidget {
   final CTheme themeMode;
   final String img;
   final String name;
-  const CategoryItem(
-      {super.key,
-      required this.themeMode,
-      required this.img,
-      required this.name});
+  final bool skeletonMode;
+
+  const CategoryItem({
+    super.key,
+    required this.themeMode,
+    required this.img,
+    required this.name,
+    this.skeletonMode = false,
+  });
+
+  @override
+  State<CategoryItem> createState() => _CategoryItemState();
+}
+
+class _CategoryItemState extends State<CategoryItem> {
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final width = getScreenSize(context).first;
     final height = getScreenSize(context).elementAt(1);
-
-    return width <= 500
-        ? FittedBox(
-            child: glowingContainer(
-              height: 60,
-              fillColor: themeMode.backgroundColor,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Center(
-                  child: Text(
-                    name,
-                    style:
-                        TextStyle(color: themeMode.primTextColor, fontSize: 18),
+    final themeMode = getThemeMode(context);
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: Transform.scale(
+        scale: isHovered ? 1.05 : 1.0, // Scale the widget on hover
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 960),
+          curve: Curves.easeInOut,
+          height: width <= 500 ? 40 : null,
+          decoration: BoxDecoration(
+            color: themeMode.buttonColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: themeMode.shadowColor ??
+                    Colors.black.withOpacity(isHovered ? 0.4 : 0.2),
+                blurRadius: isHovered ? 16 : 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(
+              color: themeMode.borderColor ?? Colors.grey,
+              width: 1.5,
+            ),
+          ),
+          child: width <= 500
+              ? widget.skeletonMode
+                  ? const SizedBox(
+                      width: 80,
+                      height: 40,
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 8),
+                      child: Center(
+                        child: Text(
+                          widget.name,
+                          style: TextStyle(
+                            color: widget.themeMode.primTextColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FittedBox(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: height * .09,
+                          foregroundImage: widget.skeletonMode
+                              ? null
+                              : NetworkImage(widget.img),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.name,
+                          style:
+                              TextStyle(color: widget.themeMode.primTextColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              themeMode: themeMode,
-            ),
-          )
-        : glowingContainer(
-            radius: 14,
-            fillColor: themeMode.backgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FittedBox(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: height * .09,
-                      foregroundImage: NetworkImage(
-                        img,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Text(
-                      name,
-                      style: TextStyle(color: themeMode.primTextColor),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            themeMode: themeMode,
-          );
+        ),
+      ),
+    );
   }
 }
 

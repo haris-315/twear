@@ -73,9 +73,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
           title: "Contact",
           themeMode: themeMode,
         ),
-        const CircleAvatar(
-          foregroundImage: AssetImage("images/hero.jpg"),
-        ),
+        
       ],
     );
   }

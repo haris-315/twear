@@ -26,6 +26,8 @@ class DarkTheme extends CTheme {
   Color? shadowColor = Colors.white.withOpacity(.3);
   @override
   Color? iconColor = Colors.white.withOpacity(.8);
+  @override
+  Color? oppositeShimmerColor = Colors.white.withOpacity(.8);
 
   @override
   ThemeData getTheme() {

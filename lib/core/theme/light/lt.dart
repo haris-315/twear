@@ -26,6 +26,8 @@ class LightTheme extends CTheme {
   @override
   Color? iconColor = Colors.grey[800];
   @override
+  Color? oppositeShimmerColor = Colors.black.withOpacity(.8);
+
   @override
   ThemeData getTheme() {
     return ThemeData.light().copyWith(
