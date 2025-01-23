@@ -14,6 +14,28 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
 
   final CTheme themeMode;
 
+  List<NavItem> navItems(CTheme themeMode, BuildContext context) => [
+        NavItem(
+          title: "Home",
+          themeMode: themeMode,
+          action: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, "home");
+          },
+        ),
+        NavItem(
+          title: "Dashboard",
+          themeMode: themeMode,
+          action: () {
+            Navigator.pushNamed(context, "products");
+          },
+        ),
+        NavItem(
+          title: "Contact",
+          themeMode: themeMode,
+        )
+      ];
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -54,26 +76,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
         ),
-        NavItem(
-          title: "Home",
-          themeMode: themeMode,
-          action: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, "home");
-          },
-        ),
-        NavItem(
-          title: "Product",
-          themeMode: themeMode,
-          action: () {
-            Navigator.pushNamed(context, "products");
-          },
-        ),
-        NavItem(
-          title: "Contact",
-          themeMode: themeMode,
-        ),
-        
+        ...navItems(themeMode, context)
       ],
     );
   }

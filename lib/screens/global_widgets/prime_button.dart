@@ -14,8 +14,7 @@ class PrimeButton extends StatelessWidget {
       required this.action,
       required this.themeMode,
       required this.width,
-      this.fillColor
-      });
+      this.fillColor});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class PrimeButton extends StatelessWidget {
               shadowColor:
                   WidgetStateProperty.resolveWith((_) => Colors.transparent),
               backgroundColor: WidgetStateProperty.resolveWith(
-                  (_) => fillColor ?? themeMode.buttonColor)),
+                  (_) => fillColor ?? Colors.transparent)),
           child: child,
         ),
         themeMode: themeMode);

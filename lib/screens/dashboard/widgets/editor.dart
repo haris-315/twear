@@ -58,15 +58,22 @@ class DescriptionEditor extends StatelessWidget {
               buttonOptions: QuillSimpleToolbarButtonOptions(
                 base: QuillToolbarBaseButtonOptions(
                   iconTheme: QuillIconTheme(
-                    iconButtonSelectedData:
-                        IconButtonData(color: themeMode.primTextColor),
-                    iconButtonUnselectedData:
-                        IconButtonData(color: themeMode.primTextColor),
+                    iconButtonSelectedData: IconButtonData(
+                        color: themeMode.primTextColor,
+                        style: ButtonStyle(
+                            foregroundColor: WidgetStateProperty.resolveWith(
+                                (_) => themeMode.primTextColor))),
+                    iconButtonUnselectedData: IconButtonData(
+                      color: themeMode.primTextColor,
+                      style: ButtonStyle(
+                          foregroundColor: WidgetStateProperty.resolveWith(
+                              (_) => themeMode.primTextColor)),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );

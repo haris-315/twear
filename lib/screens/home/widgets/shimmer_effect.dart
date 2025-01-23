@@ -53,19 +53,24 @@ class ShimmerEffect extends StatelessWidget {
       Shimmer.fromColors(
           baseColor: themeMode.backgroundColor ?? Colors.red,
           highlightColor: themeMode.oppositeShimmerColor ?? Colors.green,
-          child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: swidth <= 500
-                      ? 2
-                      : swidth <= 750
-                          ? 3
-                          : 4),
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  onTap: () {},
-                  skeletonMode: true,
-                );
-              }))
+          child: SizedBox(
+            height: sheight,
+            child: GridView.builder(
+                itemCount: swidth <= 500 ? 4 : 6,
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: swidth <= 500
+                        ? 2
+                        : swidth <= 750
+                            ? 3
+                            : 4),
+                itemBuilder: (context, index) {
+                  return ProductCard(
+                    onTap: () {},
+                    skeletonMode: true,
+                  );
+                }),
+          ))
     ]);
   }
 }

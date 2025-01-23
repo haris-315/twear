@@ -20,13 +20,19 @@ class LightTheme extends CTheme {
   @override
   Color? secondaryTextColor = Colors.grey[600];
   @override
-  Color? shadowColor = Colors.black.withOpacity(.8);
+  Color? shadowColor = Colors.black.withValues(alpha: .8);
   @override
   Color? oppositeTextColor = Colors.black;
   @override
   Color? iconColor = Colors.grey[800];
   @override
-  Color? oppositeShimmerColor = Colors.black.withOpacity(.8);
+  Color? oppositeShimmerColor = Colors.black.withValues(alpha: .8);
+
+  @override
+  LinearGradient? barGradient =
+      const LinearGradient(colors: [Colors.green, Colors.lightGreenAccent]);
+  @override
+  Color? gridLineColor = Colors.blue[600];
 
   @override
   ThemeData getTheme() {

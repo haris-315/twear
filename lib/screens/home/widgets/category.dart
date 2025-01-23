@@ -47,14 +47,14 @@ class _CategoryItemState extends State<CategoryItem> {
               BoxShadow(
                 color: themeMode.shadowColor ??
                     Colors.black.withOpacity(isHovered ? 0.4 : 0.2),
-                blurRadius: isHovered ? 16 : 8,
+                blurRadius: isHovered ? 19 : 15,
                 offset: const Offset(0, 4),
               ),
             ],
-            border: Border.all(
-              color: themeMode.borderColor ?? Colors.grey,
-              width: 1.5,
-            ),
+            // border: Border.all(
+            //   color: themeMode.borderColor ?? Colors.grey,
+            //   width: 1.5,
+            // ),
           ),
           child: width <= 500
               ? widget.skeletonMode

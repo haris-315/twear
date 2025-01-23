@@ -19,16 +19,20 @@ class DarkTheme extends CTheme {
   @override
   Color? appBarColor = Colors.grey[900];
   @override
-  Color? secondaryTextColor = Colors.white.withOpacity(.8);
+  Color? secondaryTextColor = Colors.white.withValues(alpha: .8);
   @override
   Color? oppositeTextColor = Colors.white;
   @override
-  Color? shadowColor = Colors.white.withOpacity(.3);
+  Color? shadowColor = Colors.white.withValues(alpha: .3);
   @override
-  Color? iconColor = Colors.white.withOpacity(.8);
+  Color? iconColor = Colors.white.withValues(alpha: .8);
   @override
-  Color? oppositeShimmerColor = Colors.white.withOpacity(.8);
-
+  Color? oppositeShimmerColor = Colors.white.withValues(alpha: .8);
+  @override
+  LinearGradient? barGradient = LinearGradient(
+      colors: [Colors.blue[900] ?? Colors.red, Colors.lightBlueAccent]);
+  @override
+  Color? gridLineColor = Colors.pink[600];
   @override
   ThemeData getTheme() {
     return ThemeData.dark().copyWith(

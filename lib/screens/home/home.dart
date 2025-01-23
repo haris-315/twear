@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
@@ -23,7 +22,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData());
   }
@@ -43,9 +41,10 @@ class _HomeState extends State<Home> {
             scrollController: scrollController,
           ),
           body: SingleChildScrollView(
-              controller: scrollController,
-              child: state is HomeSuccess
-                  ? Column(children: [
+            controller: scrollController,
+            child: state is HomeSuccess
+                ? Column(
+                    children: [
                       SizedBox(
                         width: swidth,
                         child: Column(
@@ -87,18 +86,25 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       ),
-                      ProductCard(
-                        product: state.products.first,
-                        onTap: () {},
-                      )
-                    ])
-                  : state is HomeLoading
-                      ? const ShimmerEffect()
-                      : state is HomeError
-                          ? Center(
-                              child: Text(state.message),
-                            )
-                          : const Placeholder()),
+                      /* Using Wrap Widget Because The List Is Not Lengthy.
+                      For Realtime Projects I use GridView Or ListView */
+                      Wrap(
+                          children: state.products
+                              .map((product) => ProductCard(
+                                    onTap: () {},
+                                    product: product,
+                                  ))
+                              .toList())
+                    ],
+                  )
+                : state is HomeLoading
+                    ? const ShimmerEffect()
+                    : state is HomeError
+                        ? Center(
+                            child: Text(state.message),
+                          )
+                        : const Placeholder(),
+          ),
         );
       },
     );

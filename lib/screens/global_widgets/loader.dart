@@ -3,7 +3,7 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 
 class AppWideLoading extends StatelessWidget {
   final String message;
-  const AppWideLoading({Key? key, this.message = 'Loading...'}) : super(key: key);
+  const AppWideLoading({super.key, this.message = 'Loading...'});
 
   @override
   Widget build(BuildContext context) {

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/screens/dashboard/dashboard.dart';
 import 'package:t_wear/screens/dashboard/post_product.dart';
-import 'package:t_wear/screens/dashboard/profile.dart';
 import 'package:t_wear/screens/home/home.dart';
 
 void main() async {
@@ -24,7 +24,7 @@ void main() async {
                 debugShowCheckedModeBanner: false,
                 home: const Home(),
                 routes: {
-                  "products": (context) => const ProfilePg(),
+                  "products": (context) => const DashBoardPg(),
                   "home": (context) => const Home(),
                   "postproduct": (context) => const PostProduct()
                 },

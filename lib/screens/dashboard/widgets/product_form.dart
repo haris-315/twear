@@ -80,6 +80,7 @@ class _ProductFormState extends State<ProductForm> {
     return [
       TextFormField(
         controller: widget.productNameController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Product Name",
@@ -90,6 +91,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.priceController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Price",
@@ -101,6 +103,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.discountController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Discount",
@@ -112,6 +115,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.stockController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Stock",
@@ -123,6 +127,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.deliveryChargesController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Delivery Charges",
@@ -134,6 +139,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.brandNameController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Brand Name",
@@ -145,6 +151,7 @@ class _ProductFormState extends State<ProductForm> {
       TextFormField(
         controller: widget.ageController,
         keyboardType: TextInputType.number,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Target Age",
@@ -155,6 +162,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       TextFormField(
         controller: widget.sizeController,
+        style: TextStyle(color: widget.themeMode.primTextColor),
         decoration: inputDecor(
           themeMode: widget.themeMode,
           ht: "Product Size",

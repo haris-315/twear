@@ -14,6 +14,9 @@ abstract class CTheme {
   Color? iconColor;
   Color? oppositeShimmerColor;
 
+  Color? gridLineColor;
+  LinearGradient? barGradient;
+
   ThemeData getTheme();
   ThemeType getThemeType() => ThemeType();
 }

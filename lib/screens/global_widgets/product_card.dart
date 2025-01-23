@@ -11,7 +11,8 @@ class ProductCard extends StatefulWidget {
   const ProductCard({
     super.key,
     this.product,
-    required this.onTap, this.skeletonMode = false,
+    required this.onTap,
+    this.skeletonMode = false,
   });
 
   @override
@@ -68,162 +69,181 @@ class _ProductCardState extends State<ProductCard> {
                 width: 1.5,
               ),
             ),
-            child: widget.skeletonMode ? SizedBox(width: cardWidth, height: 260,) : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: widget.product!.images.isNotEmpty
-                      ? AspectRatio(
-                          aspectRatio: aspectRatio,
-                          child: Image.network(
-                            widget.product!.images[0],
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              color: Colors.grey[300],
-                              alignment: Alignment.center,
-                              child: Icon(
-                                Icons.image,
-                                size: 50,
-                                color: themeMode.iconColor,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          height: 180,
-                          color: Colors.grey[300],
-                          alignment: Alignment.center,
-                          child: Icon(
-                            Icons.image_not_supported,
-                            size: 50,
-                            color: themeMode.iconColor,
-                          ),
-                        ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: widget.skeletonMode
+                ? SizedBox(
+                    width: cardWidth,
+                    height: 260,
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Tooltip(
-                        message: widget.product?.name,
-                        child: Text(
-                          widget.product!.name,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: themeMode.primTextColor,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "By ${widget.product?.company} - ${widget.product?.category.name}",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeMode.secondaryTextColor,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                '${widget.product?.price.toStringAsFixed(2)} Rs',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: themeMode.borderColor2,
-                                ),
-                              ),
-                              if (widget.product?.discount != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    '-${widget.product?.discount!.toStringAsFixed(0)}%',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.red,
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
+                        child: widget.product!.images.isNotEmpty
+                            ? AspectRatio(
+                                aspectRatio: aspectRatio,
+                                child: Image.network(
+                                  widget.product!.images[0],
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    color: Colors.grey[300],
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.image,
+                                      size: 50,
+                                      color: themeMode.iconColor,
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                          Text(
-                            widget.product!.stock > 0
-                                ? 'In Stock'
-                                : 'Out of Stock',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: widget.product!.stock > 0
-                                  ? themeMode.borderColor2
-                                  : Colors.red,
-                            ),
-                          ),
-                        ],
+                              )
+                            : Container(
+                                height: 180,
+                                color: Colors.grey[300],
+                                alignment: Alignment.center,
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 50,
+                                  color: themeMode.iconColor,
+                                ),
+                              ),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.local_shipping,
-                            size: 18,
-                            color: themeMode.iconColor,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Delivery: ${widget.product?.delivery} Rs',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeMode.secondaryTextColor,
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Tooltip(
+                              message: widget.product?.name,
+                              child: Text(
+                                widget.product!.name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: themeMode.primTextColor,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Size: ${widget.product?.size}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeMode.secondaryTextColor,
+                            const SizedBox(height: 8),
+                            Text(
+                              "By ${widget.product?.company} - ${widget.product?.category.name}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: themeMode.secondaryTextColor,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Gender: ${widget.product?.gender}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeMode.secondaryTextColor,
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${widget.product?.price.toStringAsFixed(2)} Rs',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: themeMode.borderColor2,
+                                      ),
+                                    ),
+                                    if (widget.product?.discount != null)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          '-${widget.product?.discount!.toStringAsFixed(0)}%',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                Text(
+                                  widget.product!.stock > 0
+                                      ? 'In Stock'
+                                      : 'Out of Stock',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: widget.product!.stock > 0
+                                        ? themeMode.borderColor2
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            'Age: ${widget.product?.targetAge}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: themeMode.secondaryTextColor,
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.local_shipping,
+                                  size: 18,
+                                  color: themeMode.iconColor,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Delivery: ${widget.product?.delivery} Rs',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: themeMode.secondaryTextColor,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildItem(
+                                  themeMode.secondaryTextColor,
+                                  "Size",
+                                  widget.product!.size,
+                                ),
+                                _buildItem(
+                                  themeMode.secondaryTextColor,
+                                  "Gender",
+                                  widget.product!.gender,
+                                ),
+                                _buildItem(
+                                  themeMode.secondaryTextColor,
+                                  "Age",
+                                  widget.product!.targetAge,
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
+
+  _buildItem(Color? color, String t1, String t2) => Column(
+        children: [
+          Text(
+            t1,
+            style: TextStyle(
+              fontSize: 14,
+              color: color,
+            ),
+          ),
+          Text(
+            t2,
+            style: TextStyle(
+              fontSize: 14,
+              color: color,
+            ),
+          ),
+        ],
+      );
 }

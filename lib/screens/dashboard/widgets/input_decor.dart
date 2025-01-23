@@ -12,6 +12,7 @@ InputDecoration inputDecor(
         icon,
         color: themeMode.iconColor,
       ),
+      
       contentPadding: const EdgeInsets.all(8),
       helperStyle: TextStyle(color: themeMode.primTextColor),
       labelStyle: TextStyle(
