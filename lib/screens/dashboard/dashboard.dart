@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
-import 'package:t_wear/screens/dashboard/widgets/section_builder.dart';
-import 'package:t_wear/screens/dashboard/widgets/section_child.dart';
 import 'package:t_wear/screens/dashboard/widgets/weekly_sales_chart.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
@@ -103,39 +101,9 @@ class _DashBoardPgState extends State<DashBoardPg> {
                 child: const WeeklySalesChart(),
               ),
               const SizedBox(height: 20),
-              buildSection(
-                themeMode: themeMode,
-                sectionTitle: "Personal Information",
-                items: [
-                  buildItem(
-                    icon: Icons.date_range,
-                    label: "Joined on",
-                    value: "01/01/2024",
-                    themeMode: themeMode,
-                  ),
-                  buildItem(
-                    icon: Icons.location_on,
-                    label: "Physical Address",
-                    value: "D.I.K Pakistan",
-                    themeMode: themeMode,
-                  ),
-                  buildItem(
-                    icon: Icons.phone,
-                    label: "Phone",
-                    value: "+923150398498 & +923150907995",
-                    themeMode: themeMode,
-                  ),
-                  buildItem(
-                    icon: Icons.email,
-                    label: "Email",
-                    value: "hkffking@gmail.com",
-                    themeMode: themeMode,
-                  ),
-                ],
-              ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Wrap(
+                spacing: width * .2,
                 children: [
                   PrimeButton(
                     width: width <= 500 ? width * .3 : width * .2,
@@ -144,15 +112,9 @@ class _DashBoardPgState extends State<DashBoardPg> {
                     },
                     themeMode: themeMode,
                     child: FittedBox(
-                      child: Row(
-                        children: [
-                          const Icon(Icons.add),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Post Product',
-                            style: TextStyle(color: themeMode.primTextColor),
-                          ),
-                        ],
+                      child: Text(
+                        'Post Product',
+                        style: TextStyle(color: themeMode.primTextColor),
                       ),
                     ),
                   ),
@@ -163,15 +125,9 @@ class _DashBoardPgState extends State<DashBoardPg> {
                     },
                     themeMode: themeMode,
                     child: FittedBox(
-                      child: Row(
-                        children: [
-                          const Icon(Icons.bar_chart),
-                          const SizedBox(width: 8),
-                          Text(
-                            'View Analytics',
-                            style: TextStyle(color: themeMode.primTextColor),
-                          ),
-                        ],
+                      child: Text(
+                        'View Analytics',
+                        style: TextStyle(color: themeMode.primTextColor),
                       ),
                     ),
                   ),

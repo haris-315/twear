@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:html' as html;
-import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -28,19 +26,20 @@ Future<List<String>> uploadImagesToFolder(
           'file',
           image.path,
         ));
-      } else if (image is html.File) {
-        // Handle images picked on the web
-        final html.FileReader reader = html.FileReader();
-        reader.readAsArrayBuffer(image);
-        await reader.onLoad.first;
-
-        final Uint8List bytes = reader.result as Uint8List;
-        request.files.add(http.MultipartFile.fromBytes(
-          'file',
-          bytes,
-          filename: image.name,
-        ));
       }
+      // else if (image is html.File) {
+      //   // Handle images picked on the web
+      //   final html.FileReader reader = html.FileReader();
+      //   reader.readAsArrayBuffer(image);
+      //   await reader.onLoad.first;
+
+      //   final Uint8List bytes = reader.result as Uint8List;
+      //   request.files.add(http.MultipartFile.fromBytes(
+      //     'file',
+      //     bytes,
+      //     filename: image.name,
+      //   ));
+      // }
 
       // Send the request
       final http.StreamedResponse response = await request.send();

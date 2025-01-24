@@ -11,7 +11,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => ThemeCubit()),BlocProvider(create: (_) => HomeBloc())],
+      providers: [
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => HomeBloc())
+      ],
       child: BlocBuilder<ThemeCubit, CTheme>(
         builder: (context, themeMode) {
           return DefaultTextStyle(

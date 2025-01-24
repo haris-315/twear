@@ -66,139 +66,131 @@ class _WeeklySalesChartState extends State<WeeklySalesChart> {
               ],
             )
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 950),
-                  curve: Curves.easeIn,
-                  color: themeMode.backgroundColor,
-                  child: LineChart(LineChartData(
-                    backgroundColor: Colors.transparent,
-                    maxY: 25,
-                    minY: 0,
-                    minX: 1,
-                    maxX: 4,
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: List.generate(weeklySales.length, (index) {
-                          return FlSpot(index + 1, weeklySales[index]);
-                        }),
-                        isCurved: true,
-                        color: themeMode.borderColor2,
-                        barWidth: 4,
-                        belowBarData: BarAreaData(
-                          show: true,
-                          color: themeMode.oppositeShimmerColor
-                              ?.withValues(alpha: .3),
-                        ),
-                      ),
-                    ],
-                    titlesData: FlTitlesData(
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          interval: 1,
-                          getTitlesWidget: (value, meta) {
-                            switch (value.toInt()) {
-                              case 1:
-                                return Text(
-                                  'Week 1',
-                                  style: TextStyle(
-                                    color: themeMode.primTextColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              case 2:
-                                return Text(
-                                  'Week 2',
-                                  style: TextStyle(
-                                    color: themeMode.primTextColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              case 3:
-                                return Text(
-                                  'Week 3',
-                                  style: TextStyle(
-                                    color: themeMode.primTextColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              case 4:
-                                return Text(
-                                  'Week 4',
-                                  style: TextStyle(
-                                    color: themeMode.primTextColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              default:
-                                return const SizedBox.shrink();
-                            }
-                          },
-                        ),
-                      ),
-                      rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
-                      topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false)),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 40,
-                          getTitlesWidget: (value, meta) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Text(
-                                value.toInt().toString(),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: themeMode.primTextColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+              padding: const EdgeInsets.all(32.0),
+              child: LineChart(LineChartData(
+                backgroundColor: Colors.transparent,
+                maxY: 25,
+                minY: 0,
+                minX: 1,
+                maxX: 4,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: List.generate(weeklySales.length, (index) {
+                      return FlSpot(index + 1, weeklySales[index]);
+                    }),
+                    isCurved: true,
+                    color: themeMode.borderColor2,
+                    barWidth: 4,
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color:
+                          themeMode.oppositeShimmerColor?.withValues(alpha: .3),
+                    ),
+                  ),
+                ],
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        switch (value.toInt()) {
+                          case 1:
+                            return Text(
+                              'Week 1',
+                              style: TextStyle(
+                                color: themeMode.primTextColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
                               ),
                             );
-                          },
-                        ),
-                      ),
+                          case 2:
+                            return Text(
+                              'Week 2',
+                              style: TextStyle(
+                                color: themeMode.primTextColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            );
+                          case 3:
+                            return Text(
+                              'Week 3',
+                              style: TextStyle(
+                                color: themeMode.primTextColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            );
+                          case 4:
+                            return Text(
+                              'Week 4',
+                              style: TextStyle(
+                                color: themeMode.primTextColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            );
+                          default:
+                            return const SizedBox.shrink();
+                        }
+                      },
                     ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border(
-                        left: BorderSide(
-                            color: themeMode.borderColor ?? Colors.grey),
-                        bottom: BorderSide(
-                            color: themeMode.borderColor ?? Colors.grey),
-                      ),
-                    ),
-                    gridData: FlGridData(
-                      show: true,
-                      drawVerticalLine: true,
-                      horizontalInterval: 5,
-                      verticalInterval: 1,
-                      getDrawingHorizontalLine: (value) {
-                        return FlLine(
-                          color: themeMode.gridLineColor,
-                          strokeWidth: 0.8,
-                          dashArray: [4, 4],
+                  ),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 40,
+                      getTitlesWidget: (value, meta) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(
+                            value.toInt().toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: themeMode.primTextColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         );
                       },
-                      getDrawingVerticalLine: (value) {
-                        return FlLine(
-                          color: themeMode.gridLineColor,
-                          strokeWidth: 0.8,
-                          dashArray: [4, 4],
-                        );
-                      },
                     ),
-                  )),
+                  ),
                 ),
-              ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    left:
+                        BorderSide(color: themeMode.borderColor ?? Colors.grey),
+                    bottom:
+                        BorderSide(color: themeMode.borderColor ?? Colors.grey),
+                  ),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  horizontalInterval: 5,
+                  verticalInterval: 1,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: themeMode.gridLineColor,
+                      strokeWidth: 0.8,
+                      dashArray: [4, 4],
+                    );
+                  },
+                  getDrawingVerticalLine: (value) {
+                    return FlLine(
+                      color: themeMode.gridLineColor,
+                      strokeWidth: 0.8,
+                      dashArray: [4, 4],
+                    );
+                  },
+                ),
+              )),
             ),
     );
   }

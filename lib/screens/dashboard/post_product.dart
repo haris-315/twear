@@ -6,6 +6,7 @@ import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
@@ -317,6 +318,9 @@ class _PostProductState extends State<PostProduct> {
                         category: category,
                         gender: selectedGender,
                         targetAge: ageController.text.toString(),
+                        postDate: DateFormat('dd/MM/yyyy')
+                            .format(DateTime.now())
+                            .toString(),
                       ).toMap());
                     } catch (e) {
                       print("Error: $e");

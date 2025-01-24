@@ -16,5 +16,5 @@ final class HomeError extends HomeState {
 final class HomeSuccess extends HomeState {
   final List<Product> products;
 
-  HomeSuccess({required this.products});
+  HomeSuccess({required this.products});  
 }
