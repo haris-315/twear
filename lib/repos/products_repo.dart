@@ -50,7 +50,9 @@ List<Map<String, dynamic>> productsMaps = [
     "category": {"name": "Men", "id": 2, "image": "images/c2.webp"},
     "size": "XL",
     "gender": "Male",
-    "targetAge": 18
+    "targetAge": 18,
+    'rating': [0],
+    'postDate': '24/01/2025'
   },
   {
     'name':
@@ -109,7 +111,42 @@ List<Map<String, dynamic>> productsMaps = [
     },
     'size': 'Adjustable',
     'gender': 'Female',
-    'targetAge': '12-18'
+    'targetAge': '12-18',
+    'rating': [0],
+    'postDate': '24/01/2025'
+  },
+  {
+    'name': 'Unique Style winter track suit for Papa lover kids',
+    'price': 999,
+    'discount': null,
+    'images': [
+      'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729103/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__mbg3tw.webp',
+      'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729105/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__pxisz5.webp'
+    ],
+    'details': """[
+        {'insert': 'This'},
+        {'insert': 'winter track', 'attributes': {'bold': true, 'underline': true, 'color': '#FFE91E63'}},
+        {'insert': ' suit is a must-have for kids who love to stay cozy and stylish. The high-quality fleece material ensures that your child stays warm and comfortable during the colder months. '},
+        {'insert': 'The pull-over style hoodie is perfect for casual occasions', 'attributes': {'bold': true, 'underline': true, 'italic': true, 'background': '#FFF06292'}},
+        {'insert': ' and is designed to keep your child snug. The unique design of this hoodie is sure to make your child stand out from the crowd. It is suitable for both boys and girls and is available in a range of sizes to fit your child perfectly. Whether your child is playing outside or lounging at home, this hoodie is a great addition to their wardrobe, '},
+        {'insert': 'providing both comfort and style', 'attributes': {'bold': true, 'color': '#FF4CAF50', 'underline': true}},
+        {'insert': '.', 'attributes': {'bold': true}}
+      ]""",
+    'stock': 17,
+    'delivery': 145,
+    'timesSold': 0,
+    'company': 'KNC',
+    'category': {
+      'name': "Kid's",
+      'id': 7,
+      'image':
+          'https://res.cloudinary.com/dume7lvn5/image/upload/v1737218227/c7_tyirhd.webp'
+    },
+    'size': 'S & M',
+    'gender': 'Male',
+    'targetAge': '3-6',
+    'rating': [0],
+    'postDate': '24/01/2025'
   }
 ];
 

@@ -1,7 +1,4 @@
-// ignore: avoid_web_libraries_in_flutter
-// ignore_for_file: unused_field
-
-import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -12,6 +9,7 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/repos/main_repo.dart';
+import 'package:t_wear/screens/dashboard/widgets/editor.dart';
 import 'package:t_wear/screens/dashboard/widgets/img_pick_btn.dart';
 import 'package:t_wear/screens/dashboard/widgets/input_decor.dart';
 import 'package:t_wear/screens/dashboard/widgets/product_form.dart';
@@ -42,8 +40,8 @@ class _PostProductState extends State<PostProduct> {
   final GlobalKey formKey = GlobalKey<FormState>();
   final ImagePicker _imagePicker = ImagePicker();
 
-  List<html.File> images = [];
-  List<String> imagePreviews = [];
+  List<XFile> images = [];
+  List<Uint8List> imagePreviews = [];
   int? selectedCategory;
   List<Map> products = [];
   List<String> genders = ["Male", "Female"];
@@ -51,15 +49,6 @@ class _PostProductState extends State<PostProduct> {
   final FocusNode _fNode = FocusNode();
   bool isLoading = false;
   bool isError = false;
-
-  List<html.File> removeElementAtIndex(List<html.File> list, int index) {
-    return list
-        .asMap()
-        .entries
-        .where((entry) => entry.key != index)
-        .map((e) => e.value)
-        .toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,70 +144,23 @@ class _PostProductState extends State<PostProduct> {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  width: width * .7,
-                  height: height * .6,
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(color: quillBorder ?? Colors.red, width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(8.0),
-                  child: DefaultTextStyle(
-                    style: TextStyle(color: themeMode.primTextColor),
-                    child: Column(
-                      children: [
-                        QuillEditor(
-                          controller: _editorController,
-                          scrollController: _scrollController,
-                          focusNode: _fNode,
-                          configurations: const QuillEditorConfigurations(
-                            scrollable: true,
-                            autoFocus: false,
-                            expands: false,
-                            padding: EdgeInsets.zero,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
+                    width: width * .7,
+                    height: height * .6,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: quillBorder ?? Colors.red, width: 2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: DefaultTextStyle(
+                        style: TextStyle(color: themeMode.primTextColor),
+                        child: DescriptionEditor(
+                            editorController: _editorController,
+                            scrollController: _scrollController,
+                            focusNode: _fNode))),
                 const SizedBox(height: 16),
-                QuillToolbar.simple(
-                  controller: _editorController,
-                  configurations: QuillSimpleToolbarConfigurations(
-                    multiRowsDisplay: true,
-                    showBackgroundColorButton: true,
-                    showUndo: true,
-                    showRedo: true,
-                    showListNumbers: true,
-                    showCodeBlock: true,
-                    showQuote: true,
-                    showDirection: true,
-                    showSearchButton: false,
-                    showFontSize: true,
-                    dialogTheme: QuillDialogTheme(
-                        labelTextStyle:
-                            TextStyle(color: themeMode.primTextColor),
-                        buttonTextStyle:
-                            TextStyle(color: themeMode.primTextColor),
-                        buttonStyle: ButtonStyle(
-                            textStyle: WidgetStateProperty.resolveWith((_) =>
-                                TextStyle(color: themeMode.primTextColor)))),
-                    buttonOptions: QuillSimpleToolbarButtonOptions(
-                      base: QuillToolbarBaseButtonOptions(
-                        iconTheme: QuillIconTheme(
-                          iconButtonSelectedData:
-                              IconButtonData(color: themeMode.primTextColor),
-                          iconButtonUnselectedData:
-                              IconButtonData(color: themeMode.primTextColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                ToolBar(
+                    editorController: _editorController, themeMode: themeMode),
                 const SizedBox(height: 16),
                 Wrap(
                   spacing: 5,
@@ -226,28 +168,22 @@ class _PostProductState extends State<PostProduct> {
                     if (images.length < 6)
                       ImagesButton(
                         onpress: () async {
-                          List<html.File> pickedImages =
-                              await pickMultipleImages();
-
-                          for (var image in pickedImages) {
-                            final reader = html.FileReader();
-                            reader.readAsDataUrl(image);
-
-                            reader.onLoadEnd.listen((_) {
-                              setState(() {
-                                imagePreviews.add(reader.result as String);
-                              });
-                            });
-                          }
-
+                          final pickedImages =
+                              await _imagePicker.pickMultiImage();
+                          imagePreviews.addAll([
+                            for (XFile img in pickedImages)
+                              await img.readAsBytes()
+                          ]);
                           setState(() {
-                            images = pickedImages;
+                            images.addAll(pickedImages);
+                            pickedImages.clear();
                           });
                         },
                         themeMode: themeMode,
                       ),
                     ...imagePreviews.map(
-                      (imageUri) => Stack(
+                      (image) => Stack(
+                        alignment: Alignment.bottomCenter,
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(9),
@@ -257,29 +193,31 @@ class _PostProductState extends State<PostProduct> {
                                       width: 1,
                                       color:
                                           themeMode.borderColor ?? Colors.red)),
-                              child: Image.network(
-                                  width: width * .12,
-                                  height: height * .2,
-                                  imageUri,
-                                  fit: BoxFit.fill),
+                              child: Image.memory(
+                                image,
+                                width: width * .12,
+                                height: height * .2,
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           ),
                           Positioned(
-                              left: 10,
-                              top: 20,
-                              child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      images = [];
-                                      images = removeElementAtIndex(images,
-                                          imagePreviews.indexOf(imageUri));
-                                      imagePreviews.remove(imageUri);
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: themeMode.primTextColor,
-                                  )))
+                            top: 5,
+                            right: 5,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: themeMode.borderColor2,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  final index = imagePreviews.indexOf(image);
+                                  images.removeAt(index);
+                                  imagePreviews.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -340,20 +278,4 @@ class _PostProductState extends State<PostProduct> {
       ),
     );
   }
-}
-
-Future<List<html.File>> pickMultipleImages() async {
-  final input = html.FileUploadInputElement();
-  input.accept = 'image/*';
-  input.multiple = true;
-  input.click();
-
-  await input.onChange.first;
-
-  final files = input.files;
-  if (files != null) {
-    return files;
-  }
-
-  return [];
 }

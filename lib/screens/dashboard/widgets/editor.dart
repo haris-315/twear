@@ -36,45 +36,55 @@ class DescriptionEditor extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          QuillToolbar.simple(
-            controller: _editorController,
-            configurations: QuillSimpleToolbarConfigurations(
-              multiRowsDisplay: true,
-              showBackgroundColorButton: true,
-              showUndo: true,
-              showRedo: true,
-              showListNumbers: true,
-              showCodeBlock: true,
-              showQuote: true,
-              showDirection: true,
-              showSearchButton: false,
-              showFontSize: true,
-              dialogTheme: QuillDialogTheme(
-                  labelTextStyle: TextStyle(color: themeMode.primTextColor),
-                  buttonTextStyle: TextStyle(color: themeMode.primTextColor),
-                  buttonStyle: ButtonStyle(
-                      textStyle: WidgetStateProperty.resolveWith(
-                          (_) => TextStyle(color: themeMode.primTextColor)))),
-              buttonOptions: QuillSimpleToolbarButtonOptions(
-                base: QuillToolbarBaseButtonOptions(
-                  iconTheme: QuillIconTheme(
-                    iconButtonSelectedData: IconButtonData(
-                        color: themeMode.primTextColor,
-                        style: ButtonStyle(
-                            foregroundColor: WidgetStateProperty.resolveWith(
-                                (_) => themeMode.primTextColor))),
-                    iconButtonUnselectedData: IconButtonData(
-                      color: themeMode.primTextColor,
-                      style: ButtonStyle(
-                          foregroundColor: WidgetStateProperty.resolveWith(
-                              (_) => themeMode.primTextColor)),
-                    ),
-                  ),
-                ),
+        ],
+      ),
+    );
+  }
+}
+
+class ToolBar extends StatelessWidget {
+  final QuillController editorController;
+  final CTheme themeMode;
+  const ToolBar({super.key, required this.editorController, required this.themeMode});
+
+  @override
+  Widget build(BuildContext context) {
+    return QuillToolbar.simple(
+      controller: editorController,
+      configurations: QuillSimpleToolbarConfigurations(
+        multiRowsDisplay: true,
+        showBackgroundColorButton: true,
+        showUndo: true,
+        showRedo: true,
+        showListNumbers: true,
+        showCodeBlock: true,
+        showQuote: true,
+        showDirection: true,
+        showSearchButton: false,
+        showFontSize: true,
+        dialogTheme: QuillDialogTheme(
+            labelTextStyle: TextStyle(color: themeMode.primTextColor),
+            buttonTextStyle: TextStyle(color: themeMode.primTextColor),
+            buttonStyle: ButtonStyle(
+                textStyle: WidgetStateProperty.resolveWith(
+                    (_) => TextStyle(color: themeMode.primTextColor)))),
+        buttonOptions: QuillSimpleToolbarButtonOptions(
+          base: QuillToolbarBaseButtonOptions(
+            iconTheme: QuillIconTheme(
+              iconButtonSelectedData: IconButtonData(
+                  color: themeMode.primTextColor,
+                  style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.resolveWith(
+                          (_) => themeMode.primTextColor))),
+              iconButtonUnselectedData: IconButtonData(
+                color: themeMode.primTextColor,
+                style: ButtonStyle(
+                    foregroundColor: WidgetStateProperty.resolveWith(
+                        (_) => themeMode.primTextColor)),
               ),
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

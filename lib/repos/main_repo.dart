@@ -1,13 +1,12 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 Future<List<String>> uploadImagesToFolder(
-    List<dynamic> images, String folderName) async {
+    List<XFile> images, String folderName) async {
   const String cloudName = "dume7lvn5";
-  const String uploadPreset =
-      "my_preset"; // Ensure it's configured in Cloudinary.
+  const String uploadPreset = "my_preset"; // Ensure it's configured in Cloudinary.
 
   final List<String> uploadedUrls = [];
 
@@ -20,26 +19,15 @@ Future<List<String>> uploadImagesToFolder(
         ..fields['upload_preset'] = uploadPreset
         ..fields['folder'] = folderName;
 
-      if (image is XFile) {
-        // Handle images picked on native platforms
-        request.files.add(await http.MultipartFile.fromPath(
-          'file',
-          image.path,
-        ));
-      }
-      // else if (image is html.File) {
-      //   // Handle images picked on the web
-      //   final html.FileReader reader = html.FileReader();
-      //   reader.readAsArrayBuffer(image);
-      //   await reader.onLoad.first;
+      // Read image as bytes
+      final Uint8List bytes = await image.readAsBytes();
 
-      //   final Uint8List bytes = reader.result as Uint8List;
-      //   request.files.add(http.MultipartFile.fromBytes(
-      //     'file',
-      //     bytes,
-      //     filename: image.name,
-      //   ));
-      // }
+      // Add the image as a file to the request
+      request.files.add(http.MultipartFile.fromBytes(
+        'file', // API field name
+        bytes,
+        filename: image.name,
+      ));
 
       // Send the request
       final http.StreamedResponse response = await request.send();
