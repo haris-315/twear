@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
+import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
@@ -41,6 +42,7 @@ class _HomeState extends State<Home> {
             themeMode: themeMode,
             scrollController: scrollController,
           ),
+          endDrawer: CustomDrawer(themeMode: themeMode),
           body: SingleChildScrollView(
             controller: scrollController,
             child: state is HomeSuccess

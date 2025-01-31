@@ -58,48 +58,64 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: themeMode.borderColor ?? Colors.red),
-                borderRadius: BorderRadius.circular(14)),
-            height: 40,
-            width: width * .4,
-            child: SearchBar(
-              shadowColor:
-                  WidgetStateColor.resolveWith((_) => Colors.transparent),
-              backgroundColor: WidgetStateColor.resolveWith(
-                  (_) => themeMode.appBarColor ?? Colors.red),
-              hintText: "Search",
-              hintStyle: WidgetStateProperty.resolveWith(
-                  (_) => TextStyle(color: themeMode.primTextColor)),
-              trailing: [
-                Icon(
-                  Icons.search,
-                  color: themeMode.iconColor,
-                )
-              ],
-            )),
-        IconButton(
-          onPressed: () {
-            context.read<ThemeCubit>().toggleTheme(
-                themeMode.getThemeType().runtimeType == Dark().runtimeType
-                    ? Light()
-                    : Dark());
-          },
-          icon: themeMode.getThemeType().runtimeType == Dark().runtimeType
-              ? const Icon(
-                  Icons.light_mode_sharp,
-                  color: Colors.white,
-                )
-              : Transform.rotate(
-                  angle: 12,
-                  child: const Icon(
-                    Icons.nightlight_round_sharp,
-                    color: Colors.black,
+        if (width <= 500) ...[
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                color: themeMode.iconColor,
+              )),
+          DrawerButton(
+            color: themeMode.iconColor,
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          ),
+        ] else ...[
+          Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border.all(color: themeMode.borderColor ?? Colors.red),
+                  borderRadius: BorderRadius.circular(14)),
+              height: 40,
+              width: width * .4,
+              child: SearchBar(
+                shadowColor:
+                    WidgetStateColor.resolveWith((_) => Colors.transparent),
+                backgroundColor: WidgetStateColor.resolveWith(
+                    (_) => themeMode.appBarColor ?? Colors.red),
+                hintText: "Search",
+                hintStyle: WidgetStateProperty.resolveWith(
+                    (_) => TextStyle(color: themeMode.primTextColor)),
+                trailing: [
+                  Icon(
+                    Icons.search,
+                    color: themeMode.iconColor,
+                  )
+                ],
+              )),
+          IconButton(
+            onPressed: () {
+              context.read<ThemeCubit>().toggleTheme(
+                  themeMode.getThemeType().runtimeType == Dark().runtimeType
+                      ? Light()
+                      : Dark());
+            },
+            icon: themeMode.getThemeType().runtimeType == Dark().runtimeType
+                ? const Icon(
+                    Icons.light_mode_sharp,
+                    color: Colors.white,
+                  )
+                : Transform.rotate(
+                    angle: 12,
+                    child: const Icon(
+                      Icons.nightlight_round_sharp,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-        ),
-        ...navItems(themeMode, context)
+          ),
+          ...navItems(themeMode, context)
+        ]
       ],
     );
   }

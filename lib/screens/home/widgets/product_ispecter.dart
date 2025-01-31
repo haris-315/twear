@@ -5,6 +5,7 @@ import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
@@ -19,6 +20,7 @@ class ProductInspecter extends StatelessWidget {
     Product product = ModalRoute.of(context)?.settings.arguments as Product;
 
     return Scaffold(
+        endDrawer: CustomDrawer(themeMode: themeMode),
         backgroundColor: themeMode.backgroundColor,
         appBar:
             NavBar(themeMode: themeMode, scrollController: scrollController),

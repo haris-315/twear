@@ -71,7 +71,7 @@ class TrendingPicks extends StatelessWidget {
                           Expanded(
                             child: Image.network(
                               product.images.first,
-                              fit: BoxFit.cover,
+                              fit: swidth <= 600 ? BoxFit.fill : BoxFit.cover,
                             ),
                           ),
                           Container(
@@ -140,7 +140,7 @@ class TrendingPicks extends StatelessWidget {
             );
           },
           options: CarouselOptions(
-            height: 440,
+            height: swidth <= 600 ? 260 : 460,
             autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 0.85,

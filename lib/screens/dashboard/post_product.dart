@@ -14,6 +14,7 @@ import 'package:t_wear/screens/dashboard/widgets/img_pick_btn.dart';
 import 'package:t_wear/screens/dashboard/widgets/input_decor.dart';
 import 'package:t_wear/screens/dashboard/widgets/product_form.dart';
 import 'package:t_wear/screens/dashboard/widgets/section_builder.dart';
+import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
@@ -65,6 +66,7 @@ class _PostProductState extends State<PostProduct> {
     });
 
     return Scaffold(
+      endDrawer: CustomDrawer(themeMode: themeMode),
       backgroundColor: themeMode.backgroundColor,
       appBar:
           NavBar(themeMode: themeMode, scrollController: ScrollController()),

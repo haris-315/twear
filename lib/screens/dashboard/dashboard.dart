@@ -3,6 +3,7 @@ import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/screens/dashboard/widgets/weekly_sales_chart.dart';
+import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
 
@@ -22,6 +23,7 @@ class _DashBoardPgState extends State<DashBoardPg> {
     final CTheme themeMode = getThemeMode(context);
 
     return Scaffold(
+      endDrawer: CustomDrawer(themeMode: themeMode),
       backgroundColor: themeMode.backgroundColor,
       appBar: NavBar(
         themeMode: themeMode,

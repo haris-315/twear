@@ -157,7 +157,7 @@ List<Map<String, dynamic>> productsMaps = [
     'gender': 'Female',
     'targetAge': '12-18',
     'rating': [2, 5, 3, 2, 4, 1],
-    'postDate': '24/01/2025'
+    'postDate': '24/11/2024'
   },
   {
     'name': 'Unique Style winter track suit for Papa lover kids',
