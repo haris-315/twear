@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:t_wear/core/utils/card_dimensions.dart';
+import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
@@ -26,17 +28,7 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     final themeMode = getThemeMode(context);
-    final double screenWidth = getScreenSize(context).first;
-
-    double cardWidth = screenWidth <= 450
-        ? screenWidth * 0.6
-        : screenWidth <= 600
-            ? screenWidth * 0.5
-            : screenWidth <= 790
-                ? screenWidth * 0.35
-                : screenWidth <= 900
-                    ? screenWidth * 0.3
-                    : screenWidth * .24;
+    final [screenWidth, screenHeight] = getScreenSize(context);
 
     return MouseRegion(
       onEnter: (_) {
@@ -48,186 +40,173 @@ class _ProductCardState extends State<ProductCard> {
         onTap: widget.onTap,
         child: Transform.scale(
           scale: isHovered ? 1.05 : 1.0,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 950),
-            curve: Curves.easeInOut,
-            width: cardWidth,
-            margin: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: themeMode.buttonColor,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: themeMode.shadowColor ??
-                      Colors.black.withOpacity(isHovered ? 0.4 : 0.2),
-                  blurRadius: isHovered ? 16 : 8,
-                  offset: const Offset(0, 4),
+          child: Stack(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 950),
+                curve: Curves.easeInOut,
+                width: responsiveWidth(screenWidth),
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: themeMode.buttonColor,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: themeMode.shadowColor ??
+                          Colors.black.withValues(alpha: isHovered ? 0.4 : 0.2),
+                      blurRadius: isHovered ? 16 : 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: themeMode.borderColor ?? Colors.grey,
+                    width: 1.5,
+                  ),
                 ),
-              ],
-              border: Border.all(
-                color: themeMode.borderColor ?? Colors.grey,
-                width: 1.5,
-              ),
-            ),
-            child: widget.skeletonMode
-                ? SizedBox(
-                    width: cardWidth,
-                    height: 260,
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                        child: widget.product!.images.isNotEmpty
-                            ? AspectRatio(
-                                aspectRatio: aspectRatio,
-                                child: Image.network(
-                                  widget.product!.images[0],
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
+                child: widget.skeletonMode
+                    ? SizedBox(
+                        width: responsiveWidth(screenWidth),
+                        height: 260,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16)),
+                            child: widget.product!.images.isNotEmpty
+                                ? AspectRatio(
+                                    aspectRatio: screenWidth < 600 ? 1.2 : 1.4,
+                                    child: Image.network(
+                                      widget.product!.images[0],
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                        color: Colors.grey[300],
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          Icons.image,
+                                          size: 50,
+                                          color: themeMode.iconColor,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    height: 180,
                                     color: Colors.grey[300],
                                     alignment: Alignment.center,
                                     child: Icon(
-                                      Icons.image,
+                                      Icons.image_not_supported,
                                       size: 50,
                                       color: themeMode.iconColor,
                                     ),
                                   ),
-                                ),
-                              )
-                            : Container(
-                                height: 180,
-                                color: Colors.grey[300],
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  size: 50,
-                                  color: themeMode.iconColor,
-                                ),
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Tooltip(
-                              message: widget.product?.name,
-                              child: Text(
-                                widget.product!.name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: themeMode.primTextColor,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "By ${widget.product?.company} - ${widget.product?.category.name}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: themeMode.secondaryTextColor,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      '${widget.product?.price.toStringAsFixed(2)} Rs',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: themeMode.borderColor2,
-                                      ),
+                                Tooltip(
+                                  message: widget.product?.name,
+                                  child: Text(
+                                    widget.product!.name,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: themeMode.primTextColor,
                                     ),
-                                    if (widget.product?.discount != null)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          '-${widget.product?.discount!.toStringAsFixed(0)}%',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                Text(
-                                  widget.product!.stock > 0
-                                      ? 'In Stock'
-                                      : 'Out of Stock',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: widget.product!.stock > 0
-                                        ? themeMode.borderColor2
-                                        : Colors.red,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.local_shipping,
-                                  size: 18,
-                                  color: themeMode.iconColor,
-                                ),
-                                const SizedBox(width: 4),
+                                const SizedBox(height: 3),
                                 Text(
-                                  'Delivery: ${widget.product?.delivery} Rs',
+                                  "By ${widget.product?.company} - ${widget.product?.category.name}",
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: themeMode.secondaryTextColor,
                                   ),
                                 ),
+                                const SizedBox(height: 1),
+                                Row(children: [
+                                  ...List.generate(
+                                      5,
+                                      (index) => GestureDetector(
+                                            onTap: () {
+                                              setState(() {});
+                                            },
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: Icon(
+                                                Icons.star,
+                                                color: index <
+                                                        widget.product!
+                                                            .avgRating()
+                                                    ? Colors.amberAccent
+                                                    : Colors.grey,
+                                              ),
+                                            ),
+                                          )),
+                                  FittedBox(
+                                    child: IconButton(
+                                        iconSize: 43,
+                                        onPressed: () {
+                                          print(
+                                              "Trying to cart ${widget.product!.name}");
+                                        },
+                                        icon:
+                                            const Icon(Icons.shopify_rounded)),
+                                  )
+                                ])
                               ],
                             ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildItem(
-                                  themeMode.secondaryTextColor,
-                                  "Size",
-                                  widget.product!.size,
-                                ),
-                                _buildItem(
-                                  themeMode.secondaryTextColor,
-                                  "Gender",
-                                  widget.product!.gender,
-                                ),
-                                _buildItem(
-                                  themeMode.secondaryTextColor,
-                                  "Age",
-                                  widget.product!.targetAge,
-                                )
-                              ],
-                            ),
-                          ],
+                          ),
+                        ],
+                      ),
+              ),
+              if (widget.product != null)
+                if (calculateDifference(widget.product!.postDate) <= 40)
+                  Positioned(
+                    top: 13,
+                    right: 13,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.lightGreen,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.green.withValues(alpha: 0.5),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        "New",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          fontSize: 15,
                         ),
                       ),
-                    ],
+                    ),
                   ),
+            ],
           ),
         ),
       ),
     );
   }
 
+  // ignore: unused_element
   _buildItem(Color? color, String t1, String t2) => Column(
         children: [
           Text(

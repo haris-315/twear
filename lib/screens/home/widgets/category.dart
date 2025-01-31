@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
@@ -6,16 +8,14 @@ import 'package:t_wear/models/category.dart';
 
 class CategoryItem extends StatefulWidget {
   final CTheme themeMode;
-  final String img;
-  final String name;
+  final Category category;
   final bool skeletonMode;
 
   const CategoryItem({
     super.key,
     required this.themeMode,
-    required this.img,
-    required this.name,
     this.skeletonMode = false,
+    required this.category,
   });
 
   @override
@@ -30,71 +30,76 @@ class _CategoryItemState extends State<CategoryItem> {
     final width = getScreenSize(context).first;
     final height = getScreenSize(context).elementAt(1);
     final themeMode = getThemeMode(context);
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: Transform.scale(
-        scale: isHovered ? 1.05 : 1.0, // Scale the widget on hover
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 960),
-          curve: Curves.easeInOut,
-          height: width <= 500 ? 40 : null,
-          decoration: BoxDecoration(
-            color: themeMode.buttonColor,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: themeMode.shadowColor ??
-                    Colors.black.withOpacity(isHovered ? 0.4 : 0.2),
-                blurRadius: isHovered ? 19 : 15,
-                offset: const Offset(0, 4),
-              ),
-            ],
-            // border: Border.all(
-            //   color: themeMode.borderColor ?? Colors.grey,
-            //   width: 1.5,
-            // ),
-          ),
-          child: width <= 500
-              ? widget.skeletonMode
-                  ? const SizedBox(
-                      width: 80,
-                      height: 40,
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      child: Center(
-                        child: Text(
-                          widget.name,
-                          style: TextStyle(
-                            color: widget.themeMode.primTextColor,
-                            fontSize: 16,
+    return GestureDetector(
+      onTap: () {
+        context.read<HomeBloc>().add(GetByCategory(category: widget.category));
+      },
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        cursor: SystemMouseCursors.click,
+        child: Transform.scale(
+          scale: isHovered ? 1.05 : 1.0, // Scale the widget on hover
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 960),
+            curve: Curves.easeInOut,
+            height: width <= 500 ? 40 : null,
+            decoration: BoxDecoration(
+              color: themeMode.buttonColor,
+              borderRadius: BorderRadius.circular(width <= 500 ? 10 : 16),
+              boxShadow: [
+                BoxShadow(
+                  color: themeMode.shadowColor ??
+                      Colors.black.withValues(alpha: isHovered ? 0.4 : 0.2),
+                  blurRadius: isHovered ? 19 : 15,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              // border: Border.all(
+              //   color: themeMode.borderColor ?? Colors.grey,
+              //   width: 1.5,
+              // ),
+            ),
+            child: width <= 500
+                ? widget.skeletonMode
+                    ? const SizedBox(
+                        width: 80,
+                        height: 40,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Center(
+                          child: Text(
+                            widget.category.name,
+                            style: TextStyle(
+                              color: widget.themeMode.primTextColor,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
+                      )
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FittedBox(
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: height * .09,
+                            foregroundImage: widget.skeletonMode
+                                ? null
+                                : NetworkImage(widget.category.image),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.category.name,
+                            style: TextStyle(
+                                color: widget.themeMode.primTextColor),
+                          ),
+                        ],
                       ),
-                    )
-              : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FittedBox(
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: height * .09,
-                          foregroundImage: widget.skeletonMode
-                              ? null
-                              : NetworkImage(widget.img),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.name,
-                          style:
-                              TextStyle(color: widget.themeMode.primTextColor),
-                        ),
-                      ],
                     ),
                   ),
-                ),
+          ),
         ),
       ),
     );

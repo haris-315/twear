@@ -162,4 +162,9 @@ class Product {
       postDate,
     );
   }
+
+  int avgRating() {
+    return (rating.reduce((value, element) => value + element) / rating.length)
+        .toInt();
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/screens/global_widgets/nav_item.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
@@ -38,6 +39,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final [width, height] = getScreenSize(context);
     return AppBar(
       backgroundColor: themeMode.appBarColor,
       title: MouseRegion(
@@ -56,6 +58,27 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
+        Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: themeMode.borderColor ?? Colors.red),
+                borderRadius: BorderRadius.circular(14)),
+            height: 40,
+            width: width * .4,
+            child: SearchBar(
+              shadowColor:
+                  WidgetStateColor.resolveWith((_) => Colors.transparent),
+              backgroundColor: WidgetStateColor.resolveWith(
+                  (_) => themeMode.appBarColor ?? Colors.red),
+              hintText: "Search",
+              hintStyle: WidgetStateProperty.resolveWith(
+                  (_) => TextStyle(color: themeMode.primTextColor)),
+              trailing: [
+                Icon(
+                  Icons.search,
+                  color: themeMode.iconColor,
+                )
+              ],
+            )),
         IconButton(
           onPressed: () {
             context.read<ThemeCubit>().toggleTheme(

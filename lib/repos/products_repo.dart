@@ -1,10 +1,54 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:t_wear/models/category.dart';
 import 'package:t_wear/models/failure.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/home/widgets/category.dart';
+
+class ProductsRepo {
+  List<Product> products =
+      productsMaps.map((element) => Product.fromMap(element)).toList();
+  Map<dynamic, List<Product>> categorizedProducts = {"trending": <Product>[]};
+
+  Future<Either<Failure, Map<dynamic, List<Product>>>> getProducts() async {
+    await Future.delayed(const Duration(seconds: 2));
+    try {
+      for (var category in categories) {
+        List<Product> trending =
+            products.where((product) => product.avgRating() == 5).toList();
+        categorizedProducts['trending'] = trending;
+        List<Product> tempProductsList = products
+            .where((product) => product.category.id == category.id)
+            .toList();
+        if (tempProductsList.isNotEmpty) {
+          categorizedProducts[category.name] = tempProductsList;
+        }
+      }
+
+      return right(categorizedProducts);
+    } catch (e) {
+      return left(Failure(message: e.toString(), st: StackTrace.current));
+    }
+  }
+
+  Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsByCategory(
+      Category category) async {
+    await Future.delayed(const Duration(seconds: 2));
+    try {
+      categorizedProducts.removeWhere((key, value) => key != "tending");
+
+      categorizedProducts[category.name] = products
+          .where((product) => product.category.id == category.id)
+          .toList();
+      return right(categorizedProducts);
+    } catch (e) {
+      return left(Failure(message: e.toString(), st: StackTrace.current));
+    }
+  }
+}
 
 List<Map<String, dynamic>> productsMaps = [
   {
-    "name": "New Hoods For Boys And Girls With New Print BTS",
+    "name": "New Hoods For Boys With New Print BTS",
     "price": 750,
     "discount": null,
     "images": [
@@ -58,7 +102,7 @@ List<Map<String, dynamic>> productsMaps = [
     'name':
         'Fashion Women Faux Rabbit Fur Hand Wrist Warmer Winter Fingerless Knitted Gloves',
     'price': 279,
-    'discount': null,
+    'discount': 42,
     'images': [
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737458684/Fashion%20Women%20Faux%20Rabbit%20Fur%20Hand%20Wrist%20Warmer%20Winter%20Fingerless%20Knitted%20Gloves/2fced68cffd8abceddd6ea79a721953d.jpg_720x720q80.jpg__ot4ehw.webp'
     ],
@@ -112,7 +156,7 @@ List<Map<String, dynamic>> productsMaps = [
     'size': 'Adjustable',
     'gender': 'Female',
     'targetAge': '12-18',
-    'rating': [0],
+    'rating': [2, 5, 3, 2, 4, 1],
     'postDate': '24/01/2025'
   },
   {
@@ -145,19 +189,7 @@ List<Map<String, dynamic>> productsMaps = [
     'size': 'S & M',
     'gender': 'Male',
     'targetAge': '3-6',
-    'rating': [0],
+    'rating': [5, 5, 5, 5, 5],
     'postDate': '24/01/2025'
   }
 ];
-
-Future<Either<Failure, List<Product>>> getProducts() async {
-  await Future.delayed(const Duration(seconds: 2));
-  try {
-    List<Product> products =
-        productsMaps.map((element) => Product.fromMap(element)).toList();
-
-    return right(products);
-  } catch (e) {
-    return left(Failure(message: e.toString(), st: StackTrace.current));
-  }
-}

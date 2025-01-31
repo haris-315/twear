@@ -7,7 +7,8 @@ import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 
 class ShimmerEffect extends StatelessWidget {
-  const ShimmerEffect({super.key});
+  final bool forCategories;
+  const ShimmerEffect({super.key, required this.forCategories});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class ShimmerEffect extends StatelessWidget {
     double sheight = getScreenSize(context).last;
     CTheme themeMode = getThemeMode(context);
     return Column(children: [
+      if (forCategories == false)
       Shimmer.fromColors(
           baseColor: themeMode.backgroundColor ?? Colors.red,
           highlightColor: themeMode.oppositeShimmerColor ?? Colors.white,
@@ -39,8 +41,7 @@ class ShimmerEffect extends StatelessWidget {
                           left: 19, right: 19, top: 16, bottom: 16),
                   child: CategoryItem(
                     skeletonMode: true,
-                    name: categories[index].name,
-                    img: categories[index].image,
+                    category: categories[index],
                     themeMode: themeMode,
                   ),
                 );

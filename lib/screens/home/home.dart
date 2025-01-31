@@ -7,6 +7,7 @@ import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
+import 'package:t_wear/screens/home/widgets/trends.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -45,60 +46,28 @@ class _HomeState extends State<Home> {
             child: state is HomeSuccess
                 ? Column(
                     children: [
-                      SizedBox(
-                        width: swidth,
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            SizedBox(
-                              height: swidth <= 500
-                                  ? swidth < 400
-                                      ? swidth * 0.22
-                                      : swidth * 0.19
-                                  : sheight * 0.35,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categories.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                    padding: swidth <= 500
-                                        ? EdgeInsets.only(
-                                            left: swidth <= 400 ? 10 : 19.0,
-                                            top: 22,
-                                            bottom: 22,
-                                            right: swidth <= 400 ? 10 : 19.0)
-                                        : const EdgeInsets.only(
-                                            left: 19,
-                                            right: 19,
-                                            top: 16,
-                                            bottom: 16),
-                                    child: CategoryItem(
-                                      name: categories[index].name,
-                                      img: categories[index].image,
-                                      themeMode: themeMode,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+                      _categoryBuilder(swidth, sheight, themeMode),
+                      const SizedBox(
+                        height: 40,
                       ),
-                      /* Using Wrap Widget Because The List Is Not Lengthy.
-                      For Realtime Projects I use GridView Or ListView */
-                      Wrap(
-                          children: state.products
-                              .map((product) => ProductCard(
-                                    onTap: () {},
-                                    product: product,
-                                  ))
-                              .toList())
+                      if (!state.isCategorizing)
+                        TrendingPicks(
+                            trendingProducts: state.products['trending'] ?? []),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      ..._buildProducts(state, swidth, sheight, themeMode)
                     ],
                   )
                 : state is HomeLoading
-                    ? const ShimmerEffect()
+                    ? Column(
+                        children: [
+                          if (state.byCategory)
+                            _categoryBuilder(swidth, sheight, themeMode),
+                          ShimmerEffect(
+                              forCategories: state.byCategory ? true : false),
+                        ],
+                      )
                     : state is HomeError
                         ? Center(
                             child: Text(state.message),
@@ -107,6 +76,82 @@ class _HomeState extends State<Home> {
           ),
         );
       },
+    );
+  }
+
+  SizedBox _categoryBuilder(double swidth, double sheight, CTheme themeMode) {
+    return SizedBox(
+      height: swidth <= 500
+          ? swidth < 400
+              ? swidth * 0.22
+              : swidth * 0.19
+          : sheight * 0.35,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: swidth <= 500
+                ? EdgeInsets.only(
+                    left: swidth <= 400 ? 10 : 19.0,
+                    top: 22,
+                    bottom: 22,
+                    right: swidth <= 400 ? 10 : 19.0)
+                : const EdgeInsets.only(
+                    left: 19, right: 19, top: 16, bottom: 16),
+            child: CategoryItem(
+              category: categories[index],
+              themeMode: themeMode,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Iterable _buildProducts(
+      HomeSuccess state, double swidth, double sheight, CTheme themeMode) {
+    bool smallScreen = swidth <= 500;
+    return state.products.keys.map(
+      (key) => key == 'trending'
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                crossAxisAlignment: smallScreen
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.start,
+                children: [
+                  SizedBox(width: swidth),
+                  Padding(
+                    padding: EdgeInsets.only(left: smallScreen ? 0 : 25.0),
+                    child: Text(
+                      key.toString().toUpperCase(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                          color: themeMode.primTextColor),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Wrap(
+                    direction: Axis.horizontal,
+                    children:
+                        List.generate(state.products[key]!.length, (index) {
+                      return ProductCard(
+                        onTap: () {
+                          Navigator.pushNamed(context, "inspect-widget",
+                              arguments: state.products[key]![index]);
+                        },
+                        product: state.products[key]![index],
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

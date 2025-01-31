@@ -5,7 +5,11 @@ sealed class HomeState {}
 
 final class HomeInitial extends HomeState {}
 
-final class HomeLoading extends HomeState {}
+final class HomeLoading extends HomeState {
+  final bool byCategory;
+
+  HomeLoading({this.byCategory = false});
+}
 
 final class HomeError extends HomeState {
   final String message;
@@ -14,7 +18,8 @@ final class HomeError extends HomeState {
 }
 
 final class HomeSuccess extends HomeState {
-  final List<Product> products;
+  final bool isCategorizing;
+  final Map<dynamic, List<Product>> products;
 
-  HomeSuccess({required this.products});  
+  HomeSuccess({this.isCategorizing = false, required this.products});
 }
