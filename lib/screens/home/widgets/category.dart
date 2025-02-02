@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
@@ -87,7 +88,15 @@ class _CategoryItemState extends State<CategoryItem> {
                             radius: height * .09,
                             foregroundImage: widget.skeletonMode
                                 ? null
-                                : NetworkImage(widget.category.image),
+                                : CachedNetworkImageProvider(
+                                  errorListener: (_) => Icon(Icons.error,color: themeMode.iconColor,),
+                                    widget.category.image),
+                            backgroundColor: Colors.grey[300],
+                            child: widget.skeletonMode
+                                ? Icon(Icons.category,
+                                    size: height * 0.05,
+                                    color: Colors.grey[600])
+                                : null,
                           ),
                           const SizedBox(height: 2),
                           Text(

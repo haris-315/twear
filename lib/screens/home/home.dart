@@ -7,6 +7,7 @@ import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
+import 'package:t_wear/screens/home/widgets/custom_lazy_wrap.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
@@ -120,9 +121,7 @@ class _HomeState extends State<Home> {
           : Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
-                crossAxisAlignment: smallScreen
-                    ? CrossAxisAlignment.center
-                    : CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(width: swidth),
                   Padding(
@@ -138,22 +137,66 @@ class _HomeState extends State<Home> {
                   const SizedBox(
                     height: 30,
                   ),
-                  Wrap(
-                    direction: Axis.horizontal,
-                    children:
-                        List.generate(state.products[key]!.length, (index) {
-                      return ProductCard(
-                        onTap: () {
-                          Navigator.pushNamed(context, "inspect-widget",
-                              arguments: state.products[key]![index]);
-                        },
-                        product: state.products[key]![index],
-                      );
-                    }),
-                  ),
+                  CustomLazyWrap(
+                      itemCount: state.products[key]!.length,
+                      itemBuilder: (context, index) {
+                        return ProductCard(
+                          onTap: () {
+                            Navigator.pushNamed(context, "inspect-widget",
+                                arguments: state.products[key]![index]);
+                          },
+                          product: state.products[key]![index],
+                        );
+                      }),
                 ],
               ),
             ),
     );
   }
+
+  // Iterable _buildProducts(
+  //     HomeSuccess state, double swidth, double sheight, CTheme themeMode) {
+  //   bool smallScreen = swidth <= 500;
+  //   return state.products.keys.map(
+  //     (key) => key == 'trending'
+  //         ? const SizedBox()
+  //         : Padding(
+  //             padding: const EdgeInsets.all(18.0),
+  //             child: Column(
+  //               crossAxisAlignment: smallScreen
+  //                   ? CrossAxisAlignment.center
+  //                   : CrossAxisAlignment.start,
+  //               children: [
+  //                 SizedBox(width: swidth),
+  //                 Padding(
+  //                   padding: EdgeInsets.only(left: smallScreen ? 0 : 25.0),
+  //                   child: Text(
+  //                     key.toString().toUpperCase(),
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 26,
+  //                         color: themeMode.primTextColor),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(
+  //                   height: 30,
+  //                 ),
+  //                 Wrap(
+  //                   direction: Axis.horizontal,
+  //                   children:
+  //                       List.generate(state.products[key]!.length, (index) {
+  //                     return ProductCard(
+  //                       onTap: () {
+  //                         Navigator.pushNamed(context, "inspect-widget",
+  //                             arguments: state.products[key]![index]);
+  //                       },
+  //                       product: state.products[key]![index],
+  //                     );
+  //                   }),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //   );
+  // }
 }

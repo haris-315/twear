@@ -10,3 +10,9 @@ final class GetByCategory extends HomeEvent {
 
   GetByCategory({required this.category});
 }
+
+final class GetBySearch extends HomeEvent {
+  final String query;
+
+  GetBySearch({required this.query});
+}

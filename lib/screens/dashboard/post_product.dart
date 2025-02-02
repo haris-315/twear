@@ -250,9 +250,7 @@ class _PostProductState extends State<PostProduct> {
                         images: urls,
                         stock: int.parse(stockController.text),
                         details: _editorController.document
-                            .toDelta()
-                            .toJson()
-                            .toString(),
+                            .toDelta(),
                         delivery: int.parse(deliveryChargesController.text),
                         company: brandNameController.text,
                         category: category,

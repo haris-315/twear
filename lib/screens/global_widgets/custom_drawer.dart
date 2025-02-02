@@ -78,7 +78,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               children: [
                 const CircleAvatar(
                   radius: 40,
-                  foregroundImage: AssetImage("images/hero.jpg"),
+                  foregroundImage: AssetImage("assets/images/hero.jpg"),
                 ),
                 const SizedBox(width: 12),
                 Text(

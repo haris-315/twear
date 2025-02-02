@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
@@ -58,28 +59,23 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        if (width <= 500) ...[
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.search,
-                color: themeMode.iconColor,
-              )),
-          DrawerButton(
-            color: themeMode.iconColor,
-            onPressed: () {
-              Scaffold.of(context).openEndDrawer();
-            },
-          ),
-        ] else ...[
+        if (ModalRoute.of(context)?.settings.name == "home" ||
+            ModalRoute.of(context)?.settings.name == "/")
           Container(
               decoration: BoxDecoration(
                   border:
                       Border.all(color: themeMode.borderColor ?? Colors.red),
-                  borderRadius: BorderRadius.circular(14)),
-              height: 40,
-              width: width * .4,
+                  borderRadius: BorderRadius.circular(16)),
+              height: 34,
+              width: width * .5,
               child: SearchBar(
+                onSubmitted: (query) {
+                  context.read<HomeBloc>().add(GetBySearch(query: query));
+                },
+                overlayColor:
+                    WidgetStateColor.resolveWith((_) => Colors.transparent),
+                textStyle: WidgetStateTextStyle.resolveWith(
+                    (_) => TextStyle(color: themeMode.primTextColor)),
                 shadowColor:
                     WidgetStateColor.resolveWith((_) => Colors.transparent),
                 backgroundColor: WidgetStateColor.resolveWith(
@@ -94,6 +90,14 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 ],
               )),
+        if (width <= 500)
+          DrawerButton(
+            color: themeMode.iconColor,
+            onPressed: () {
+              Scaffold.of(context).openEndDrawer();
+            },
+          )
+        else ...[
           IconButton(
             onPressed: () {
               context.read<ThemeCubit>().toggleTheme(

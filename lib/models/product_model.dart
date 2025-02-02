@@ -1,3 +1,5 @@
+import 'package:flutter_quill/quill_delta.dart';
+
 import 'category.dart' as cat;
 
 class Product {
@@ -5,7 +7,7 @@ class Product {
   final double price;
   final double? discount;
   final List<String> images;
-  final String details;
+  final Delta details;
   final int stock;
   final int delivery;
   final int timesSold;
@@ -45,7 +47,7 @@ class Product {
       discount:
           map['discount'] != null ? (map['discount'] as num).toDouble() : null,
       images: List<String>.from(map['images'] ?? []),
-      details: map['details']?.toString() ?? '',
+      details: map['details'] ?? '',
       stock: map['stock'] ?? 0,
       delivery: map['delivery'] ?? 0,
       timesSold: map['timesSold'] ?? 0,
@@ -84,7 +86,7 @@ class Product {
     double? price,
     double? discount,
     List<String>? images,
-    String? details,
+    Delta? details,
     int? stock,
     int? delivery,
     int? timesSold,

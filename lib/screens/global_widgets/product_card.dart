@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/ratings.dart';
 
 class ProductCard extends StatefulWidget {
   final Product? product;
@@ -77,10 +79,15 @@ class _ProductCardState extends State<ProductCard> {
                             child: widget.product!.images.isNotEmpty
                                 ? AspectRatio(
                                     aspectRatio: screenWidth < 600 ? 1.2 : 1.4,
-                                    child: Image.network(
-                                      widget.product!.images[0],
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.product!.images[0],
                                       fit: BoxFit.contain,
-                                      errorBuilder:
+                                      progressIndicatorBuilder:
+                                          (context, url, progress) =>
+                                              CircularProgressIndicator(
+                                        color: themeMode.borderColor2,
+                                      ),
+                                      errorWidget:
                                           (context, error, stackTrace) =>
                                               Container(
                                         color: Colors.grey[300],
@@ -132,24 +139,7 @@ class _ProductCardState extends State<ProductCard> {
                                 ),
                                 const SizedBox(height: 1),
                                 Row(children: [
-                                  ...List.generate(
-                                      5,
-                                      (index) => GestureDetector(
-                                            onTap: () {
-                                              setState(() {});
-                                            },
-                                            child: MouseRegion(
-                                              cursor: SystemMouseCursors.click,
-                                              child: Icon(
-                                                Icons.star,
-                                                color: index <
-                                                        widget.product!
-                                                            .avgRating()
-                                                    ? Colors.amberAccent
-                                                    : Colors.grey,
-                                              ),
-                                            ),
-                                          )),
+                                  ...buildStars(widget.product!),
                                   FittedBox(
                                     child: IconButton(
                                         iconSize: 43,
