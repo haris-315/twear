@@ -61,35 +61,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (ModalRoute.of(context)?.settings.name == "home" ||
             ModalRoute.of(context)?.settings.name == "/")
-          Container(
-              decoration: BoxDecoration(
-                  border:
-                      Border.all(color: themeMode.borderColor ?? Colors.red),
-                  borderRadius: BorderRadius.circular(16)),
-              height: 34,
-              width: width * .5,
-              child: SearchBar(
-                onSubmitted: (query) {
-                  context.read<HomeBloc>().add(GetBySearch(query: query));
-                },
-                overlayColor:
-                    WidgetStateColor.resolveWith((_) => Colors.transparent),
-                textStyle: WidgetStateTextStyle.resolveWith(
-                    (_) => TextStyle(color: themeMode.primTextColor)),
-                shadowColor:
-                    WidgetStateColor.resolveWith((_) => Colors.transparent),
-                backgroundColor: WidgetStateColor.resolveWith(
-                    (_) => themeMode.appBarColor ?? Colors.red),
-                hintText: "Search",
-                hintStyle: WidgetStateProperty.resolveWith(
-                    (_) => TextStyle(color: themeMode.primTextColor)),
-                trailing: [
-                  Icon(
-                    Icons.search,
-                    color: themeMode.iconColor,
-                  )
-                ],
-              )),
+          SearchField(themeMode: themeMode, width: width),
         if (width <= 500)
           DrawerButton(
             color: themeMode.iconColor,
@@ -126,4 +98,94 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class SearchField extends StatefulWidget {
+  const SearchField({
+    super.key,
+    required this.themeMode,
+    required this.width,
+  });
+
+  final CTheme themeMode;
+  final dynamic width;
+
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
+  final FocusNode _fNode = FocusNode();
+  bool isSearchBarFocused = false;
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fNode.addListener(() {
+      if (_fNode.hasFocus) {
+        setState(() {
+          isSearchBarFocused = true;
+        });
+      } else {
+        setState(() {
+          isSearchBarFocused = false;
+        });
+      }
+    });
+  }
+
+  _search(String query) {
+    context.read<HomeBloc>().add(GetBySearch(query: query));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: isSearchBarFocused
+                    ? widget.themeMode.borderColor2 ?? Colors.red
+                    : widget.themeMode.borderColor ?? Colors.red),
+            borderRadius: BorderRadius.circular(16)),
+        height: 34,
+        width: widget.width * .5,
+        child: SearchBar(
+          controller: controller,
+          onChanged: (query) {
+            if (query.isEmpty || query == "") {
+              context.read<HomeBloc>().add(GetBySearch(query: query));
+            }
+          },
+          onSubmitted: _search,
+          overlayColor: WidgetStateColor.resolveWith((_) => Colors.transparent),
+          textStyle: WidgetStateTextStyle.resolveWith(
+              (_) => TextStyle(color: widget.themeMode.primTextColor)),
+          shadowColor: WidgetStateColor.resolveWith((_) => Colors.transparent),
+          backgroundColor: WidgetStateColor.resolveWith(
+              (_) => widget.themeMode.appBarColor ?? Colors.red),
+          hintText: "Search",
+          hintStyle: WidgetStateProperty.resolveWith(
+              (_) => TextStyle(color: widget.themeMode.primTextColor)),
+          trailing: [
+            InkWell(
+              onTap: () {
+                if (!isSearchBarFocused && controller.text.isEmpty) {
+                  _search(controller.text.trim());
+                } else {
+                  controller.text = "";
+                  _search("");
+                }
+              },
+              child: Icon(
+                !isSearchBarFocused && controller.text.isEmpty
+                    ? Icons.search
+                    : Icons.clear,
+                size: 26,
+                color: widget.themeMode.iconColor,
+              ),
+            ),
+          ],
+        ));
+  }
 }
