@@ -2,15 +2,46 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/discount.dart';
 import 'package:t_wear/screens/global_widgets/ratings.dart';
 
-class TrendingPicks extends StatelessWidget {
+class TrendingPicks extends StatefulWidget {
   final List<Product> trendingProducts;
 
   const TrendingPicks({required this.trendingProducts, super.key});
+
+  @override
+  State<TrendingPicks> createState() => _TrendingPicksState();
+}
+
+class _TrendingPicksState extends State<TrendingPicks> {
+  final List<GlobalKey> _globalKeys = [];
+  final Map<int, double> _infoBoxHeights = {};
+  bool showRating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _globalKeys.addAll(
+        List.generate(widget.trendingProducts.length, (_) => GlobalKey()));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (int i = 0; i < _globalKeys.length; i++) {
+        final renderBox =
+            _globalKeys[i].currentContext?.findRenderObject() as RenderBox?;
+        if (renderBox != null) {
+          _infoBoxHeights[i] = renderBox.size.height;
+        }
+      }
+      setState(() {
+        showRating = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +51,6 @@ class TrendingPicks extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Title
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
           child: Text(
@@ -34,12 +64,10 @@ class TrendingPicks extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 22),
-
-        // Carousel Slider
         CarouselSlider.builder(
-          itemCount: trendingProducts.length,
+          itemCount: widget.trendingProducts.length,
           itemBuilder: (context, index, realIndex) {
-            final product = trendingProducts[index];
+            final product = widget.trendingProducts[index];
             return GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, "inspect-product",
@@ -47,7 +75,6 @@ class TrendingPicks extends StatelessWidget {
               },
               child: Stack(
                 children: [
-                  // Card Background
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: BoxDecoration(
@@ -66,11 +93,10 @@ class TrendingPicks extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // Product Image
                           Expanded(
                             child: CachedNetworkImage(
                               imageUrl: product.images.first,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                               placeholder: (context, url) => Center(
                                 child: CircularProgressIndicator(
                                   color: themeMode.borderColor2,
@@ -83,8 +109,9 @@ class TrendingPicks extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Product Details
                           Container(
+                            key: _globalKeys[
+                                index], // Use unique key for each item
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: themeMode.backgroundColor,
@@ -106,10 +133,8 @@ class TrendingPicks extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // Price
                                     Text(
                                       "\$${product.price}",
                                       style: TextStyle(
@@ -118,8 +143,26 @@ class TrendingPicks extends StatelessWidget {
                                         color: themeMode.borderColor2,
                                       ),
                                     ),
-                                    // Rating Stars
-                                    ...buildStars(product),
+                                    SizedBox(
+                                      width: swidth * .1,
+                                    ),
+                                    if (calculateDifference(product.postDate) <=
+                                        40)
+                                      const Discount(
+                                        discount: "New",
+                                      ),
+                                    SizedBox(
+                                      width: swidth * .1,
+                                    ),
+                                    if (product.discount != null &&
+                                        product.discount != 0) ...[
+                                      Discount(
+                                          discount: "-${product.discount}%",
+                                          color: Colors.red),
+                                      SizedBox(
+                                        width: swidth * .1,
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ],
@@ -129,52 +172,56 @@ class TrendingPicks extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  // Discount Badge as Ribbon
-                  if (product.discount != null && product.discount != 0)
+                  if (showRating)
                     Positioned(
-                      top: 12,
-                      right: 12,
-                      child: Transform.rotate(
-                        angle: 0.2, // Slight diagonal effect
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.red.withValues(alpha: 0.5),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            "-${product.discount}%",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                              fontSize: 14,
+                      right: 9.5,
+                      bottom: _infoBoxHeights[index] ?? 0,
+                      child: ClipPath(
+                          clipper: TrapezoidClipper(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: themeMode.backgroundColor,
                             ),
-                          ),
-                        ),
-                      ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, top: 3, right: 2, bottom: 3),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: buildStars(product),
+                              ),
+                            ),
+                          )),
                     ),
                 ],
               ),
             );
           },
           options: CarouselOptions(
+            autoPlayCurve: Curves.easeInOutCubicEmphasized,
             height: swidth <= 600 ? 270 : 460,
             autoPlay: true,
-            enlargeCenterPage: true,
-            viewportFraction: 0.85,
+            enlargeCenterPage: false,
+            viewportFraction: 0.95,
           ),
         ),
       ],
     );
   }
+}
+
+class TrapezoidClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width * 0.2, 0); // Top-left (offset inward)
+    path.lineTo(size.width, 0); // Top-right
+    path.lineTo(size.width, size.height); // Bottom-right (offset inward)
+    path.lineTo(0, size.height); // Bottom-left
+    path.close(); // Close the path to form the trapezoid
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

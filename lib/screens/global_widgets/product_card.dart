@@ -5,6 +5,7 @@ import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/discount.dart';
 import 'package:t_wear/screens/global_widgets/ratings.dart';
 
 class ProductCard extends StatefulWidget {
@@ -83,9 +84,14 @@ class _ProductCardState extends State<ProductCard> {
                                       imageUrl: widget.product!.images[0],
                                       fit: BoxFit.contain,
                                       progressIndicatorBuilder:
-                                          (context, url, progress) =>
-                                              CircularProgressIndicator(
-                                        color: themeMode.borderColor2,
+                                          (context, url, progress) => Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            color: themeMode.borderColor2,
+                                          ),
+                                        ),
                                       ),
                                       errorWidget:
                                           (context, error, stackTrace) =>
@@ -147,8 +153,10 @@ class _ProductCardState extends State<ProductCard> {
                                           print(
                                               "Trying to cart ${widget.product!.name}");
                                         },
-                                        icon:
-                                            const Icon(Icons.shopify_rounded)),
+                                        icon: const Icon(
+                                          Icons.shopify_rounded,
+                                          color: Colors.lightGreen,
+                                        )),
                                   )
                                 ])
                               ],
@@ -157,62 +165,32 @@ class _ProductCardState extends State<ProductCard> {
                         ],
                       ),
               ),
-              if (widget.product != null)
+              if (widget.product != null) ...[
                 if (calculateDifference(widget.product!.postDate) <= 40)
+                  const Positioned(
+                      top: 13,
+                      right: 13,
+                      child: Discount(
+                        discount: "New",
+                        size: 15,
+                      )),
+                if (widget.product!.discount != null &&
+                    widget.product!.discount != 0)
                   Positioned(
-                    top: 13,
-                    right: 13,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.lightGreen,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.green.withValues(alpha: 0.5),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Text(
-                        "New",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  ),
+                      top: calculateDifference(widget.product!.postDate) <= 40
+                          ? 48
+                          : 13,
+                      right: 13,
+                      child: Discount(
+                        discount: "-${widget.product!.discount ?? 9}%",
+                        color: Colors.red,
+                        size: 14,
+                      )),
+              ]
             ],
           ),
         ),
       ),
     );
   }
-
-  // ignore: unused_element
-  _buildItem(Color? color, String t1, String t2) => Column(
-        children: [
-          Text(
-            t1,
-            style: TextStyle(
-              fontSize: 14,
-              color: color,
-            ),
-          ),
-          Text(
-            t2,
-            style: TextStyle(
-              fontSize: 14,
-              color: color,
-            ),
-          ),
-        ],
-      );
 }

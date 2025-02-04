@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 Future<List<String>> uploadImagesToFolder(
     List<XFile> images, String folderName) async {
   const String cloudName = "dume7lvn5";
-  const String uploadPreset = "my_preset"; // Ensure it's configured in Cloudinary.
+  const String uploadPreset = "my_preset"; 
 
   final List<String> uploadedUrls = [];
 
@@ -19,21 +19,21 @@ Future<List<String>> uploadImagesToFolder(
         ..fields['upload_preset'] = uploadPreset
         ..fields['folder'] = folderName;
 
-      // Read image as bytes
+  
       final Uint8List bytes = await image.readAsBytes();
 
-      // Add the image as a file to the request
+      
       request.files.add(http.MultipartFile.fromBytes(
-        'file', // API field name
+        'file', 
         bytes,
         filename: image.name,
       ));
 
-      // Send the request
+  
       final http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        // Parse the response and extract the secure URL
+    
         final http.Response responseData =
             await http.Response.fromStream(response);
         final Map<String, dynamic> jsonResponse =
@@ -41,14 +41,14 @@ Future<List<String>> uploadImagesToFolder(
         final String imageUrl = jsonResponse['secure_url'];
         uploadedUrls.add(imageUrl);
       } else {
-        // Handle upload errors
+       
         final String errorResponse =
             await http.Response.fromStream(response).then((r) => r.body);
         print(
             'Failed to upload image. Status code: ${response.statusCode}, response: $errorResponse');
       }
     } catch (e) {
-      // Log any exceptions during the upload
+      
       print('Error uploading image: $e');
     }
   }

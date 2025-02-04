@@ -249,12 +249,12 @@ class _PostProductState extends State<PostProduct> {
                         price: double.parse(priceController.text),
                         images: urls,
                         stock: int.parse(stockController.text),
-                        details: _editorController.document
-                            .toDelta(),
+                        details: _editorController.document.toDelta(),
                         delivery: int.parse(deliveryChargesController.text),
                         company: brandNameController.text,
                         category: category,
                         gender: selectedGender,
+                        discount: double.parse(discountController.text),
                         targetAge: ageController.text.toString(),
                         postDate: DateFormat('dd/MM/yyyy')
                             .format(DateTime.now())

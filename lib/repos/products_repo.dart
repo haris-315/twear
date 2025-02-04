@@ -42,6 +42,9 @@ class ProductsRepo {
 
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsByCategory(
       Category category) async {
+    if (category.id == 8) {
+      return await getProducts();
+    }
     await Future.delayed(const Duration(seconds: 2));
     try {
       categorizedProducts.removeWhere((key, value) => key != "tending");
@@ -278,7 +281,7 @@ List<Map<String, dynamic>> productsMaps = [
   {
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
-    'discount': null,
+    'discount': 43,
     'images': [
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729103/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__mbg3tw.webp',
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729105/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__pxisz5.webp'
@@ -702,5 +705,82 @@ List<Map<String, dynamic>> productsMaps = [
     'targetAge': '3-6',
     'rating': [5, 5, 5, 5, 5],
     'postDate': '24/01/2025'
+  },
+  {
+    "name":
+        "Zushaam-Hand bag for girls Leather bags for girls Cross body bags for girls and ladies Shoulder bag for girls with adjustable strap",
+    "price": 890,
+    "discount": 60,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1738494958/Zushaam-Hand%20bag%20for%20girls%20Leather%20bags%20for%20girls%20Cross%20body%20bags%20for%20girls%20and%20ladies%20Shoulder%20bag%20for%20girls%20with%20adjustable%20starp/ace19968cc7c471bae66b3f1c0b1a0ea.jpg_720x720q80.jpg__ztupx6.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1738494960/Zushaam-Hand%20bag%20for%20girls%20Leather%20bags%20for%20girls%20Cross%20body%20bags%20for%20girls%20and%20ladies%20Shoulder%20bag%20for%20girls%20with%20adjustable%20starp/cae5015cfc92eb23602392a6f895ec76.jpg_720x720q80.jpg__zqvorm.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1738494962/Zushaam-Hand%20bag%20for%20girls%20Leather%20bags%20for%20girls%20Cross%20body%20bags%20for%20girls%20and%20ladies%20Shoulder%20bag%20for%20girls%20with%20adjustable%20starp/d772b4e9c108cc23e55f666098619c80.jpg_720x720q80.jpg__frxjfs.webp"
+    ],
+    "details": [
+      {"insert": "The "},
+      {
+        "insert": "Zushaam Handbag",
+        "attributes": {"color": "#FF4CAF50", "bold": true, "size": "large"}
+      },
+      {"insert": " is a versatile accessory "},
+      {
+        "insert": "designed for girls and ladies",
+        "attributes": {"bold": true, "underline": true}
+      },
+      {"insert": ", combining "},
+      {
+        "insert": "style with practicality",
+        "attributes": {"bold": true, "italic": true, "color": "#FFE91E63"}
+      },
+      {"insert": ". Crafted from "},
+      {
+        "insert": "high-quality leather",
+        "attributes": {"bold": true, "color": "#FFFFF176"}
+      },
+      {"insert": ", this handbag "},
+      {
+        "insert": "ensures durability",
+        "attributes": {"bold": true, "color": "#FFFFEB3B"}
+      },
+      {"insert": " and a "},
+      {
+        "insert": "premium feel",
+        "attributes": {"bold": true, "color": "#FFF44336"}
+      },
+      {
+        "insert":
+            ". Its sleek black color offers a timeless appeal, making it suitable for various occasions and outfits.\n\n"
+      },
+      {
+        "insert": "High Quality Leather",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "\n"},
+      {
+        "insert": "Premium Look",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "\n"},
+      {
+        "insert": "Stylish",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "\n"}
+    ],
+    "stock": 14,
+    "delivery": 229,
+    "timesSold": 0,
+    "company": "ZUSHAAM",
+    "category": {
+      "name": "Fashion",
+      "id": 1,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218212/c1_vl9lgi.webp"
+    },
+    "size": "L",
+    "gender": "Female",
+    "targetAge": "19-30",
+    "rating": [0],
+    "postDate": "02/02/2025"
   }
 ];

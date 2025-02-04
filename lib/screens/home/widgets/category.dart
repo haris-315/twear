@@ -89,7 +89,10 @@ class _CategoryItemState extends State<CategoryItem> {
                             foregroundImage: widget.skeletonMode
                                 ? null
                                 : CachedNetworkImageProvider(
-                                  errorListener: (_) => Icon(Icons.error,color: themeMode.iconColor,),
+                                    errorListener: (_) => Icon(
+                                          Icons.error,
+                                          color: themeMode.iconColor,
+                                        ),
                                     widget.category.image),
                             backgroundColor: Colors.grey[300],
                             child: widget.skeletonMode
@@ -116,6 +119,11 @@ class _CategoryItemState extends State<CategoryItem> {
 }
 
 List<Category> categories = [
+  Category(
+      name: "Random",
+      id: 8,
+      image:
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1738492303/random_svoye6.webp"),
   Category(
       name: "Fashion",
       id: 1,

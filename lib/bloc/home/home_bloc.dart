@@ -20,14 +20,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetByCategory>((event, emit) async {
       emit(HomeLoading(byCategory: true));
       var data = await repo.getProductsByCategory(event.category);
-      data.fold((fail) => emit(HomeError(message: fail.message)),
-          (data) => emit(HomeSuccess(products: data,isCategorizing: true)));
+      data.fold(
+          (fail) => emit(HomeError(message: fail.message)),
+          (data) => emit(HomeSuccess(
+              products: data,
+              isCategorizing: event.category.id == 8 ? false : true)));
     });
     on<GetBySearch>((event, emit) async {
       emit(HomeLoading(byCategory: true));
       var data = await repo.getProductsBySearch(event.query);
-      data.fold((fail) => emit(HomeError(message: fail.message)),
-          (data) => emit(HomeSuccess(products: data,isCategorizing: true)));
+      data.fold(
+          (fail) => emit(HomeError(message: fail.message)),
+          (data) => emit(HomeSuccess(
+              products: data,
+              isCategorizing:
+                  event.query == "" || event.query.isEmpty ? false : true)));
     });
   }
 }

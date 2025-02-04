@@ -37,7 +37,6 @@ class _WeeklySalesChartState extends State<WeeklySalesChart> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     themeCubit.flushEvent(chartEvent);
     super.dispose();
   }

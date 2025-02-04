@@ -9,7 +9,7 @@ class AppWideLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeMode = getThemeMode(context);
     return Container(
-      color: themeMode.backgroundColor?.withOpacity(0.8), 
+      color: themeMode.backgroundColor?.withValues(alpha:0.8), 
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -22,8 +22,8 @@ class AppWideLoading extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    themeMode.primTextColor?.withOpacity(0.3) ?? Colors.red,
-                    themeMode.primTextColor?.withOpacity(0.1) ?? Colors.red,
+                    themeMode.primTextColor?.withValues(alpha:0.3) ?? Colors.red,
+                    themeMode.primTextColor?.withValues(alpha:0.1) ?? Colors.red,
                     Colors.transparent,
                   ],
                   stops: const [0.4, 0.7, 1.0],
