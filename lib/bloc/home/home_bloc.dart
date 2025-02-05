@@ -36,5 +36,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isCategorizing:
                   event.query == "" || event.query.isEmpty ? false : true)));
     });
+
+    on<AddToCart>((event, emit) {
+      
+    });
   }
 }

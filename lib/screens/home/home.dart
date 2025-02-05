@@ -43,6 +43,7 @@ class _HomeState extends State<Home> {
             themeMode: themeMode,
             scrollController: scrollController,
           ),
+          
           endDrawer: CustomDrawer(themeMode: themeMode),
           body: SingleChildScrollView(
             controller: scrollController,

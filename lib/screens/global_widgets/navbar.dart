@@ -62,7 +62,9 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         if (ModalRoute.of(context)?.settings.name == "home" ||
             ModalRoute.of(context)?.settings.name == "/")
           SearchField(themeMode: themeMode, width: width),
-        if (width <= 500)
+        if (ModalRoute.of(context)!.settings.name != "cart")
+          NavItem(action: () {}, title: "Cart", themeMode: themeMode),
+        if (width <= 700)
           DrawerButton(
             color: themeMode.iconColor,
             onPressed: () {
@@ -149,7 +151,7 @@ class _SearchFieldState extends State<SearchField> {
                     : widget.themeMode.borderColor ?? Colors.red),
             borderRadius: BorderRadius.circular(16)),
         height: 34,
-        width: widget.width * .5,
+        width: widget.width * .4,
         child: SearchBar(
           controller: controller,
           onChanged: (query) {
@@ -157,6 +159,7 @@ class _SearchFieldState extends State<SearchField> {
               context.read<HomeBloc>().add(GetBySearch(query: query));
             }
           },
+          focusNode: _fNode,
           onSubmitted: _search,
           overlayColor: WidgetStateColor.resolveWith((_) => Colors.transparent),
           textStyle: WidgetStateTextStyle.resolveWith(

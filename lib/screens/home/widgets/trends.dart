@@ -157,7 +157,9 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                     if (product.discount != null &&
                                         product.discount != 0) ...[
                                       Discount(
-                                          discount: "-${product.discount}%",
+                                          size: 12,
+                                          discount:
+                                              "-${product.discount!.toInt()}%",
                                           color: Colors.red),
                                       SizedBox(
                                         width: swidth * .1,

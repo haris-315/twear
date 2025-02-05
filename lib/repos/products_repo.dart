@@ -1,22 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_quill/quill_delta.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:t_wear/models/category.dart';
+import 'package:t_wear/models/category.dart' as cat;
 import 'package:t_wear/models/failure.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 
 class ProductsRepo {
   late List<Product> products;
-
   Map<dynamic, List<Product>> categorizedProducts = {"trending": <Product>[]};
 
   ProductsRepo() {
-    products = productsMaps.map((element) {
-      // print(element['details'].runtimeType);
-      element['details'] = jsonToDelta(element['details']);
+    _initializeProducts();
+  }
+
+  Future<void> _initializeProducts() async {
+    products = await compute(_parseProducts, productsMaps);
+    productsMaps.clear();
+  }
+
+  static List<Product> _parseProducts(List<Map<String, dynamic>> productsMaps) {
+    return productsMaps.map((element) {
+      element['details'] = Delta.fromJson(element['details']);
       return Product.fromMap(element);
     }).toList();
-    productsMaps.clear();
   }
 
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProducts() async {
@@ -26,6 +33,7 @@ class ProductsRepo {
         List<Product> trending =
             products.where((product) => product.avgRating() == 5).toList();
         categorizedProducts['trending'] = trending;
+
         List<Product> tempProductsList = products
             .where((product) => product.category.id == category.id)
             .toList();
@@ -41,13 +49,13 @@ class ProductsRepo {
   }
 
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsByCategory(
-      Category category) async {
+      cat.Category category) async {
     if (category.id == 8) {
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 2));
     try {
-      categorizedProducts.removeWhere((key, value) => key != "tending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
 
       categorizedProducts[category.name] = products
           .where((product) => product.category.id == category.id)
@@ -61,12 +69,12 @@ class ProductsRepo {
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsBySearch(
       String query) async {
     if (query.isEmpty || query == "") {
-      categorizedProducts.removeWhere((key, value) => key != "tending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
-      categorizedProducts.removeWhere((key, value) => key != "tending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
 
       List<Product> searchedProducts = products
           .where((product) =>
@@ -84,15 +92,6 @@ class ProductsRepo {
 
   String deltaToPlainText(Delta delta) {
     return delta.toList().map((op) => op.data.toString()).join();
-  }
-
-  Delta jsonToDelta(jsonString) {
-    try {
-      return Delta.fromJson(jsonString);
-    } catch (e) {
-      print("Error parsing JSON to Delta: $e");
-      return Delta()..insert("Invalid content");
-    }
   }
 }
 
