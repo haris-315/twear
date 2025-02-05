@@ -11,6 +11,7 @@ import 'package:t_wear/screens/global_widgets/ratings.dart';
 class ProductCard extends StatefulWidget {
   final Product? product;
   final bool skeletonMode;
+  final Function(Product product)? cartAction;
   final VoidCallback onTap;
 
   const ProductCard({
@@ -18,6 +19,7 @@ class ProductCard extends StatefulWidget {
     this.product,
     required this.onTap,
     this.skeletonMode = false,
+    this.cartAction,
   });
 
   @override
@@ -150,8 +152,7 @@ class _ProductCardState extends State<ProductCard> {
                                     child: IconButton(
                                         iconSize: 43,
                                         onPressed: () {
-                                          print(
-                                              "Trying to cart ${widget.product!.name}");
+                                          widget.cartAction!(widget.product!);
                                         },
                                         icon: const Icon(
                                           Icons.shopify_rounded,

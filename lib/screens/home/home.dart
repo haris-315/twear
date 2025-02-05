@@ -43,8 +43,18 @@ class _HomeState extends State<Home> {
             themeMode: themeMode,
             scrollController: scrollController,
           ),
-          
           endDrawer: CustomDrawer(themeMode: themeMode),
+          floatingActionButton: state is HomeSuccess && state.isCarted
+              ? FloatingActionButton(
+                  onPressed: () {
+                    print(state.products['cart']);
+                  },
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: themeMode.iconColor,
+                  ),
+                )
+              : null,
           body: SingleChildScrollView(
             controller: scrollController,
             child: state is HomeSuccess
@@ -117,7 +127,7 @@ class _HomeState extends State<Home> {
       HomeSuccess state, double swidth, double sheight, CTheme themeMode) {
     bool smallScreen = swidth <= 500;
     return state.products.keys.map(
-      (key) => key == 'trending'
+      (key) => key == 'trending' || key == 'cart'
           ? const SizedBox()
           : Padding(
               padding: const EdgeInsets.all(18.0),
@@ -147,6 +157,14 @@ class _HomeState extends State<Home> {
                                 arguments: state.products[key]![index]);
                           },
                           product: state.products[key]![index],
+                          cartAction: (cproduct) {
+                            context.read<HomeBloc>().add(LoadHomeData(
+                                isCarting: true,
+                                product: cproduct,
+                                productsMap: state.products));
+
+                            print("Trying to cart ${cproduct.name}");
+                          },
                         );
                       }),
                 ],

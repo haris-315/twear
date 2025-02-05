@@ -12,10 +12,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc() : super(HomeInitial()) {
     on<LoadHomeData>((event, emit) async {
-      emit(HomeLoading());
-      var data = await repo.getProducts();
-      data.fold((fail) => emit(HomeError(message: fail.message)),
-          (data) => emit(HomeSuccess(products: data)));
+      if (!event.isCarting) {
+        emit(HomeLoading());
+        var data = await repo.getProducts();
+        data.fold((fail) => emit(HomeError(message: fail.message)),
+            (data) => emit(HomeSuccess(products: data)));
+      } else {
+        event.productsMap!['cart'] = [
+          ...?event.productsMap?['cart'],
+          event.product as Product
+        ];
+        emit(HomeSuccess(
+            isCarted: true,
+            products: event.productsMap as Map<dynamic, List<Product>>));
+      }
     });
     on<GetByCategory>((event, emit) async {
       emit(HomeLoading(byCategory: true));
@@ -35,10 +45,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               products: data,
               isCategorizing:
                   event.query == "" || event.query.isEmpty ? false : true)));
-    });
-
-    on<AddToCart>((event, emit) {
-      
     });
   }
 }
