@@ -55,7 +55,8 @@ class ProductsRepo {
     }
     await Future.delayed(const Duration(seconds: 2));
     try {
-      categorizedProducts.removeWhere((key, value) => key != "trending");
+      categorizedProducts
+          .removeWhere((key, value) => key != "trending" || key != "cart");
 
       categorizedProducts[category.name] = products
           .where((product) => product.category.id == category.id)
@@ -69,12 +70,14 @@ class ProductsRepo {
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsBySearch(
       String query) async {
     if (query.isEmpty || query == "") {
-      categorizedProducts.removeWhere((key, value) => key != "trending");
+      categorizedProducts
+          .removeWhere((key, value) => key != "trending" || key != "cart");
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
-      categorizedProducts.removeWhere((key, value) => key != "trending");
+      categorizedProducts
+          .removeWhere((key, value) => key != "trending" || key != "cart");
 
       List<Product> searchedProducts = products
           .where((product) =>
@@ -136,7 +139,11 @@ List<Map<String, dynamic>> productsMaps = [
         "insert": "comfortable",
         "attributes": {"color": "#FF4CAF50"}
       },
-      {"insert": " hoods today!"}
+      {"insert": " hoods today!"},
+      {
+        'insert': '\n',
+        'attributes': {'list': 'bullet'}
+      }
     ],
     "delivery": 142,
     "company": "BTS Collection",
@@ -315,6 +322,10 @@ List<Map<String, dynamic>> productsMaps = [
       {
         'insert': '.',
         'attributes': {'bold': true}
+      },
+      {
+        'insert': '\n',
+        'attributes': {'list': 'bullet'}
       }
     ],
     'stock': 17,
@@ -501,6 +512,10 @@ List<Map<String, dynamic>> productsMaps = [
       {
         'insert': '.',
         'attributes': {'bold': true}
+      },
+      {
+        'insert': '\n',
+        'attributes': {'list': 'bullet'}
       }
     ],
     'stock': 17,
@@ -687,6 +702,10 @@ List<Map<String, dynamic>> productsMaps = [
       {
         'insert': '.',
         'attributes': {'bold': true}
+      },
+      {
+        'insert': '\n',
+        'attributes': {'list': 'bullet'}
       }
     ],
     'stock': 17,

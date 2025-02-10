@@ -4,6 +4,7 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/screens/dashboard/widgets/weekly_sales_chart.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
+import 'package:t_wear/screens/global_widgets/kpi.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
 
@@ -59,29 +60,30 @@ class _DashBoardPgState extends State<DashBoardPg> {
                 runSpacing: 16,
                 children: [
                   buildKpiCard(
-                    themeMode: themeMode,
-                    icon: Icons.shopping_cart,
-                    title: "Total Orders",
-                    value: "150",
-                  ),
+                      themeMode: themeMode,
+                      icon: Icons.shopping_cart,
+                      title: "Total Orders",
+                      value: "150",
+                      color: Colors.yellowAccent),
                   buildKpiCard(
-                    themeMode: themeMode,
-                    icon: Icons.attach_money,
-                    title: "Revenue",
-                    value: "Rs.12,000",
-                  ),
+                      themeMode: themeMode,
+                      icon: Icons.attach_money,
+                      title: "Revenue",
+                      value: "Rs.12,000",
+                      color: Colors.redAccent),
                   buildKpiCard(
                     themeMode: themeMode,
                     icon: Icons.people,
                     title: "Customers",
                     value: "75",
+                    color: Colors.blueAccent,
                   ),
                   buildKpiCard(
-                    themeMode: themeMode,
-                    icon: Icons.star,
-                    title: "Avg. Rating",
-                    value: "4.5/5",
-                  ),
+                      themeMode: themeMode,
+                      icon: Icons.star,
+                      title: "Avg. Rating",
+                      value: "4.5/5",
+                      color: Colors.greenAccent),
                 ],
               ),
               const SizedBox(height: 20),
@@ -139,55 +141,6 @@ class _DashBoardPgState extends State<DashBoardPg> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildKpiCard({
-    required CTheme themeMode,
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 950),
-      curve: Curves.easeIn,
-      decoration: BoxDecoration(
-        color: themeMode.backgroundColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: themeMode.shadowColor ?? Colors.black12,
-            blurRadius: 4,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      width: 150,
-      height: 160,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: themeMode.iconColor, size: 32),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              color: themeMode.secondaryTextColor,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              color: themeMode.primTextColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-        ],
       ),
     );
   }

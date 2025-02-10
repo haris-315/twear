@@ -46,5 +46,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isCategorizing:
                   event.query == "" || event.query.isEmpty ? false : true)));
     });
+
+    on<RemoveFromCart>((event, emit) {
+      HomeSuccess oldState = state as HomeSuccess;
+      Map<dynamic, List<Product>> products = oldState.products;
+      if (products['cart'] != null || products['cart'] != []) {
+        products['cart']?.remove(event.product);
+      }
+      emit(HomeSuccess(
+          products: products,
+          isCarted: products['cart'] != null ? true : false));
+    });
   }
 }

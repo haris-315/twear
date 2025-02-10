@@ -6,27 +6,44 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
+import 'package:t_wear/screens/home/product_inspection_page.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/custom_lazy_wrap.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
+// ignore: library_private_types_in_public_api
+final GlobalKey<_HomeState> homeKey = GlobalKey();
+
 class Home extends StatefulWidget {
-  const Home({
-    super.key,
-  });
+  Home({
+    key,
+  }) : super(key: homeKey);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _rotateAnimation;
 
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData());
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {});
+    // });
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _rotateAnimation = Tween<double>(begin: 0.6, end: 1.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -45,13 +62,22 @@ class _HomeState extends State<Home> {
           ),
           endDrawer: CustomDrawer(themeMode: themeMode),
           floatingActionButton: state is HomeSuccess && state.isCarted
-              ? FloatingActionButton(
-                  onPressed: () {
-                    print(state.products['cart']);
-                  },
-                  child: Icon(
-                    Icons.shopping_cart,
-                    color: themeMode.iconColor,
+              ? ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: RotationTransition(
+                    turns: _rotateAnimation,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        if (state.products['cart'] != null) {
+                          Navigator.pushNamed(context, "cart",
+                              arguments: [state.products['cart'], homeKey]);
+                        }
+                      },
+                      child: Icon(
+                        Icons.shopping_cart,
+                        color: themeMode.iconColor,
+                      ),
+                    ),
                   ),
                 )
               : null,
@@ -153,17 +179,31 @@ class _HomeState extends State<Home> {
                       itemBuilder: (context, index) {
                         return ProductCard(
                           onTap: () {
-                            Navigator.pushNamed(context, "inspect-widget",
-                                arguments: state.products[key]![index]);
+                            print(state.isCarted);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetailPage(
+                                        product: state.products[key]![index])));
+                            // Navigator.pushNamed(context, "inspect-widget",
+
+                            //     arguments: state.products[key]![index]);
                           },
+                          carted: state.products['cart'] != null
+                              ? state.products['cart']!.any((product) =>
+                                      state.products[key]![index] == product)
+                                  ? true
+                                  : false
+                              : false,
                           product: state.products[key]![index],
                           cartAction: (cproduct) {
+                            if (state.isCarted == false) {
+                              _controller.forward();
+                            }
                             context.read<HomeBloc>().add(LoadHomeData(
                                 isCarting: true,
                                 product: cproduct,
                                 productsMap: state.products));
-
-                            print("Trying to cart ${cproduct.name}");
                           },
                         );
                       }),
@@ -172,50 +212,4 @@ class _HomeState extends State<Home> {
             ),
     );
   }
-
-  // Iterable _buildProducts(
-  //     HomeSuccess state, double swidth, double sheight, CTheme themeMode) {
-  //   bool smallScreen = swidth <= 500;
-  //   return state.products.keys.map(
-  //     (key) => key == 'trending'
-  //         ? const SizedBox()
-  //         : Padding(
-  //             padding: const EdgeInsets.all(18.0),
-  //             child: Column(
-  //               crossAxisAlignment: smallScreen
-  //                   ? CrossAxisAlignment.center
-  //                   : CrossAxisAlignment.start,
-  //               children: [
-  //                 SizedBox(width: swidth),
-  //                 Padding(
-  //                   padding: EdgeInsets.only(left: smallScreen ? 0 : 25.0),
-  //                   child: Text(
-  //                     key.toString().toUpperCase(),
-  //                     style: TextStyle(
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 26,
-  //                         color: themeMode.primTextColor),
-  //                   ),
-  //                 ),
-  //                 const SizedBox(
-  //                   height: 30,
-  //                 ),
-  //                 Wrap(
-  //                   direction: Axis.horizontal,
-  //                   children:
-  //                       List.generate(state.products[key]!.length, (index) {
-  //                     return ProductCard(
-  //                       onTap: () {
-  //                         Navigator.pushNamed(context, "inspect-widget",
-  //                             arguments: state.products[key]![index]);
-  //                       },
-  //                       product: state.products[key]![index],
-  //                     );
-  //                   }),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //   );
-  // }
 }

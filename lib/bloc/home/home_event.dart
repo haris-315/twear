@@ -17,6 +17,12 @@ final class LoadHomeData extends HomeEvent {
 
 final class AddToCart extends HomeEvent {}
 
+final class RemoveFromCart extends HomeEvent {
+  final Product product;
+
+  RemoveFromCart({required this.product});
+}
+
 final class GetByCategory extends HomeEvent {
   final Category category;
 

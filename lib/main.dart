@@ -5,8 +5,8 @@ import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/screens/dashboard/dashboard.dart';
 import 'package:t_wear/screens/dashboard/post_product.dart';
+import 'package:t_wear/screens/home/cart.dart';
 import 'package:t_wear/screens/home/home.dart';
-import 'package:t_wear/screens/home/widgets/product_ispecter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,12 +26,12 @@ void main() async {
               data: themeMode.getTheme(),
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                home: const Home(),
+                home: Home(),
                 routes: {
                   "products": (context) => const DashBoardPg(),
-                  "home": (context) => const Home(),
+                  "home": (context) => Home(),
                   "postproduct": (context) => const PostProduct(),
-                  "inspect-product": (context) => ProductInspecter()
+                  "cart": (context) => const Cart()
                 },
               ),
             ),

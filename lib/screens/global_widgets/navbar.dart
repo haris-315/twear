@@ -62,8 +62,6 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         if (ModalRoute.of(context)?.settings.name == "home" ||
             ModalRoute.of(context)?.settings.name == "/")
           SearchField(themeMode: themeMode, width: width),
-        if (ModalRoute.of(context)!.settings.name != "cart")
-          NavItem(action: () {}, title: "Cart", themeMode: themeMode),
         if (width <= 700)
           DrawerButton(
             color: themeMode.iconColor,

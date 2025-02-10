@@ -13,14 +13,15 @@ class ProductCard extends StatefulWidget {
   final bool skeletonMode;
   final Function(Product product)? cartAction;
   final VoidCallback onTap;
+  final bool carted;
 
-  const ProductCard({
-    super.key,
-    this.product,
-    required this.onTap,
-    this.skeletonMode = false,
-    this.cartAction,
-  });
+  const ProductCard(
+      {super.key,
+      this.product,
+      required this.onTap,
+      this.skeletonMode = false,
+      this.cartAction,
+      this.carted = false});
 
   @override
   State<ProductCard> createState() => _ProductCardState();
@@ -146,20 +147,67 @@ class _ProductCardState extends State<ProductCard> {
                                   ),
                                 ),
                                 const SizedBox(height: 1),
-                                Row(children: [
-                                  ...buildStars(widget.product!),
-                                  FittedBox(
-                                    child: IconButton(
-                                        iconSize: 43,
-                                        onPressed: () {
-                                          widget.cartAction!(widget.product!);
-                                        },
-                                        icon: const Icon(
-                                          Icons.shopify_rounded,
-                                          color: Colors.lightGreen,
-                                        )),
-                                  )
-                                ])
+                                Row(
+                                  children: [
+                                    Text(
+                                      widget.product!.discount != null
+                                          ? "Rs.${(widget.product!.price / (1 - (widget.product!.discount! / 100))).toStringAsFixed(0)}"
+                                          : "Rs.${widget.product!.price.toStringAsFixed(0)}",
+                                      style: TextStyle(
+                                        color: widget.product!.discount != null
+                                            ? themeMode.secondaryTextColor
+                                            : themeMode.borderColor2,
+                                        decorationStyle:
+                                            TextDecorationStyle.solid,
+                                        decorationThickness: 2,
+                                        decorationColor: themeMode.borderColor2,
+                                        decoration:
+                                            widget.product!.discount != null
+                                                ? TextDecoration.lineThrough
+                                                : null,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    if (widget.product!.discount != null)
+                                      Text(
+                                        "Rs.${widget.product!.price.toStringAsFixed(0)}",
+                                        style: TextStyle(
+                                          color: themeMode.borderColor2,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ...buildStars(widget.product!),
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                      FittedBox(
+                                        child: widget.carted
+                                            ? const Icon(
+                                                Icons.shopping_cart,
+                                                color: Colors.lightGreen,
+                                              )
+                                            : IconButton(
+                                                onPressed: () {
+                                                  widget.cartAction!(
+                                                      widget.product!);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.shopping_cart_outlined,
+                                                  color: Colors.amberAccent,
+                                                )),
+                                      )
+                                    ])
                               ],
                             ),
                           ),
