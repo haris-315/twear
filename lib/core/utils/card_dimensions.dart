@@ -4,7 +4,7 @@ double responsiveWidth(double screenWidth) {
   } else if (screenWidth <= 480) {
     return screenWidth * 0.55; // Small phones
   } else if (screenWidth <= 600) {
-    return screenWidth * 0.5; // Large phones
+    return screenWidth * 0.43; // Large phones
   } else if (screenWidth <= 768) {
     return screenWidth * 0.4; // Small tablets
   } else if (screenWidth <= 1024) {

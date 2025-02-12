@@ -10,7 +10,6 @@ import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/product_inspection_page.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
-import 'package:t_wear/screens/home/widgets/custom_lazy_wrap.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
@@ -98,7 +97,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           const SizedBox(
                             height: 40,
                           ),
-                          ..._buildProducts(
+                          _buildProducts(
                               state,
                               swidth,
                               sheight,
@@ -160,55 +159,51 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  Iterable _buildProducts(HomeSuccess state, double swidth, double sheight,
+
+  Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
       CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
-    return state.products.keys.map(
-      (key) => key == 'trending'
-          ? const SizedBox()
-          : Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(width: swidth),
-                  Padding(
-                    padding: EdgeInsets.only(left: smallScreen ? 0 : 25.0),
-                    child: Text(
-                      key.toString().toUpperCase(),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26,
-                          color: themeMode.primTextColor),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  CustomLazyWrap(
-                      itemCount: state.products[key]!.length,
-                      itemBuilder: (context, index) {
-                        Product currentProduct = state.products[key]![index];
-                        return ProductCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProductDetailPage(
-                                        product: currentProduct)));
-                          },
-                          carted: cartedProducts.contains(currentProduct),
-                          product: currentProduct,
-                          cartAction: (cproduct) {
-                            context
-                                .read<CartCubit>()
-                                .addToCart(currentProduct, cartedProducts);
-                          },
-                        );
-                      }),
-                ],
-              ),
-            ),
-    );
+    return Wrap(
+      children: state.products.keys.expand(
+            (key) => [
+              if (key == "trending")
+                SizedBox()
+              else
+                ...[SizedBox(
+      width: swidth,
+      child: Padding(
+      padding: EdgeInsets.only(left: smallScreen ? 12 : 25.0,bottom: 18,top: 8),
+      child: Text(
+        key.toString().toUpperCase(),
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
+            color: themeMode.primTextColor),
+      ),
+    ),),
+
+    ...state.products[key]!.map((product) {
+      return ProductCard(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProductDetailPage(
+                                product: product)));
+                  },
+                  carted: cartedProducts.contains(product),
+                  product: product,
+                  cartAction: (cproduct) {
+                    context
+                        .read<CartCubit>()
+                        .addToCart(cproduct, cartedProducts);
+                  },
+                );
+              })],]).toList());
+
+
+
+
   }
+
 }
