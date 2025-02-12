@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
@@ -14,7 +15,8 @@ void main() async {
   runApp(MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ThemeCubit()),
-        BlocProvider(create: (_) => HomeBloc())
+        BlocProvider(create: (_) => HomeBloc()),
+        BlocProvider(create: (_) => CartCubit())
       ],
       child: BlocBuilder<ThemeCubit, CTheme>(
         builder: (context, themeMode) {

@@ -187,7 +187,9 @@ class _ProductCardState extends State<ProductCard> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      ...buildStars(widget.product!),
+                                      Row(
+                                        children: buildStars(widget.product!),
+                                      ),
                                       const SizedBox(
                                         width: 3,
                                       ),

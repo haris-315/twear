@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
+import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
@@ -34,9 +36,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData());
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   setState(() {});
-    // });
+
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
 
@@ -44,6 +44,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _rotateAnimation = Tween<double>(begin: 0.6, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(Duration(seconds: 3));
+      _controller.forward();
+    });
   }
 
   @override
@@ -61,43 +65,50 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             scrollController: scrollController,
           ),
           endDrawer: CustomDrawer(themeMode: themeMode),
-          floatingActionButton: state is HomeSuccess && state.isCarted
-              ? ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: RotationTransition(
-                    turns: _rotateAnimation,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        if (state.products['cart'] != null) {
-                          Navigator.pushNamed(context, "cart",
-                              arguments: [state.products['cart'], homeKey]);
-                        }
-                      },
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: themeMode.iconColor,
-                      ),
-                    ),
-                  ),
-                )
-              : null,
+          floatingActionButton: ScaleTransition(
+            scale: _scaleAnimation,
+            child: RotationTransition(
+              turns: _rotateAnimation,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "cart");
+                },
+                child: Icon(
+                  Icons.shopping_cart,
+                  color: themeMode.iconColor,
+                ),
+              ),
+            ),
+          ),
           body: SingleChildScrollView(
             controller: scrollController,
             child: state is HomeSuccess
-                ? Column(
-                    children: [
-                      _categoryBuilder(swidth, sheight, themeMode),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      if (!state.isCategorizing)
-                        TrendingPicks(
-                            trendingProducts: state.products['trending'] ?? []),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      ..._buildProducts(state, swidth, sheight, themeMode)
-                    ],
+                ? BlocBuilder<CartCubit, CartState>(
+                    builder: (context, cartState) {
+                      return Column(
+                        children: [
+                          _categoryBuilder(swidth, sheight, themeMode),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          if (!state.isCategorizing)
+                            TrendingPicks(
+                                trendingProducts:
+                                    state.products['trending'] ?? []),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          ..._buildProducts(
+                              state,
+                              swidth,
+                              sheight,
+                              themeMode,
+                              cartState is CartSuccess
+                                  ? cartState.cartedProdcuts
+                                  : [])
+                        ],
+                      );
+                    },
                   )
                 : state is HomeLoading
                     ? Column(
@@ -149,11 +160,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  Iterable _buildProducts(
-      HomeSuccess state, double swidth, double sheight, CTheme themeMode) {
+  Iterable _buildProducts(HomeSuccess state, double swidth, double sheight,
+      CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
     return state.products.keys.map(
-      (key) => key == 'trending' || key == 'cart'
+      (key) => key == 'trending'
           ? const SizedBox()
           : Padding(
               padding: const EdgeInsets.all(18.0),
@@ -177,33 +188,21 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   CustomLazyWrap(
                       itemCount: state.products[key]!.length,
                       itemBuilder: (context, index) {
+                        Product currentProduct = state.products[key]![index];
                         return ProductCard(
                           onTap: () {
-                            print(state.isCarted);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ProductDetailPage(
-                                        product: state.products[key]![index])));
-                            // Navigator.pushNamed(context, "inspect-widget",
-
-                            //     arguments: state.products[key]![index]);
+                                        product: currentProduct)));
                           },
-                          carted: state.products['cart'] != null
-                              ? state.products['cart']!.any((product) =>
-                                      state.products[key]![index] == product)
-                                  ? true
-                                  : false
-                              : false,
-                          product: state.products[key]![index],
+                          carted: cartedProducts.contains(currentProduct),
+                          product: currentProduct,
                           cartAction: (cproduct) {
-                            if (state.isCarted == false) {
-                              _controller.forward();
-                            }
-                            context.read<HomeBloc>().add(LoadHomeData(
-                                isCarting: true,
-                                product: cproduct,
-                                productsMap: state.products));
+                            context
+                                .read<CartCubit>()
+                                .addToCart(currentProduct, cartedProducts);
                           },
                         );
                       }),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/kpi.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
-import 'package:t_wear/screens/home/home.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -20,181 +21,207 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
   List<Product> cartedProducts = [];
   late double totalPrice;
   late double totalOriginalPrice;
+  late double totalDiscount;
 
   @override
   Widget build(BuildContext context) {
     final CTheme themeMode = getThemeMode(context);
-    final List fromHome = ModalRoute.of(context)?.settings.arguments as List;
-    cartedProducts = fromHome.first ?? [];
-    final GlobalKey homeKey = fromHome.last;
 
-    totalPrice = cartedProducts.fold(0, (sum, item) => sum + item.price);
-    totalOriginalPrice = cartedProducts.fold(0, (sum, item) {
-      if (item.discount != null || item.discount != 0) {
-        return sum + (item.price / (1 - (item.discount ?? 0 / 100)));
-      } else {
-        return sum + item.price;
-      }
-    });
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, state) {
+        if (state is CartSuccess) {
+          cartedProducts = state.cartedProdcuts;
 
-    return Scaffold(
-      backgroundColor: themeMode.backgroundColor,
-      appBar: NavBar(themeMode: themeMode, scrollController: _scrollController),
-      endDrawer: CustomDrawer(themeMode: themeMode),
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  themeMode.backgroundColor!.withValues(alpha: 0.8),
-                  themeMode.backgroundColor!.withValues(alpha: 0.2),
-                ],
-              ),
-            ),
-          ),
+          totalOriginalPrice = cartedProducts == []
+              ? 0
+              : cartedProducts.fold(0, (sum, item) => sum + item.price);
 
-          SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                // Header KPIs
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Wrap(
-                    key: _wrapKey,
-                    spacing: 20,
-                    runSpacing: 20,
-                    children: [
-                      buildKpiCard(
-                        themeMode: themeMode,
-                        icon: Icons.shopping_basket,
-                        title: "Total Items",
-                        value: cartedProducts.length.toString(),
-                        color: Colors.blueAccent,
-                      ),
-                      buildKpiCard(
-                        themeMode: themeMode,
-                        icon: Icons.attach_money,
-                        title: "Total Price",
-                        value: totalPrice.toStringAsFixed(2),
-                        color: Colors.greenAccent,
-                      ),
-                      buildKpiCard(
-                          themeMode: themeMode,
-                          icon: Icons.percent_outlined,
-                          title: "Total Discount",
-                          value:
-                              "${(((totalOriginalPrice - totalPrice) / totalOriginalPrice) * 100).toStringAsFixed(1)}%",
-                          color: Colors.redAccent),
-                    ],
-                  ),
-                ),
+          totalPrice = cartedProducts.isEmpty
+              ? 0
+              : cartedProducts.fold(
+                  0,
+                  (sum, item) => (item.discount ?? 0) > 0
+                      ? sum + ((item.discount! * item.price) / 100)
+                      : sum + item.price);
+        } else {
+          totalOriginalPrice = 0;
+          totalPrice = 0;
+        }
 
-                // Cart Items
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: cartedProducts.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
-                    itemBuilder: (context, index) => _buildCartItem(
-                      context,
-                      cartedProducts[index],
-                      index,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 100),
-              ],
-            ),
-          ),
-
-          // Sticky Checkout Bar
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: themeMode.backgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Total:',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeMode.secondaryTextColor,
+        return state is CartSuccess
+            ? Scaffold(
+                backgroundColor: themeMode.backgroundColor,
+                appBar: NavBar(
+                    themeMode: themeMode, scrollController: _scrollController),
+                endDrawer: CustomDrawer(themeMode: themeMode),
+                body: Stack(
+                  children: [
+                    // Background Gradient
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            themeMode.backgroundColor!.withValues(alpha: 0.8),
+                            themeMode.backgroundColor!.withValues(alpha: 0.2),
+                          ],
                         ),
                       ),
-                      Text(
-                        '\$${totalOriginalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: themeMode.primTextColor,
-                            decoration: TextDecoration.lineThrough,
-                            decorationColor: Colors.red,
-                            decorationThickness: 1.6),
+                    ),
+
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          // Header KPIs
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Wrap(
+                              key: _wrapKey,
+                              spacing: 20,
+                              runSpacing: 20,
+                              children: [
+                                buildKpiCard(
+                                  themeMode: themeMode,
+                                  icon: Icons.shopping_basket,
+                                  title: "Total Items",
+                                  value: cartedProducts.length.toString(),
+                                  color: Colors.blueAccent,
+                                ),
+                                buildKpiCard(
+                                  themeMode: themeMode,
+                                  icon: Icons.attach_money,
+                                  title: "Discounted Price",
+                                  value: totalPrice.toStringAsFixed(2),
+                                  color: Colors.greenAccent,
+                                ),
+                                buildKpiCard(
+                                    themeMode: themeMode,
+                                    icon: Icons.percent_outlined,
+                                    title: "Total Discount",
+                                    value:
+                                        "${(((totalOriginalPrice - totalPrice) / totalOriginalPrice) * 100).toStringAsFixed(1)}%",
+                                    color: Colors.yellowAccent),
+                                buildKpiCard(
+                                    themeMode: themeMode,
+                                    icon: Icons.attach_money,
+                                    title: "Actual Price",
+                                    value:
+                                    "$totalOriginalPrice",
+                                    color: Colors.redAccent),
+                              ],
+
+
+                            ),
+                          ),
+
+                          // Cart Items
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: cartedProducts.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 16),
+                              itemBuilder: (context, index) => _buildCartItem(
+                                context,
+                                cartedProducts[index],
+                                index,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 100),
+                        ],
                       ),
-                      Text(
-                        '\$${totalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: themeMode.primTextColor,
+                    ),
+
+                    // Sticky Checkout Bar
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: themeMode.backgroundColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 20,
+                              offset: const Offset(0, -5),
+                            ),
+                          ],
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(24)),
+                        ),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Total:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: themeMode.secondaryTextColor,
+                                  ),
+                                ),
+                                Text(
+                                  '\$${totalOriginalPrice.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: themeMode.primTextColor,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Colors.red,
+                                      decorationThickness: 1.6),
+                                ),
+                                Text(
+                                  '\$${totalPrice.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: themeMode.primTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.arrow_forward,
+                                  color: Colors.white),
+                              label: const Text(
+                                'Checkout',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  const Spacer(),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.arrow_forward, color: Colors.white),
-                    label: const Text(
-                      'Checkout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink();
+      },
     );
   }
 
@@ -213,19 +240,14 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
         child: const Icon(Icons.delete_forever, color: Colors.red, size: 32),
       ),
       onDismissed: (direction) {
-        setState(() {
-          cartedProducts.removeAt(index);
-          homeKey.currentState!.setState(() {});
-        });
+        context.read<CartCubit>().removeFromCart(product, cartedProducts);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${product.name} removed'),
             action: SnackBarAction(
               label: 'Undo',
               onPressed: () {
-                setState(() {
-                  cartedProducts.insert(index, product);
-                });
+                context.read<CartCubit>().addToCart(product, cartedProducts);
               },
             ),
           ),

@@ -19,8 +19,7 @@ final class HomeError extends HomeState {
 
 final class HomeSuccess extends HomeState {
   final bool isCategorizing;
-  final bool isCarted;
   final Map<dynamic, List<Product>> products;
 
-  HomeSuccess({this.isCarted = false,this.isCategorizing = false, required this.products});
+  HomeSuccess({this.isCategorizing = false, required this.products});
 }

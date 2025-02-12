@@ -56,7 +56,7 @@ class ProductsRepo {
     await Future.delayed(const Duration(seconds: 2));
     try {
       categorizedProducts
-          .removeWhere((key, value) => key != "trending" || key != "cart");
+          .removeWhere((key, value) => key != "trending");
 
       categorizedProducts[category.name] = products
           .where((product) => product.category.id == category.id)
@@ -71,13 +71,13 @@ class ProductsRepo {
       String query) async {
     if (query.isEmpty || query == "") {
       categorizedProducts
-          .removeWhere((key, value) => key != "trending" || key != "cart");
+          .removeWhere((key, value) => key != "trending");
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
       categorizedProducts
-          .removeWhere((key, value) => key != "trending" || key != "cart");
+          .removeWhere((key, value) => key != "trending");
 
       List<Product> searchedProducts = products
           .where((product) =>

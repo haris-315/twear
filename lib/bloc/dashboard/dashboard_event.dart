@@ -8,3 +8,4 @@ final class PostNewProduct {
 
   PostNewProduct({required this.product});
 }
+

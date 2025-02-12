@@ -1,135 +1,318 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_theme_state.dart';
+import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
+import 'package:t_wear/screens/global_widgets/navbar.dart';
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final Product product;
 
-  const ProductDetailPage({Key? key, required this.product}) : super(key: key);
+  const ProductDetailPage({super.key, required this.product});
 
-  double get discountedPrice => product.discount != null
-      ? product.price - (product.price * (product.discount! / 100))
-      : product.price;
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
 
-  double get averageRating => product.rating.isNotEmpty
-      ? product.rating.reduce((a, b) => a + b) / product.rating.length
-      : 0.0;
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  int _currentImageIndex = 0;
+  int rating = -1;
+  ScrollController scrollController = ScrollController();
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+
+  double get _discountedPrice => widget.product.discount != null
+      ? widget.product.price -
+          (widget.product.price * (widget.product.discount! / 100))
+      : widget.product.price;
+
+
+  quill.QuillController _quillController() => quill.QuillController(
+        document: quill.Document.fromDelta(widget.product.details),
+        readOnly: true,
+        selection: const TextSelection.collapsed(offset: 0),
+      );
 
   @override
   Widget build(BuildContext context) {
-    quill.QuillController _controller = quill.QuillController(
-      document: quill.Document.fromDelta(product.details),
-      readOnly: true,
-      selection: TextSelection.collapsed(offset: 0),
-    );
+    final CTheme theme = getThemeMode(context);
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final [width, height] = getScreenSize(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.name)),
+      backgroundColor: theme.backgroundColor,
+      appBar: NavBar(
+        themeMode: theme,
+        scrollController: scrollController,
+      ),
+      endDrawer: CustomDrawer(themeMode: theme),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Carousel
-            CarouselSlider(
-              options: CarouselOptions(height: 250.0, autoPlay: true),
-              items: product.images.map((url) {
-                return Container(
-                  margin: EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-                  ),
-                );
-              }).toList(),
-            ),
-
+            _buildImageCarousel(theme, width),
+            const SizedBox(height: 20),
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Product Name
-                  Text(product.name, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-
-                  SizedBox(height: 8),
-
-                  // Price & Discount
+                  Text(
+                    widget.product.name,
+                    style: TextStyle(
+                        color: theme.primTextColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Manufacturer: ${widget.product.company}",
+                    style: TextStyle(
+                        color: theme.secondaryTextColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
-                      Text("\$${discountedPrice.toStringAsFixed(2)}",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green)),
-                      if (product.discount != null)
+                      Text('\$${_discountedPrice.toStringAsFixed(2)}',
+                          style: TextStyle(
+                              color: theme.primTextColor,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold)),
+                      if (widget.product.discount != null)
                         Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text("\$${product.price}",
-                              style: TextStyle(fontSize: 16, decoration: TextDecoration.lineThrough, color: Colors.red)),
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            '\$${widget.product.price.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: theme.secondaryTextColor,
+                              fontSize: 16,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
                         ),
                     ],
                   ),
-
-                  SizedBox(height: 10),
-
-                  // Stock & Delivery Info
-                  Text(product.stock > 0 ? "In Stock (${product.stock} available)" : "Out of Stock",
-                      style: TextStyle(color: product.stock > 0 ? Colors.green : Colors.red, fontSize: 16)),
-
-                  Text("Delivery: ${product.delivery} days", style: TextStyle(fontSize: 16)),
-                  Text("Sold: ${product.timesSold} times", style: TextStyle(fontSize: 16)),
-
-                  SizedBox(height: 16),
-
-                  // Product Details (Rendered using Quill)
-                  Text("Product Details", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.product.stock > 0
+                        ? 'In Stock (${widget.product.stock})'
+                        : 'Out of Stock',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          widget.product.stock > 0 ? Colors.green : Colors.red,
                     ),
-                    child: quill.QuillEditor(
-  controller: _controller,
-  focusNode: FocusNode(),
-  scrollController: ScrollController(),
- configurations: quill.QuillEditorConfigurations(
-   scrollable: true,
-  padding: EdgeInsets.all(8.0),
-  autoFocus: false,
-  expands: false,
- ),
-),
                   ),
-
-                  SizedBox(height: 16),
-
-                  // Additional Info
-                  Text("Company: ${product.company}", style: TextStyle(fontSize: 16)),
-                  Text("Category: ${product.category.name}", style: TextStyle(fontSize: 16)),
-                  Text("Size: ${product.size}", style: TextStyle(fontSize: 16)),
-                  Text("Gender: ${product.gender}", style: TextStyle(fontSize: 16)),
-                  Text("Target Age: ${product.targetAge}", style: TextStyle(fontSize: 16)),
-
-                  SizedBox(height: 16),
-
-                  // Ratings
-                  Row(
-                    children: [
-                      Text("Rating: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      Icon(Icons.star, color: Colors.yellow, size: 20),
-                      Text(averageRating.toStringAsFixed(1), style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-
-                  SizedBox(height: 16),
-
-                  // Date Posted
-                  Text("Posted on: ${product.postDate}", style: TextStyle(fontSize: 14, color: Colors.grey)),
+                  const SizedBox(height: 20),
+                  _buildDetailsSection(theme, textTheme, _quillController()),
+                  const SizedBox(height: 20),
+                  _buildRatingSection(theme),
+                  const SizedBox(height: 20),
+                  _buildProductInfoSection(theme, width),
                 ],
               ),
             ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+        label:
+            Text('Add to Cart', style: TextStyle(color: theme.primTextColor)),
+        backgroundColor: theme.buttonColor,
+      ),
     );
   }
+
+  Widget _buildImageCarousel(CTheme theme, double width) {
+    return Column(
+      children: [
+        CarouselSlider(
+          carouselController: _carouselController,
+          options: CarouselOptions(
+            height: width <= 700
+                ? width * .75
+                : width <= 1000
+                    ? width * .45
+                    : width * .32,
+            autoPlay: true,
+            viewportFraction: 0.9,
+            autoPlayInterval: const Duration(seconds: 5),
+            enlargeCenterPage: true,
+            onPageChanged: (index, reason) {
+              setState(() => _currentImageIndex = index);
+            },
+          ),
+          items: widget.product.images.map((url) {
+            return GestureDetector(
+              onTap: () {
+                // TODO: Implement full-screen image view
+              },
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: NetworkImage(url),
+                    fit: width <= 700 ? BoxFit.cover : BoxFit.fill,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  if (_currentImageIndex > 0) {
+                    _carouselController.previousPage();
+                  } else {
+                    _carouselController
+                        .jumpToPage(widget.product.images.length - 1);
+                  }
+                },
+                icon: Icon(Icons.arrow_left_outlined, color: theme.iconColor),
+              ),
+              _buildDotsIndicator(),
+              IconButton(
+                onPressed: () {
+                  if (_currentImageIndex < widget.product.images.length - 1) {
+                    _carouselController.nextPage();
+                  } else {
+                    _carouselController.jumpToPage(0);
+                  }
+                },
+                icon: Icon(Icons.arrow_right_outlined, color: theme.iconColor),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDotsIndicator() {
+    return DotsIndicator(
+      dotsCount: widget.product.images.length,
+      position: _currentImageIndex,
+      decorator: DotsDecorator(
+        activeColor: Colors.blueAccent,
+        size: const Size.square(8.0),
+        activeSize: const Size(18.0, 8.0),
+        activeShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsSection(
+      CTheme theme, TextTheme textTheme, quill.QuillController controller) {
+    return DefaultTextStyle(
+      style: TextStyle(color: theme.primTextColor),
+      child: quill.QuillEditor(
+        focusNode: FocusNode(),
+        scrollController: ScrollController(),
+        configurations: quill.QuillEditorConfigurations(
+          customStyles: quill.DefaultStyles(color: theme.primTextColor),
+          scrollable: false,
+        ),
+        controller: controller,
+      ),
+    );
+  }
+
+  Widget _buildRatingSection(CTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Rate this product:',
+          style: TextStyle(
+            color: theme.primTextColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: List.generate(5, (index) {
+            return GestureDetector(
+              onTap: () =>
+                  setState(() => rating = rating == index ? -1 : index),
+              child: Icon(Icons.star,
+                  color: index <= rating ? Colors.amber : Colors.grey),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductInfoSection(CTheme theme, double width) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Product Information',
+          style: TextStyle(
+            color: theme.primTextColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: width * .34,
+          runSpacing: 12,
+          children: [
+            _buildInfoRow('Category:', widget.product.category.name, theme),
+            _buildInfoRow('Size:', widget.product.size, theme),
+            _buildInfoRow('Gender:', widget.product.gender, theme),
+            _buildInfoRow('Target Age:', widget.product.targetAge, theme),
+            _buildInfoRow(
+                'Delivery:', '${widget.product.delivery} days', theme),
+            _buildInfoRow('Times Sold:', '${widget.product.timesSold}', theme),
+            _buildInfoRow('Post Date:', widget.product.postDate, theme),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+Widget _buildInfoRow(String label, String value, CTheme theme) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: RichText(
+        text: TextSpan(
+            text: label,
+            style: TextStyle(
+              color: theme.secondaryTextColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            children: [
+              TextSpan(
+                text: "     $value",
+                style: TextStyle(
+                  color: theme.primTextColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ]),
+      ));
 }
