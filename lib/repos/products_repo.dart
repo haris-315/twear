@@ -330,7 +330,7 @@ List<Map<String, dynamic>> productsMaps = [
     ],
     'stock': 17,
     'delivery': 145,
-    'timesSold': 0,
+    'timesSold': 2,
     'company': 'KNC',
     'category': {
       'name': "Kid's",
@@ -520,7 +520,7 @@ List<Map<String, dynamic>> productsMaps = [
     ],
     'stock': 17,
     'delivery': 145,
-    'timesSold': 0,
+    'timesSold': 16,
     'company': 'KNC',
     'category': {
       'name': "Kid's",
@@ -787,7 +787,7 @@ List<Map<String, dynamic>> productsMaps = [
     ],
     "stock": 14,
     "delivery": 229,
-    "timesSold": 0,
+    "timesSold": 7,
     "company": "ZUSHAAM",
     "category": {
       "name": "Fashion",

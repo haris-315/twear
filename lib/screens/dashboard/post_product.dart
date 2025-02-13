@@ -5,6 +5,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
@@ -29,8 +30,8 @@ class PostProduct extends StatefulWidget {
 class _PostProductState extends State<PostProduct> {
   final ScrollController _scrollController = ScrollController();
   final QuillController _editorController = QuillController.basic();
-  final TextEditingController productNameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  final TextEditingController productNameController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
   final TextEditingController stockController = TextEditingController();
   final TextEditingController deliveryChargesController =
@@ -50,7 +51,12 @@ class _PostProductState extends State<PostProduct> {
   final FocusNode _fNode = FocusNode();
   bool isLoading = false;
   bool isError = false;
+  @override
+  void dispose() {
+    // TODO: implement dispose
 
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final width = getScreenSize(context).first;
@@ -102,7 +108,9 @@ class _PostProductState extends State<PostProduct> {
                 SizedBox(
                   width: width * .7,
                   child: DropdownButtonFormField<String>(
+                    style: TextStyle(color: themeMode.primTextColor),
                     value: selectedGender,
+                    dropdownColor: themeMode.backgroundColor,
                     decoration: inputDecor(
                         ht: "Select Gender",
                         hit: "Select Gender",
@@ -111,7 +119,7 @@ class _PostProductState extends State<PostProduct> {
                     items: genders
                         .map((gender) => DropdownMenuItem(
                               value: gender,
-                              child: Text(gender),
+                              child: Text(gender,style: TextStyle(color: themeMode.oppositeTextColor)),
                             ))
                         .toList(),
                     onChanged: (value) {
@@ -125,7 +133,9 @@ class _PostProductState extends State<PostProduct> {
                 SizedBox(
                   width: width * .7,
                   child: DropdownButtonFormField<int>(
+                    style: TextStyle(color: themeMode.primTextColor),
                     value: selectedCategory,
+                    dropdownColor: themeMode.backgroundColor,
                     decoration: inputDecor(
                         ht: "Select Category",
                         hit: "Select Category",
@@ -134,7 +144,7 @@ class _PostProductState extends State<PostProduct> {
                     items: categories
                         .map((category) => DropdownMenuItem(
                               value: category.id,
-                              child: Text(category.name),
+                              child: Text(category.name,style: TextStyle(color: themeMode.oppositeTextColor),),
                             ))
                         .toList(),
                     onChanged: (value) {
@@ -197,7 +207,7 @@ class _PostProductState extends State<PostProduct> {
                                           themeMode.borderColor ?? Colors.red)),
                               child: Image.memory(
                                 image,
-                                width: width * .12,
+                                width: width <= 420 ? width * .33 : width * .22,
                                 height: height * .2,
                                 fit: BoxFit.fill,
                               ),
@@ -231,7 +241,7 @@ class _PostProductState extends State<PostProduct> {
                       print(products);
                     },
                     themeMode: themeMode,
-                    width: width * .2,
+                    width: width <= 420 ? responsiveWidth(width) * .85 : responsiveWidth(width) * .65,
                     child: const Text("Print Products")),
                 const SizedBox(height: 10),
                 PrimeButton(
@@ -265,7 +275,7 @@ class _PostProductState extends State<PostProduct> {
                     }
                   },
                   themeMode: themeMode,
-                  width: width * .2,
+                  width: width <= 420 ? responsiveWidth(width) * .85 : responsiveWidth(width) * .65,
                   child: Text(
                     "Post Product",
                     style: TextStyle(color: themeMode.primTextColor),

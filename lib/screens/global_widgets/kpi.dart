@@ -46,12 +46,18 @@ Widget buildKpiCard({
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: themeMode.primTextColor,
+        Tooltip(
+          message: value,
+          child: Text(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            value,
+            style: TextStyle(
+
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: themeMode.primTextColor,
+            ),
           ),
         ),
       ],

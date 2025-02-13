@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
@@ -21,6 +23,7 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int _currentImageIndex = 0;
   int rating = -1;
+  List<Product> cartedProducts = [];
   ScrollController scrollController = ScrollController();
   final CarouselSliderController _carouselController =
       CarouselSliderController();
@@ -43,93 +46,109 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final [width, height] = getScreenSize(context);
 
-    return Scaffold(
-      backgroundColor: theme.backgroundColor,
-      appBar: NavBar(
-        themeMode: theme,
-        scrollController: scrollController,
-      ),
-      endDrawer: CustomDrawer(themeMode: theme),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildImageCarousel(theme, width),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.product.name,
-                    style: TextStyle(
-                        color: theme.primTextColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Manufacturer: ${widget.product.company}",
-                    style: TextStyle(
-                        color: theme.secondaryTextColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
+    return BlocBuilder<CartCubit,CartState>(
+      builder: (context,state) {
+        if (state is CartSuccess) {
+          cartedProducts = state.cartedProdcuts;
+        }
+        final bool isCarted  = cartedProducts.contains(widget.product);
+
+        return Scaffold(
+          backgroundColor: theme.backgroundColor,
+          appBar: NavBar(
+            themeMode: theme,
+            scrollController: scrollController,
+          ),
+          endDrawer: CustomDrawer(themeMode: theme),
+          body: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildImageCarousel(theme, width),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('\$${_discountedPrice.toStringAsFixed(2)}',
-                          style: TextStyle(
-                              color: theme.primTextColor,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold)),
-                      if (widget.product.discount != null)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            '\$${widget.product.price.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: theme.secondaryTextColor,
-                              fontSize: 16,
-                              decoration: TextDecoration.lineThrough,
+                      Text(
+                        widget.product.name,
+                        style: TextStyle(
+                            color: theme.primTextColor,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Manufacturer: ${widget.product.company}",
+                        style: TextStyle(
+                            color: theme.secondaryTextColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text('\$${_discountedPrice.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  color: theme.primTextColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold)),
+                          if (widget.product.discount != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                '\$${widget.product.price.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  color: theme.secondaryTextColor,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
                             ),
-                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.product.stock > 0
+                            ? 'In Stock (${widget.product.stock})'
+                            : 'Out of Stock',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              widget.product.stock > 0 ? Colors.green : Colors.red,
                         ),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildDetailsSection(theme, textTheme, _quillController()),
+                      const SizedBox(height: 20),
+                      _buildRatingSection(theme),
+                      const SizedBox(height: 20),
+                      _buildProductInfoSection(theme, width),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    widget.product.stock > 0
-                        ? 'In Stock (${widget.product.stock})'
-                        : 'Out of Stock',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color:
-                          widget.product.stock > 0 ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildDetailsSection(theme, textTheme, _quillController()),
-                  const SizedBox(height: 20),
-                  _buildRatingSection(theme),
-                  const SizedBox(height: 20),
-                  _buildProductInfoSection(theme, width),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        icon: Icon(Icons.shopping_cart, color: theme.iconColor),
-        label:
-            Text('Add to Cart', style: TextStyle(color: theme.primTextColor)),
-        backgroundColor: theme.buttonColor,
-      ),
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              if (isCarted) {
+                Navigator.pushReplacementNamed(context, "cart");
+              }
+              else {
+                context.read<CartCubit>().addToCart(widget.product, cartedProducts);
+              }
+            },
+            icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+            label:
+                Text(isCarted ? 'Go to Cart' :'Add to Cart', style: TextStyle(color: theme.primTextColor)),
+            backgroundColor: theme.buttonColor,
+          ),
+        );
+      }
     );
   }
 

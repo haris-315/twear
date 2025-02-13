@@ -68,13 +68,24 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             scale: _scaleAnimation,
             child: RotationTransition(
               turns: _rotateAnimation,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "cart");
-                },
-                child: Icon(
-                  Icons.shopping_cart,
-                  color: themeMode.iconColor,
+              child: Container(
+
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1,color: themeMode.borderColor ?? Colors.red),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  gradient: LinearGradient(colors: [themeMode.oppositeShimmerColor!.withValues(alpha: .7),themeMode.oppositeShimmerColor!.withValues(alpha: .2)])
+                      
+                      
+                ),
+                child: FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "cart");
+                  },
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: themeMode.iconColor,
+                  ),
                 ),
               ),
             ),

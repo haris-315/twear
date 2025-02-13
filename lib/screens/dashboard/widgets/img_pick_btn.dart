@@ -23,7 +23,7 @@ class ImagesButton extends StatelessWidget {
             width: 1,
           ),
         ),
-        width: width * .12,
+        width: width <= 420 ? width * .33 : width * .22,
         height: height * .2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

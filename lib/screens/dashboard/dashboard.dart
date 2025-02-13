@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
+import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/dashboard/widgets/weekly_sales_chart.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/kpi.dart';
@@ -17,11 +21,24 @@ class DashBoardPg extends StatefulWidget {
 
 class _DashBoardPgState extends State<DashBoardPg> {
   final ScrollController scrollController = ScrollController();
+  List<Product> products = [];
 
   @override
   Widget build(BuildContext context) {
     double width = getScreenSize(context).first;
     final CTheme themeMode = getThemeMode(context);
+    final HomeState homeState = context.watch<HomeBloc>().state;
+    if (homeState is HomeSuccess) {
+      products = homeState.products.values.fold([], (previous,item) {
+        previous.addAll(item);
+        return [...previous];
+      }
+      );
+    }
+    int totalOrders = products.fold(0, (previousOrders,product) => previousOrders + product.timesSold);
+    double totalRevenue = products.fold(0, (previousAmount,product) => previousAmount + ((product.discount ?? 0) > 0
+        ? (product.price * product.discount! /100) * product.timesSold : (product.price*product.timesSold)));
+    double avgRating = products.fold(0, (totalRating, product) => totalRating + product.avgRating())/products.length;
 
     return Scaffold(
       endDrawer: CustomDrawer(themeMode: themeMode),
@@ -63,13 +80,13 @@ class _DashBoardPgState extends State<DashBoardPg> {
                       themeMode: themeMode,
                       icon: Icons.shopping_cart,
                       title: "Total Orders",
-                      value: "150",
+                      value: "$totalOrders",
                       color: Colors.yellowAccent),
                   buildKpiCard(
                       themeMode: themeMode,
                       icon: Icons.attach_money,
                       title: "Revenue",
-                      value: "Rs.12,000",
+                      value: "Rs.${totalRevenue.toStringAsFixed(0)}",
                       color: Colors.redAccent),
                   buildKpiCard(
                     themeMode: themeMode,
@@ -82,7 +99,7 @@ class _DashBoardPgState extends State<DashBoardPg> {
                       themeMode: themeMode,
                       icon: Icons.star,
                       title: "Avg. Rating",
-                      value: "4.5/5",
+                      value: "${avgRating.toStringAsFixed(1)}/5",
                       color: Colors.greenAccent),
                 ],
               ),

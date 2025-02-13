@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 
@@ -32,7 +33,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Text("Dashboard", style: TextStyle(color: themeMode.primTextColor)),
         onTap: () {
           Navigator.pop(context);
-          Navigator.pushNamed(context, "products");
+          Navigator.pushNamed(context, "products",);
         },
       ),
       ListTile(

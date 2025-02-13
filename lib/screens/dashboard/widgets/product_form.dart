@@ -167,7 +167,7 @@ class _ProductFormState extends State<ProductForm> {
           themeMode: widget.themeMode,
           ht: "Product Size",
           hit: "Size of the product in roman numerals",
-          icon: Icons.watch_later,
+          icon: Icons.numbers,
         ),
         validator: (value) => _validateRequired(value, "Size"),
       ),
