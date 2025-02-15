@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
+import 'package:t_wear/bloc/dashboard/dashboard_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
@@ -57,6 +58,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state is HomeSuccess) {
+          context.read<DashboardBloc>().add(FeedProducts(products: state.products));
+        }
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(

@@ -27,7 +27,7 @@ class ProductsRepo {
   }
 
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProducts() async {
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
     try {
       for (var category in categories) {
         List<Product> trending =
@@ -53,7 +53,7 @@ class ProductsRepo {
     if (category.id == 8) {
       return await getProducts();
     }
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     try {
       categorizedProducts
           .removeWhere((key, value) => key != "trending");

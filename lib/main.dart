@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
+import 'package:t_wear/bloc/dashboard/dashboard_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
@@ -16,7 +17,8 @@ void main() async {
       providers: [
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => HomeBloc()),
-        BlocProvider(create: (_) => CartCubit())
+        BlocProvider(create: (_) => CartCubit()),
+        BlocProvider(create: (_) => DashboardBloc())
       ],
       child: BlocBuilder<ThemeCubit, CTheme>(
         builder: (context, themeMode) {
@@ -33,7 +35,7 @@ void main() async {
                   "products": (context) => const DashBoardPg(),
                   "home": (context) => Home(),
                   "postproduct": (context) => const PostProduct(),
-                  "cart": (context) => const Cart()
+                  "cart": (context) => const Cart(),
                 },
               ),
             ),

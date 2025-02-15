@@ -9,3 +9,10 @@ final class PostNewProduct {
   PostNewProduct({required this.product});
 }
 
+final class FeedProducts extends DashboardEvent {
+  final Map<dynamic,List<Product>> products;
+
+  FeedProducts({required this.products});
+}
+
+final class GetDashboardDetails extends DashboardEvent {}
