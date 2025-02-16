@@ -38,8 +38,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           0,
           (prev, product) =>
               prev +
-              ((product.discount ?? 0) > 0
-                  ? (product.price * product.discount! / 100) *
+              ((product.discount) > 0
+                  ? (product.price * product.discount / 100) *
                       product.timesSold
                   : (product.price * product.timesSold)));
 

@@ -18,13 +18,26 @@ class DashBoardPg extends StatefulWidget {
   State<DashBoardPg> createState() => _DashBoardPgState();
 }
 
-class _DashBoardPgState extends State<DashBoardPg> {
+class _DashBoardPgState extends State<DashBoardPg>
+    with SingleTickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<Offset> _slideAnimation2;
 
   @override
   void initState() {
     super.initState();
     context.read<DashboardBloc>().add(GetDashboardDetails());
+    _animationController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1000));
+    _slideAnimation = Tween<Offset>(begin: Offset(0, -2), end: Offset(0, 0))
+        .animate(_animationController);
+    _slideAnimation2 = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
+        .animate(_animationController);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _animationController.forward();
+    });
   }
 
   @override
@@ -53,25 +66,32 @@ class _DashBoardPgState extends State<DashBoardPg> {
                 children: [
                   const SizedBox(height: 20),
                   if (state is DashboardSuccess) ...[
-                    Text(
-                      "Welcome to Your Dashboard!",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: themeMode.primTextColor,
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: Text(
+                        "Welcome to Your Dashboard!",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: themeMode.primTextColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      "Here's an overview of your store's performance.",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: themeMode.secondaryTextColor,
+                    SlideTransition(
+                      position: _slideAnimation2,
+                      child: Text(
+                        "Here's an overview of your store's performance.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: themeMode.secondaryTextColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
                     Center(
                       child: Wrap(
+                        alignment: WrapAlignment.center,
                         spacing: 16,
                         runSpacing: 16,
                         children: [
@@ -157,10 +177,25 @@ class _DashBoardPgState extends State<DashBoardPg> {
                     // ),
                     const SizedBox(height: 30),
                     if (state.dashboardDetails['products'] != null &&
-                        state.dashboardDetails['products'] != [])
+                        (state.dashboardDetails['products'] as List?)!
+                            .cast<DBP>()
+                            .isNotEmpty) ...[
+                      Text(
+                        "Products Info",
+                        style: TextStyle(
+                            color: themeMode.primTextColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 24,
+                      ),
                       Wrap(
+                        spacing: 10,
+                        runSpacing: 22,
+                        alignment: WrapAlignment.center,
                         children: (state.dashboardDetails['products'] as List)
-                            .cast<DBP>() // Ensure it's List<DBP>
+                            .cast<DBP>()
                             .map((DBP dbp) => Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -197,13 +232,13 @@ class _DashBoardPgState extends State<DashBoardPg> {
                                 ))
                             .toList(),
                       )
-                    else
+                    ] else
                       Center(
                         child: Text(
-                          "No Data Available...",
+                          "More data not available...",
                           style: TextStyle(
                               color: themeMode.primTextColor,
-                              fontSize: 24,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700),
                         ),
                       )

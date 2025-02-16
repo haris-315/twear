@@ -14,10 +14,12 @@ class ProductCard extends StatefulWidget {
   final Function(Product product)? cartAction;
   final VoidCallback onTap;
   final bool carted;
+  final bool isAdmin;
 
   const ProductCard(
       {super.key,
       this.product,
+      this.isAdmin = false,
       required this.onTap,
       this.skeletonMode = false,
       this.cartAction,
@@ -150,11 +152,11 @@ class _ProductCardState extends State<ProductCard> {
                                 Row(
                                   children: [
                                     Text(
-                                      widget.product!.discount != null
-                                          ? "Rs.${(widget.product!.price / (1 - (widget.product!.discount! / 100))).toStringAsFixed(0)}"
+                                      widget.product!.discount != 0
+                                          ? "Rs.${(widget.product!.price / (1 - (widget.product!.discount / 100))).toStringAsFixed(0)}"
                                           : "Rs.${widget.product!.price.toStringAsFixed(0)}",
                                       style: TextStyle(
-                                        color: widget.product!.discount != null
+                                        color: widget.product!.discount != 0
                                             ? themeMode.secondaryTextColor
                                             : themeMode.borderColor2,
                                         decorationStyle:
@@ -162,7 +164,7 @@ class _ProductCardState extends State<ProductCard> {
                                         decorationThickness: 2,
                                         decorationColor: themeMode.borderColor2,
                                         decoration:
-                                            widget.product!.discount != null
+                                            widget.product!.discount != 0
                                                 ? TextDecoration.lineThrough
                                                 : null,
                                         fontWeight: FontWeight.bold,
@@ -172,7 +174,7 @@ class _ProductCardState extends State<ProductCard> {
                                     const SizedBox(
                                       width: 4,
                                     ),
-                                    if (widget.product!.discount != null)
+                                    if (widget.product!.discount != 0)
                                       Text(
                                         "Rs.${widget.product!.price.toStringAsFixed(0)}",
                                         style: TextStyle(
@@ -188,16 +190,30 @@ class _ProductCardState extends State<ProductCard> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
-                                        children: buildStars(widget.product!),
+                                        children: [
+                                          ...buildStars(widget.product!),
+                                          // SizedBox(
+                                          //   width: 3,
+                                          // ),
+                                          // Text(
+                                          //   '(${widget.product!.rating.length})',
+                                          //   style: TextStyle(
+                                          //       color: themeMode
+                                          //           .secondaryTextColor),
+                                          // )
+                                        ],
                                       ),
                                       const SizedBox(
                                         width: 3,
                                       ),
                                       FittedBox(
                                         child: widget.carted
-                                            ? const Icon(
-                                                Icons.shopping_cart,
-                                                color: Colors.lightGreen,
+                                            ? IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(
+                                                  Icons.shopping_cart,
+                                                  color: Colors.lightGreen,
+                                                ),
                                               )
                                             : IconButton(
                                                 onPressed: () {
@@ -225,15 +241,14 @@ class _ProductCardState extends State<ProductCard> {
                         discount: "New",
                         size: 15,
                       )),
-                if (widget.product!.discount != null &&
-                    widget.product!.discount != 0)
+                if (widget.product!.discount != 0)
                   Positioned(
                       top: calculateDifference(widget.product!.postDate) <= 40
                           ? 48
                           : 13,
                       right: 13,
                       child: Discount(
-                        discount: "-${widget.product!.discount ?? 9}%",
+                        discount: "-${widget.product!.discount}%",
                         color: Colors.red,
                         size: 14,
                       )),

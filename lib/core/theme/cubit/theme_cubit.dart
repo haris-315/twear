@@ -8,7 +8,7 @@ part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<CTheme> {
   List<ThemeChangeEvent> events = [];
-  ThemeCubit() : super(ThemeMode.dT);
+  ThemeCubit() : super(ThemeMode.lT);
 
   void toggleTheme(ThemeType themeType) {
     for (var e in events) {
@@ -21,6 +21,7 @@ class ThemeCubit extends Cubit<CTheme> {
     events.add(event);
     return;
   }
+
   void flushEvent(ThemeChangeEvent event) {
     events.remove(event);
     return;

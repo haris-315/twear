@@ -39,8 +39,8 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
               ? 0
               : cartedProducts.fold(
                   0,
-                  (sum, item) => (item.discount ?? 0) > 0
-                      ? sum + ((item.discount! * item.price) / 100)
+                  (sum, item) => (item.discount) > 0
+                      ? sum + ((item.discount * item.price) / 100)
                       : sum + item.price);
         } else {
           totalOriginalPrice = 0;

@@ -11,14 +11,11 @@ import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/repos/main_repo.dart';
 import 'package:t_wear/screens/dashboard/widgets/editor.dart';
-import 'package:t_wear/screens/dashboard/widgets/img_pick_btn.dart';
-import 'package:t_wear/screens/dashboard/widgets/input_decor.dart';
-import 'package:t_wear/screens/dashboard/widgets/product_form.dart';
-import 'package:t_wear/screens/dashboard/widgets/section_builder.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
+import 'package:uuid/uuid.dart';
 
 class PostProduct extends StatefulWidget {
   const PostProduct({super.key});
@@ -29,7 +26,8 @@ class PostProduct extends StatefulWidget {
 
 class _PostProductState extends State<PostProduct> {
   final ScrollController _scrollController = ScrollController();
-  final QuillController _editorController = QuillController.basic();
+  late QuillController
+      _editorController; // Made it late to allow reinitialization
   final TextEditingController priceController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
@@ -39,7 +37,7 @@ class _PostProductState extends State<PostProduct> {
   final TextEditingController brandNameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
-  final GlobalKey formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final ImagePicker _imagePicker = ImagePicker();
 
   List<XFile> images = [];
@@ -51,18 +49,50 @@ class _PostProductState extends State<PostProduct> {
   final FocusNode _fNode = FocusNode();
   bool isLoading = false;
   bool isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the Quill editor with an empty document
+    _editorController = QuillController(
+      document: Document(),
+      selection: const TextSelection.collapsed(offset: 0),
+    );
+  }
+
   @override
   void dispose() {
-    // TODO: implement dispose
-
+    _editorController.dispose();
     super.dispose();
   }
+
+  void _setUpdateDetails(Product product) {
+    setState(() {
+      _editorController = QuillController(
+        document: Document.fromDelta(
+            product.details), // Set QuillController with product details
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+    });
+
+    priceController.text = product.price.toString();
+    productNameController.text = product.name;
+    discountController.text = product.discount.toString();
+    stockController.text = product.stock.toString();
+    deliveryChargesController.text = product.delivery.toString();
+    brandNameController.text = product.company.toString();
+    ageController.text = product.targetAge.toString();
+    sizeController.text = product.size.toString();
+    selectedGender = product.gender;
+    selectedCategory = product.category.id;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final width = getScreenSize(context).first;
-    final height = getScreenSize(context).elementAt(1);
     final CTheme themeMode = getThemeMode(context);
     Color? quillBorder = themeMode.borderColor;
+    Product? product = ModalRoute.of(context)!.settings.arguments as Product?;
 
     _fNode.addListener(() {
       setState(() {
@@ -83,167 +113,25 @@ class _PostProductState extends State<PostProduct> {
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                buildSection(
-                  themeMode: themeMode,
-                  sectionTitle: "Product Info",
-                  items: [],
-                ),
-                const SizedBox(height: 6),
-                SizedBox(
-                  width: width * .7,
-                  child: ProductForm(
-                    themeMode: themeMode,
-                    formKey: formKey,
-                    productNameController: productNameController,
-                    priceController: priceController,
-                    discountController: discountController,
-                    stockController: stockController,
-                    deliveryChargesController: deliveryChargesController,
-                    brandNameController: brandNameController,
-                    sizeController: sizeController,
-                    ageController: ageController,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: width * .7,
-                  child: DropdownButtonFormField<String>(
-                    style: TextStyle(color: themeMode.primTextColor),
-                    value: selectedGender,
-                    dropdownColor: themeMode.backgroundColor,
-                    decoration: inputDecor(
-                        ht: "Select Gender",
-                        hit: "Select Gender",
-                        icon: Icons.man_4,
-                        themeMode: themeMode),
-                    items: genders
-                        .map((gender) => DropdownMenuItem(
-                              value: gender,
-                              child: Text(gender,style: TextStyle(color: themeMode.oppositeTextColor)),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGender = value!;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: width * .7,
-                  child: DropdownButtonFormField<int>(
-                    style: TextStyle(color: themeMode.primTextColor),
-                    value: selectedCategory,
-                    dropdownColor: themeMode.backgroundColor,
-                    decoration: inputDecor(
-                        ht: "Select Category",
-                        hit: "Select Category",
-                        icon: Icons.category,
-                        themeMode: themeMode),
-                    items: categories
-                        .map((category) => DropdownMenuItem(
-                              value: category.id,
-                              child: Text(category.name,style: TextStyle(color: themeMode.oppositeTextColor),),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCategory = value;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
                 Container(
-                    width: width * .7,
-                    height: height * .6,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: quillBorder ?? Colors.red, width: 2),
-                      borderRadius: BorderRadius.circular(8),
+                  width: getScreenSize(context).first * .7,
+                  height: getScreenSize(context).elementAt(1) * .6,
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: quillBorder ?? Colors.red, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: DefaultTextStyle(
+                    style: TextStyle(color: themeMode.primTextColor),
+                    child: DescriptionEditor(
+                      editorController: _editorController,
+                      scrollController: _scrollController,
+                      focusNode: _fNode,
                     ),
-                    padding: const EdgeInsets.all(8.0),
-                    child: DefaultTextStyle(
-                        style: TextStyle(color: themeMode.primTextColor),
-                        child: DescriptionEditor(
-                            editorController: _editorController,
-                            scrollController: _scrollController,
-                            focusNode: _fNode))),
-                const SizedBox(height: 16),
-                ToolBar(
-                    editorController: _editorController, themeMode: themeMode),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 5,
-                  children: [
-                    if (images.length < 6)
-                      ImagesButton(
-                        onpress: () async {
-                          final pickedImages =
-                              await _imagePicker.pickMultiImage();
-                          imagePreviews.addAll([
-                            for (XFile img in pickedImages)
-                              await img.readAsBytes()
-                          ]);
-                          setState(() {
-                            images.addAll(pickedImages);
-                            pickedImages.clear();
-                          });
-                        },
-                        themeMode: themeMode,
-                      ),
-                    ...imagePreviews.map(
-                      (image) => Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(9),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1,
-                                      color:
-                                          themeMode.borderColor ?? Colors.red)),
-                              child: Image.memory(
-                                image,
-                                width: width <= 420 ? width * .33 : width * .22,
-                                height: height * .2,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 5,
-                            right: 5,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: themeMode.borderColor2,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  final index = imagePreviews.indexOf(image);
-                                  images.removeAt(index);
-                                  imagePreviews.removeAt(index);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-                PrimeButton(
-                    action: () {
-                      print(products);
-                    },
-                    themeMode: themeMode,
-                    width: width <= 420 ? responsiveWidth(width) * .85 : responsiveWidth(width) * .65,
-                    child: const Text("Print Products")),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 PrimeButton(
                   action: () async {
                     try {
@@ -254,12 +142,14 @@ class _PostProductState extends State<PostProduct> {
                         orElse: () => throw Exception("Invalid category"),
                       );
                       products.add(Product(
+                        id: Uuid().v1(),
                         size: sizeController.text,
                         name: productNameController.text,
                         price: double.parse(priceController.text),
                         images: urls,
                         stock: int.parse(stockController.text),
-                        details: _editorController.document.toDelta(),
+                        details: _editorController.document
+                            .toDelta(), // Correctly fetching the Delta
                         delivery: int.parse(deliveryChargesController.text),
                         company: brandNameController.text,
                         category: category,
@@ -275,7 +165,9 @@ class _PostProductState extends State<PostProduct> {
                     }
                   },
                   themeMode: themeMode,
-                  width: width <= 420 ? responsiveWidth(width) * .85 : responsiveWidth(width) * .65,
+                  width: getScreenSize(context).first <= 420
+                      ? responsiveWidth(getScreenSize(context).first) * .85
+                      : responsiveWidth(getScreenSize(context).first) * .65,
                   child: Text(
                     "Post Product",
                     style: TextStyle(color: themeMode.primTextColor),

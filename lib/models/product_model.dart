@@ -4,7 +4,7 @@ import 'category.dart' as cat;
 
 class Product {
   final String name;
-  
+
   final double price;
   final double discount;
   final List<String> images;
@@ -19,6 +19,7 @@ class Product {
   final String targetAge;
   final List<int> rating;
   final String postDate;
+  final String id;
 
   Product(
       {required this.name,
@@ -29,6 +30,7 @@ class Product {
       required this.stock,
       required this.delivery,
       this.timesSold = 0,
+      required this.id,
       required this.company,
       required this.category,
       required this.size,
@@ -44,6 +46,7 @@ class Product {
 
     return Product(
       name: map['name'],
+      id: map['id'],
       price: (map['price'] as num).toDouble(),
       discount: (map['discount'] as num).toDouble(),
       images: List<String>.from(map['images'] ?? []),
@@ -99,6 +102,7 @@ class Product {
     DateTime? postDate,
   }) {
     return Product(
+      id: id,
       name: name ?? this.name,
       price: price ?? this.price,
       discount: discount ?? this.discount,
@@ -119,7 +123,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product(name: $name, price: $price, discount: $discount, images: $images, details: $details, stock: $stock, delivery: $delivery, timesSold: $timesSold, company: $company, category: $category, size: $size, gender: $gender, targetAge: $targetAge, rating: $rating, postDate: $postDate)';
+    return 'Product(id: $id,name: $name, price: $price, discount: $discount, images: $images, details: $details, stock: $stock, delivery: $delivery, timesSold: $timesSold, company: $company, category: $category, size: $size, gender: $gender, targetAge: $targetAge, rating: $rating, postDate: $postDate)';
   }
 
   @override
@@ -134,6 +138,7 @@ class Product {
         other.details == details &&
         other.stock == stock &&
         other.delivery == delivery &&
+        other.id == id &&
         other.timesSold == timesSold &&
         other.company == company &&
         other.category == category &&
@@ -155,6 +160,7 @@ class Product {
       stock,
       delivery,
       timesSold,
+      id,
       company,
       category,
       size,

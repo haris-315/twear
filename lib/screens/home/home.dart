@@ -14,28 +14,41 @@ import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
 // ignore: library_private_types_in_public_api
-final GlobalKey<_HomeState> homeKey = GlobalKey();
 
 class Home extends StatefulWidget {
-  Home({
-    key,
-  }) : super(key: homeKey);
+  const Home({
+    super.key,
+  });
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  bool isAdmin = false;
   final ScrollController scrollController = ScrollController();
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotateAnimation;
+
+  void reloadAsAdmin() {
+    Navigator.pushReplacementNamed(context, "home", arguments: true);
+  }
 
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData(context));
 
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      isAdmin = ModalRoute.of(context)!.settings.arguments as bool? ?? false;
+      if (!isAdmin) {
+        bool reLoad = await showConfirmationDialog(context);
+        if (reLoad) {
+          reloadAsAdmin();
+        }
+      }
+    });
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
 
@@ -54,12 +67,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final double swidth = MediaQuery.of(context).size.width;
     final double sheight = MediaQuery.of(context).size.height;
     final CTheme themeMode = getThemeMode(context);
-    print("Building Home Again...");
+
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(
+            isAdmin: isAdmin,
             themeMode: themeMode,
             scrollController: scrollController,
           ),
@@ -96,6 +110,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ? BlocBuilder<CartCubit, CartState>(
                     builder: (context, cartState) {
                       return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _categoryBuilder(swidth, sheight, themeMode),
                           const SizedBox(
@@ -174,6 +189,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
     return Wrap(
+        alignment: WrapAlignment.center,
         children: state.products.keys
             .expand((key) => [
                   if (key == "trending")
@@ -181,15 +197,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   else ...[
                     SizedBox(
                       width: swidth,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: smallScreen ? 12 : 25.0, bottom: 18, top: 8),
-                        child: Text(
-                          key.toString().toUpperCase(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26,
-                              color: themeMode.primTextColor),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: smallScreen ? 12 : 25.0,
+                              bottom: 18,
+                              top: 8),
+                          child: Text(
+                            key.toString().toUpperCase(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                                color: themeMode.primTextColor),
+                          ),
                         ),
                       ),
                     ),
@@ -214,5 +234,30 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ],
                 ])
             .toList());
+  }
+
+  Future<bool> showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Confirm Action"),
+              content: Text(
+                  "Hello visitor, since this is just a showcase project everyone is allowed to visit it as admin. Would you like to visit the site as admin?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text("No"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text("Yes"),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 }

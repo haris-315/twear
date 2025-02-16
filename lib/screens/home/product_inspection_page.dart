@@ -28,9 +28,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
-  double get _discountedPrice => widget.product.discount != null
+  double get _discountedPrice => widget.product.discount != 0
       ? widget.product.price -
-          (widget.product.price * (widget.product.discount! / 100))
+          (widget.product.price * (widget.product.discount / 100))
       : widget.product.price;
 
 
@@ -95,7 +95,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                   color: theme.primTextColor,
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold)),
-                          if (widget.product.discount != null)
+                          if (widget.product.discount != 0)
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Text(

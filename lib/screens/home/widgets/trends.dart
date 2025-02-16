@@ -157,12 +157,11 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                             40)
                                           const Discount(discount: "New"),
                                         SizedBox(width: swidth * .1),
-                                        if (product.discount != null &&
-                                            product.discount != 0) ...[
+                                        if (product.discount != 0) ...[
                                           Discount(
                                               size: 12,
                                               discount:
-                                                  "-${product.discount!.toInt()}%",
+                                                  "-${product.discount.toInt()}%",
                                               color: Colors.red),
                                           SizedBox(width: swidth * .1),
                                         ],

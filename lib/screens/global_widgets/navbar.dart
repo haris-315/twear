@@ -8,8 +8,10 @@ import 'package:t_wear/screens/global_widgets/nav_item.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   final ScrollController scrollController;
+  final bool isAdmin;
   const NavBar({
     super.key,
+    this.isAdmin = false,
     required this.themeMode,
     required this.scrollController,
   });
@@ -25,17 +27,19 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
             Navigator.pushNamed(context, "home");
           },
         ),
-        NavItem(
-          title: "Dashboard",
-          themeMode: themeMode,
-          action: () {
-            Navigator.pushNamed(context, "products");
-          },
-        ),
-        NavItem(
-          title: "Contact",
-          themeMode: themeMode,
-        )
+        if (isAdmin)
+          NavItem(
+            title: "Dashboard",
+            themeMode: themeMode,
+            action: () {
+              Navigator.pushNamed(context, "products");
+            },
+          ),
+        if (!isAdmin)
+          NavItem(
+            title: "Contact",
+            themeMode: themeMode,
+          )
       ];
 
   @override
