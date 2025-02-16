@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
-import 'package:t_wear/bloc/dashboard/dashboard_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
@@ -35,7 +34,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().add(LoadHomeData());
+    context.read<HomeBloc>().add(LoadHomeData(context));
 
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
@@ -55,12 +54,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final double swidth = MediaQuery.of(context).size.width;
     final double sheight = MediaQuery.of(context).size.height;
     final CTheme themeMode = getThemeMode(context);
-
+    print("Building Home Again...");
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is HomeSuccess) {
-          context.read<DashboardBloc>().add(FeedProducts(products: state.products));
-        }
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(
@@ -73,14 +69,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             child: RotationTransition(
               turns: _rotateAnimation,
               child: Container(
-
                 decoration: BoxDecoration(
-                  border: Border.all(width: 1,color: themeMode.borderColor ?? Colors.red),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  gradient: LinearGradient(colors: [themeMode.oppositeShimmerColor!.withValues(alpha: .7),themeMode.oppositeShimmerColor!.withValues(alpha: .2)])
-                      
-                      
-                ),
+                    border: Border.all(
+                        width: 1, color: themeMode.borderColor ?? Colors.red),
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    gradient: LinearGradient(colors: [
+                      themeMode.oppositeShimmerColor!.withValues(alpha: .7),
+                      themeMode.oppositeShimmerColor!.withValues(alpha: .2)
+                    ])),
                 child: FloatingActionButton(
                   backgroundColor: Colors.transparent,
                   onPressed: () {
@@ -174,51 +170,49 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-
   Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
       CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
     return Wrap(
-      children: state.products.keys.expand(
-            (key) => [
-              if (key == "trending")
-                SizedBox()
-              else
-                ...[SizedBox(
-      width: swidth,
-      child: Padding(
-      padding: EdgeInsets.only(left: smallScreen ? 12 : 25.0,bottom: 18,top: 8),
-      child: Text(
-        key.toString().toUpperCase(),
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-            color: themeMode.primTextColor),
-      ),
-    ),),
-
-    ...state.products[key]!.map((product) {
-      return ProductCard(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductDetailPage(
-                                product: product)));
-                  },
-                  carted: cartedProducts.contains(product),
-                  product: product,
-                  cartAction: (cproduct) {
-                    context
-                        .read<CartCubit>()
-                        .addToCart(cproduct, cartedProducts);
-                  },
-                );
-              })],]).toList());
-
-
-
-
+        children: state.products.keys
+            .expand((key) => [
+                  if (key == "trending")
+                    SizedBox()
+                  else ...[
+                    SizedBox(
+                      width: swidth,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: smallScreen ? 12 : 25.0, bottom: 18, top: 8),
+                        child: Text(
+                          key.toString().toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 26,
+                              color: themeMode.primTextColor),
+                        ),
+                      ),
+                    ),
+                    ...state.products[key]!.map((product) {
+                      return ProductCard(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetailPage(product: product)));
+                        },
+                        carted: cartedProducts.contains(product),
+                        product: product,
+                        cartAction: (cproduct) {
+                          context
+                              .read<CartCubit>()
+                              .addToCart(cproduct, cartedProducts);
+                        },
+                      );
+                    })
+                  ],
+                ])
+            .toList());
   }
-
 }

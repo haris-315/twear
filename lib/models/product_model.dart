@@ -4,8 +4,9 @@ import 'category.dart' as cat;
 
 class Product {
   final String name;
+  
   final double price;
-  final double? discount;
+  final double discount;
   final List<String> images;
   final Delta details;
   final int stock;
@@ -22,7 +23,7 @@ class Product {
   Product(
       {required this.name,
       required this.price,
-      this.discount,
+      required this.discount,
       required this.images,
       required this.details,
       required this.stock,
@@ -44,8 +45,7 @@ class Product {
     return Product(
       name: map['name'],
       price: (map['price'] as num).toDouble(),
-      discount:
-          map['discount'] != null ? (map['discount'] as num).toDouble() : null,
+      discount: (map['discount'] as num).toDouble(),
       images: List<String>.from(map['images'] ?? []),
       details: map['details'] ?? '',
       stock: map['stock'] ?? 0,

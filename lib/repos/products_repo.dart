@@ -55,8 +55,7 @@ class ProductsRepo {
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
-      categorizedProducts
-          .removeWhere((key, value) => key != "trending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
 
       categorizedProducts[category.name] = products
           .where((product) => product.category.id == category.id)
@@ -70,14 +69,12 @@ class ProductsRepo {
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsBySearch(
       String query) async {
     if (query.isEmpty || query == "") {
-      categorizedProducts
-          .removeWhere((key, value) => key != "trending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
-      categorizedProducts
-          .removeWhere((key, value) => key != "trending");
+      categorizedProducts.removeWhere((key, value) => key != "trending");
 
       List<Product> searchedProducts = products
           .where((product) =>
@@ -102,7 +99,7 @@ List<Map<String, dynamic>> productsMaps = [
   {
     "name": "New Hoods For Boys With New Print BTS",
     "price": 750,
-    "discount": null,
+    'discount': 0,
     "images": [
       "https://res.cloudinary.com/dume7lvn5/image/upload/v1737214178/New%20Hoods%20For%20Boys%20And%20Girls%20With%20New%20Print%20BTS/Sd3e7123dcda844419b10d5b58bf6a605i.jpg_720x720q80.jpg__auqxm8.webp"
     ],
@@ -477,7 +474,7 @@ List<Map<String, dynamic>> productsMaps = [
   {
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
-    'discount': null,
+    'discount': 0,
     'images': [
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729103/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__mbg3tw.webp',
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729105/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__pxisz5.webp'
@@ -667,7 +664,7 @@ List<Map<String, dynamic>> productsMaps = [
   {
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
-    'discount': null,
+    'discount': 0,
     'images': [
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729103/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__mbg3tw.webp',
       'https://res.cloudinary.com/dume7lvn5/image/upload/v1737729105/Unique%20Style%20winter%20track%20suit%20for%20Papa%20lover%20kids/Se70f6c33ce47495fbf9a6f8cfd1b9247I.jpg_720x720q80.jpg__pxisz5.webp'

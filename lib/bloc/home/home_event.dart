@@ -5,12 +5,12 @@ sealed class HomeEvent {}
 
 final class LoadHomeData extends HomeEvent {
   final Map<dynamic, List<Product>>? productsMap;
+  final BuildContext? context;
 
-  LoadHomeData({
+  LoadHomeData(this.context, {
     this.productsMap,
   });
 }
-
 
 final class GetByCategory extends HomeEvent {
   final Category category;

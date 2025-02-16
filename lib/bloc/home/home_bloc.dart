@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/dashboard/dashboard_bloc.dart';
 import 'package:t_wear/models/category.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/repos/products_repo.dart';
@@ -14,8 +15,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<LoadHomeData>((event, emit) async {
       emit(HomeLoading());
       var data = await repo.getProducts();
-      data.fold((fail) => emit(HomeError(message: fail.message)),
-          (data) => emit(HomeSuccess(products: data)));
+      data.fold((fail) => emit(HomeError(message: fail.message)), (data) {
+        emit(HomeSuccess(products: data));
+        if (event.context != null) {
+          event.context!
+              .read<DashboardBloc>()
+              .add(FeedProducts(products: data));
+        }
+      });
     });
     on<GetByCategory>((event, emit) async {
       emit(HomeLoading(byCategory: true));

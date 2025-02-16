@@ -26,7 +26,6 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final CTheme themeMode = getThemeMode(context);
-
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         if (state is CartSuccess) {
@@ -107,12 +106,9 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                                     themeMode: themeMode,
                                     icon: Icons.attach_money,
                                     title: "Actual Price",
-                                    value:
-                                    "$totalOriginalPrice",
+                                    value: "$totalOriginalPrice",
                                     color: Colors.redAccent),
                               ],
-
-
                             ),
                           ),
 
