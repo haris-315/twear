@@ -7,7 +7,8 @@ final class LoadHomeData extends HomeEvent {
   final Map<dynamic, List<Product>>? productsMap;
   final BuildContext? context;
 
-  LoadHomeData(this.context, {
+  LoadHomeData(
+    this.context, {
     this.productsMap,
   });
 }
@@ -22,4 +23,10 @@ final class GetBySearch extends HomeEvent {
   final String query;
 
   GetBySearch({required this.query});
+}
+
+final class UpdateProduct extends HomeEvent {
+  final Product product;
+
+  UpdateProduct({required this.product});
 }

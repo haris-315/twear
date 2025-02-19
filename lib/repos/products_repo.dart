@@ -9,15 +9,15 @@ import 'package:t_wear/screens/home/widgets/category.dart';
 
 class ProductsRepo {
   late List<Product> products;
+  bool isInit = true;
   Map<dynamic, List<Product>> categorizedProducts = {"trending": <Product>[]};
 
-  ProductsRepo() {
-    _initializeProducts();
-  }
 
-  Future<void> _initializeProducts() async {
+
+ _initializeProducts() async {
     products = await compute(_parseProducts, productsMaps);
     productsMaps.clear();
+    isInit = false;
   }
 
   static List<Product> _parseProducts(List<Map<String, dynamic>> productsMaps) {
@@ -28,7 +28,9 @@ class ProductsRepo {
   }
 
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProducts() async {
-    await Future.delayed(const Duration(seconds: 1));
+    if (isInit) {
+      await _initializeProducts();
+    }
     try {
       for (var category in categories) {
         List<Product> trending =
@@ -49,15 +51,28 @@ class ProductsRepo {
     }
   }
 
+  Future<Either<Failure, Map<dynamic, List<Product>>>> updateProduct(
+      Product product) async {
+    await Future.delayed(Duration(seconds: 1));
+    try {
+      int index = products.indexWhere((element) => element.id == product.id);
+      products.removeAt(index);
+      products.insert(index, product);
+      return await getProducts();
+    } catch (e) {
+      return left(Failure(message: e.toString(), st: StackTrace.current));
+    }
+  }
+
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsByCategory(
       cat.Category category) async {
+    categorizedProducts.removeWhere((key, value) => key != "trending");
+
     if (category.id == 8) {
       return await getProducts();
     }
     await Future.delayed(const Duration(seconds: 1));
     try {
-      categorizedProducts.removeWhere((key, value) => key != "trending");
-
       categorizedProducts[category.name] = products
           .where((product) => product.category.id == category.id)
           .toList();
@@ -95,4 +110,3 @@ class ProductsRepo {
     return delta.toList().map((op) => op.data.toString()).join();
   }
 }
-

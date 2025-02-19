@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
+import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
-import 'package:t_wear/screens/home/product_inspection_page.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
@@ -25,7 +25,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  bool isAdmin = false;
+  bool isAdmin = true;
   final ScrollController scrollController = ScrollController();
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -40,15 +40,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData(context));
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      isAdmin = ModalRoute.of(context)!.settings.arguments as bool? ?? false;
-      if (!isAdmin) {
-        bool reLoad = await showConfirmationDialog(context);
-        if (reLoad) {
-          reloadAsAdmin();
-        }
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   isAdmin = ModalRoute.of(context)!.settings.arguments as bool? ?? false;
+    //   if (!isAdmin) {
+    //     bool reLoad = await showConfirmationDialog(context);
+    //     if (reLoad) {
+    //       reloadAsAdmin();
+    //     }
+    //   }
+    // });
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
 
@@ -156,31 +156,42 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   SizedBox _categoryBuilder(double swidth, double sheight, CTheme themeMode) {
+    ScrollController controller = ScrollController();
     return SizedBox(
       height: swidth <= 500
           ? swidth < 400
               ? swidth * 0.22
               : swidth * 0.19
           : sheight * 0.35,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: swidth <= 500
-                ? EdgeInsets.only(
-                    left: swidth <= 400 ? 10 : 19.0,
-                    top: 22,
-                    bottom: 22,
-                    right: swidth <= 400 ? 10 : 19.0)
-                : const EdgeInsets.only(
-                    left: 19, right: 19, top: 16, bottom: 16),
-            child: CategoryItem(
-              category: categories[index],
-              themeMode: themeMode,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 18.0, right: 8.0),
+        child: Scrollbar(
+          controller: controller,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: ListView.builder(
+              controller: controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: swidth <= 500
+                      ? EdgeInsets.only(
+                          left: swidth <= 400 ? 10 : 19.0,
+                          top: 22,
+                          bottom: 22,
+                          right: swidth <= 400 ? 10 : 19.0)
+                      : const EdgeInsets.only(
+                          left: 19, right: 19, top: 16, bottom: 16),
+                  child: CategoryItem(
+                    category: categories[index],
+                    themeMode: themeMode,
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -189,6 +200,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
     return Wrap(
+        spacing: smallScreen ? 3 : 10,
+        runSpacing: 14,
         alignment: WrapAlignment.center,
         children: state.products.keys
             .expand((key) => [
@@ -216,11 +229,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ...state.products[key]!.map((product) {
                       return ProductCard(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductDetailPage(product: product)));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             ProductDetailPage(product: product)));
+                          Navigator.pushNamed(context, "postproduct",
+                              arguments: product);
                         },
                         carted: cartedProducts.contains(product),
                         product: product,
@@ -237,24 +252,53 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   Future<bool> showConfirmationDialog(BuildContext context) async {
+    double width = MediaQuery.of(context).size.width;
+    CTheme themeMode = context.read<ThemeCubit>().state;
     return await showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Confirm Action"),
-              content: Text(
-                  "Hello visitor, since this is just a showcase project everyone is allowed to visit it as admin. Would you like to visit the site as admin?"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text("No"),
+            return SizedBox(
+              width: width <= 600 ? width * .7 : width * .3,
+              child: AlertDialog(
+                title: Text(
+                  "Admin Access",
+                  style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700),
                 ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text("Yes"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.waving_hand,
+                      color: Colors.yellowAccent,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Hello visitor, since this is just a showcase project everyone is allowed to visit it as admin. Would you like to visit the site as admin?",
+                      maxLines: 5,
+                      style: TextStyle(
+                          color: themeMode.primTextColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
                 ),
-              ],
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text("Yes"),
+                  ),
+                ],
+              ),
             );
           },
         ) ??

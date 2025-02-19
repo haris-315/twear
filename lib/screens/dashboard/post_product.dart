@@ -1,9 +1,9 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
@@ -11,10 +11,15 @@ import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/repos/main_repo.dart';
 import 'package:t_wear/screens/dashboard/widgets/editor.dart';
+import 'package:t_wear/screens/dashboard/widgets/img_pick_btn.dart';
+import 'package:t_wear/screens/dashboard/widgets/input_decor.dart';
+import 'package:t_wear/screens/dashboard/widgets/product_form.dart';
+import 'package:t_wear/screens/dashboard/widgets/section_builder.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/prime_button.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
+import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 import 'package:uuid/uuid.dart';
 
 class PostProduct extends StatefulWidget {
@@ -26,8 +31,9 @@ class PostProduct extends StatefulWidget {
 
 class _PostProductState extends State<PostProduct> {
   final ScrollController _scrollController = ScrollController();
-  late QuillController
-      _editorController; // Made it late to allow reinitialization
+  QuillController _editorController = QuillController(
+      document: Document(),
+      selection: const TextSelection.collapsed(offset: 0));
   final TextEditingController priceController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
@@ -37,45 +43,30 @@ class _PostProductState extends State<PostProduct> {
   final TextEditingController brandNameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController sizeController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey formKey = GlobalKey<FormState>();
   final ImagePicker _imagePicker = ImagePicker();
 
-  List<XFile> images = [];
-  List<Uint8List> imagePreviews = [];
+  List<dynamic> images = [];
+  List<dynamic> imagePreviews = [];
   int? selectedCategory;
   List<Map> products = [];
-  List<String> genders = ["Male", "Female"];
+  List<String> genders = ["Male", "Female", "Unisex"];
   String selectedGender = "Male";
   final FocusNode _fNode = FocusNode();
   bool isLoading = false;
   bool isError = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Initialize the Quill editor with an empty document
-    _editorController = QuillController(
-      document: Document(),
-      selection: const TextSelection.collapsed(offset: 0),
-    );
-  }
+  bool isUpdating = false;
+  Product? product;
 
   @override
   void dispose() {
-    _editorController.dispose();
     super.dispose();
   }
 
   void _setUpdateDetails(Product product) {
-    setState(() {
-      _editorController = QuillController(
-        document: Document.fromDelta(
-            product.details), // Set QuillController with product details
-        selection: const TextSelection.collapsed(offset: 0),
-      );
-    });
-
+    _editorController = QuillController(
+        document: Document.fromDelta(product.details),
+        selection: const TextSelection.collapsed(offset: 0));
     priceController.text = product.price.toString();
     productNameController.text = product.name;
     discountController.text = product.discount.toString();
@@ -86,13 +77,29 @@ class _PostProductState extends State<PostProduct> {
     sizeController.text = product.size.toString();
     selectedGender = product.gender;
     selectedCategory = product.category.id;
+    imagePreviews.addAll(product.images);
+    images.addAll(product.images);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (product != null) {
+        _setUpdateDetails(product!);
+        isUpdating = true;
+        setState(() {});
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = getScreenSize(context).first;
+    final height = getScreenSize(context).elementAt(1);
     final CTheme themeMode = getThemeMode(context);
     Color? quillBorder = themeMode.borderColor;
-    Product? product = ModalRoute.of(context)!.settings.arguments as Product?;
+    product = ModalRoute.of(context)!.settings.arguments as Product?;
 
     _fNode.addListener(() {
       setState(() {
@@ -113,63 +120,263 @@ class _PostProductState extends State<PostProduct> {
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                Container(
-                  width: getScreenSize(context).first * .7,
-                  height: getScreenSize(context).elementAt(1) * .6,
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(color: quillBorder ?? Colors.red, width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(8.0),
-                  child: DefaultTextStyle(
-                    style: TextStyle(color: themeMode.primTextColor),
-                    child: DescriptionEditor(
-                      editorController: _editorController,
-                      scrollController: _scrollController,
-                      focusNode: _fNode,
-                    ),
+                buildSection(
+                  themeMode: themeMode,
+                  sectionTitle: "Product Info",
+                  items: [],
+                ),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: width * .7,
+                  child: ProductForm(
+                    themeMode: themeMode,
+                    formKey: formKey,
+                    productNameController: productNameController,
+                    priceController: priceController,
+                    discountController: discountController,
+                    stockController: stockController,
+                    deliveryChargesController: deliveryChargesController,
+                    brandNameController: brandNameController,
+                    sizeController: sizeController,
+                    ageController: ageController,
                   ),
                 ),
                 const SizedBox(height: 16),
+                SizedBox(
+                  width: width * .7,
+                  child: DropdownButtonFormField<String>(
+                    style: TextStyle(color: themeMode.primTextColor),
+                    value: selectedGender,
+                    dropdownColor: themeMode.backgroundColor,
+                    decoration: inputDecor(
+                        ht: "Select Gender",
+                        hit: "Select Gender",
+                        icon: Icons.man_4,
+                        themeMode: themeMode),
+                    items: genders
+                        .map((gender) => DropdownMenuItem(
+                              value: gender,
+                              child: Text(gender,
+                                  style: TextStyle(
+                                      color: themeMode.oppositeTextColor)),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value!;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: width * .7,
+                  child: DropdownButtonFormField<int>(
+                    style: TextStyle(color: themeMode.primTextColor),
+                    value: selectedCategory,
+                    dropdownColor: themeMode.backgroundColor,
+                    decoration: inputDecor(
+                        ht: "Select Category",
+                        hit: "Select Category",
+                        icon: Icons.category,
+                        themeMode: themeMode),
+                    items: categories
+                        .map((category) => DropdownMenuItem(
+                              value: category.id,
+                              child: Text(
+                                category.name,
+                                style: TextStyle(
+                                    color: themeMode.oppositeTextColor),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  width: width * .7,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: themeMode.borderColor ?? Colors.red, width: 2),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8)),
+                  ),
+                  child: ToolBar(
+                      editorController: _editorController,
+                      themeMode: themeMode),
+                ),
+                Container(
+                    width: width * .7,
+                    height: height * .6,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: quillBorder ?? Colors.red, width: 2),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: DefaultTextStyle(
+                        style: TextStyle(color: themeMode.primTextColor),
+                        child: DescriptionEditor(
+                            editorController: _editorController,
+                            scrollController: _scrollController,
+                            focusNode: _fNode))),
+                const SizedBox(height: 16),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 5,
+                  children: [
+                    if (images.length < 6)
+                      ImagesButton(
+                        onpress: () async {
+                          final pickedImages =
+                              await _imagePicker.pickMultiImage();
+                          imagePreviews.addAll([
+                            for (XFile img in pickedImages)
+                              await img.readAsBytes()
+                          ]);
+                          setState(() {
+                            images.addAll(pickedImages);
+                            pickedImages.clear();
+                          });
+                        },
+                        themeMode: themeMode,
+                      ),
+                    ...imagePreviews.map(
+                      (image) => Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(9),
+                            child: Container(
+                              // decoration: BoxDecoration(
+                              //     border: Border.all(
+                              //         width: 1,
+                              //         color:
+                              //             themeMode.borderColor ?? Colors.red)),
+                              child: isValidUrl(image.toString())
+                                  ? Image.network(
+                                      image,
+                                      width: width <= 420
+                                          ? width * .33
+                                          : width * .22,
+                                      height: height * .2,
+                                      fit: BoxFit.fill,
+                                    )
+                                  : Image.memory(
+                                      image,
+                                      width: width <= 420
+                                          ? width * .33
+                                          : width * .22,
+                                      height: height * .2,
+                                      fit: BoxFit.fill,
+                                    ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: themeMode.borderColor2,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  final index = imagePreviews.indexOf(image);
+                                  images.removeAt(index);
+                                  imagePreviews.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 PrimeButton(
-                  action: () async {
-                    try {
-                      List<String> urls = await uploadImagesToFolder(
-                          images, productNameController.text);
-                      final category = categories.firstWhere(
-                        (cat) => cat.id == selectedCategory,
-                        orElse: () => throw Exception("Invalid category"),
-                      );
-                      products.add(Product(
-                        id: Uuid().v1(),
-                        size: sizeController.text,
-                        name: productNameController.text,
-                        price: double.parse(priceController.text),
-                        images: urls,
-                        stock: int.parse(stockController.text),
-                        details: _editorController.document
-                            .toDelta(), // Correctly fetching the Delta
-                        delivery: int.parse(deliveryChargesController.text),
-                        company: brandNameController.text,
-                        category: category,
-                        gender: selectedGender,
-                        discount: double.parse(discountController.text),
-                        targetAge: ageController.text.toString(),
-                        postDate: DateFormat('dd/MM/yyyy')
-                            .format(DateTime.now())
-                            .toString(),
-                      ).toMap());
-                    } catch (e) {
-                      print("Error: $e");
-                    }
-                  },
+                    action: () {
+                                            print(products);
+                                            print(_editorController.document.toDelta().toJson().toString());
+                    },
+                    themeMode: themeMode,
+                    width: width <= 420
+                        ? responsiveWidth(width) * .85
+                        : responsiveWidth(width) * .65,
+                    child: const Text("Print Products")),
+                const SizedBox(height: 10),
+                PrimeButton(
+                  action: isUpdating
+                      ? () async {
+                          final category = categories.firstWhere(
+                            (cat) => cat.id == selectedCategory,
+                            orElse: () => throw Exception("Invalid category"),
+                          );
+                          context.read<HomeBloc>().add(UpdateProduct(
+                                  product: product!.copyWith(
+                                size: sizeController.text,
+                                name: productNameController.text,
+                                price: double.parse(priceController.text),
+                                images: imagePreviews as List<String>,
+                                stock: int.parse(stockController.text),
+                                details: _editorController.document.toDelta(),
+                                delivery:
+                                    int.parse(deliveryChargesController.text),
+                                company: brandNameController.text,
+                                category: category,
+                                gender: selectedGender,
+                                discount: double.parse(discountController.text),
+                                targetAge: ageController.text.toString(),
+                              )));
+                        }
+                      : () async {
+                          List<XFile> fImages =
+                              images.whereType<XFile>().toList();
+                          try {
+                            List<String> urls = await uploadImagesToFolder(
+                                fImages, productNameController.text);
+                            final category = categories.firstWhere(
+                              (cat) => cat.id == selectedCategory,
+                              orElse: () => throw Exception("Invalid category"),
+                            );
+                            products.add(Product(
+                              id: Uuid().v1(),
+                              size: sizeController.text,
+                              name: productNameController.text,
+                              price: double.parse(priceController.text),
+                              images: urls,
+                              stock: int.parse(stockController.text),
+                              details: _editorController.document.toDelta(),
+                              delivery:
+                                  int.parse(deliveryChargesController.text),
+                              company: brandNameController.text,
+                              category: category,
+                              gender: selectedGender,
+                              discount: double.parse(discountController.text),
+                              targetAge: ageController.text.toString(),
+                              postDate: DateFormat('dd/MM/yyyy')
+                                  .format(DateTime.now())
+                                  .toString(),
+                            ).toMap());
+                          } catch (e) {
+                            print("Error: $e");
+                          }
+                        },
                   themeMode: themeMode,
-                  width: getScreenSize(context).first <= 420
-                      ? responsiveWidth(getScreenSize(context).first) * .85
-                      : responsiveWidth(getScreenSize(context).first) * .65,
+                  width: width <= 420
+                      ? responsiveWidth(width) * .85
+                      : responsiveWidth(width) * .65,
                   child: Text(
-                    "Post Product",
+                    isUpdating ? "Push Updates" : "Post Product",
                     style: TextStyle(color: themeMode.primTextColor),
                   ),
                 ),

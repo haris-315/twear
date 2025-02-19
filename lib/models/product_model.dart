@@ -43,7 +43,6 @@ class Product {
     if (map['name'] == null || map['price'] == null) {
       throw const FormatException('Missing required fields: name or price');
     }
-
     return Product(
       name: map['name'],
       id: map['id'],
@@ -67,6 +66,7 @@ class Product {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'id': id,
       'price': price,
       'discount': discount,
       'images': images,

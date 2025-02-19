@@ -8,8 +8,7 @@ import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/kpi.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
-
-import '../home/product_inspection_page.dart';
+import 'package:t_wear/screens/home/product_inspection_page.dart';
 
 class DashBoardPg extends StatefulWidget {
   const DashBoardPg({super.key});
@@ -29,8 +28,8 @@ class _DashBoardPgState extends State<DashBoardPg>
   void initState() {
     super.initState();
     context.read<DashboardBloc>().add(GetDashboardDetails());
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
     _slideAnimation = Tween<Offset>(begin: Offset(0, -2), end: Offset(0, 0))
         .animate(_animationController);
     _slideAnimation2 = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
@@ -191,8 +190,8 @@ class _DashBoardPgState extends State<DashBoardPg>
                         height: 24,
                       ),
                       Wrap(
-                        spacing: 10,
-                        runSpacing: 22,
+                        spacing: width <= 500 ? 3 : 10,
+                        runSpacing: 14,
                         alignment: WrapAlignment.center,
                         children: (state.dashboardDetails['products'] as List)
                             .cast<DBP>()
@@ -212,11 +211,12 @@ class _DashBoardPgState extends State<DashBoardPg>
                                         );
                                       },
                                     ),
+                                    SizedBox(
+                                      height: 6,
+                                    ),
                                     ClipPath(
                                       clipper: WaterMarkClipper(),
                                       child: Container(
-                                        padding:
-                                            EdgeInsets.only(left: 22, right: 2),
                                         color: dbp.color,
                                         width: responsiveWidth(width),
                                         child: Center(
@@ -244,8 +244,10 @@ class _DashBoardPgState extends State<DashBoardPg>
                       )
                   ],
                   if (state is DashboardLoading)
-                    CircularProgressIndicator(
-                      color: themeMode.borderColor2,
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: themeMode.borderColor2,
+                      ),
                     )
                 ],
               ),

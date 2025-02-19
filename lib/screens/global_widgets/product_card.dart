@@ -54,7 +54,7 @@ class _ProductCardState extends State<ProductCard> {
                 duration: const Duration(milliseconds: 950),
                 curve: Curves.easeInOut,
                 width: responsiveWidth(screenWidth),
-                margin: const EdgeInsets.all(12),
+                // margin: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: themeMode.buttonColor,
                   borderRadius: BorderRadius.circular(16),
@@ -190,8 +190,12 @@ class _ProductCardState extends State<ProductCard> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          ...buildStars(widget.product!),
+                                          ...buildStars(
+                                              product: widget.product!,
+                                              themeMode: themeMode,
+                                              shrinkMode: true),
                                           // SizedBox(
                                           //   width: 3,
                                           // ),

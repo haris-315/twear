@@ -189,7 +189,8 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   mainAxisAlignment: MainAxisAlignment.end,
-                                  children: buildStars(product),
+                                  children: buildStars(
+                                      product: product, themeMode: themeMode),
                                 ),
                               ),
                             ),
@@ -221,8 +222,9 @@ class _TrendingPicksState extends State<TrendingPicks> {
                     if (_currentIndex > 0) {
                       _carouselController.previousPage();
                     } else {
-                      _carouselController
-                          .animateToPage(widget.trendingProducts.length - 1,duration: Duration(milliseconds: 120));
+                      _carouselController.animateToPage(
+                          widget.trendingProducts.length - 1,
+                          duration: Duration(milliseconds: 120));
                     }
                   },
                   icon: Icon(Icons.arrow_left_outlined,
@@ -244,7 +246,8 @@ class _TrendingPicksState extends State<TrendingPicks> {
                     if (_currentIndex < widget.trendingProducts.length - 1) {
                       _carouselController.nextPage();
                     } else {
-                      _carouselController.animateToPage(0,duration: Duration(milliseconds: 120));
+                      _carouselController.animateToPage(0,
+                          duration: Duration(milliseconds: 120));
                     }
                   },
                   icon: Icon(Icons.arrow_right_outlined,

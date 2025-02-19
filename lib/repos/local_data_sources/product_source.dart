@@ -1,6 +1,55 @@
 List<Map<String, dynamic>> productsMaps = [
-  { 
-    "id" : "ff027f66-ec4f-11ef-8bfb-3b1e4f8a312b",
+  {
+    "name":
+        "winter fleece Printed Pullover Hoodie - Premium Quality, Stylish Winter Sweatshirt",
+    "price": 2000,
+    "id" : "ff020fs6-vc7f-11ef-8bfb-3b1e4f8a312b",
+    "discount": 48,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1739889043/winter%20fleece%20Printed%20Pullover%20Hoodie%20Premium%20Quality%2C%20Stylish%20Winter%20Sweatshirt/1_kwtlw7.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1739889050/winter%20fleece%20Printed%20Pullover%20Hoodie%20Premium%20Quality%2C%20Stylish%20Winter%20Sweatshirt/2_tcjten.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1739889052/winter%20fleece%20Printed%20Pullover%20Hoodie%20Premium%20Quality%2C%20Stylish%20Winter%20Sweatshirt/3_rtkcla.webp"
+    ],
+    "details": [
+      {
+        "insert": "Stay Warm and Cozy with Our Premium Fleece Hoodie\n",
+        "attributes": {"bold": true, "size": "large", "color": "#FF607D8B"}
+      },
+      {
+        "insert": "Material",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            ": Made from high-quality fleece, this hoodie offers exceptional warmth and comfort. The soft and plush fabric ensures you stay cozy in cold weather.\n\n"
+      },
+      {
+        "insert": "Design",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            ": Featuring a sleek and modern design, this hoodie is both stylish and functional. It covers your head and neck, providing comprehensive protection against the elements.\n\n"
+      }
+    ],
+    "stock": 33,
+    "delivery": 125,
+    "timesSold": 0,
+    "company": "INZ",
+    "category": {
+      "name": "Winter",
+      "id": 4,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218210/c4_injdfj.webp"
+    },
+    "size": "XL",
+    "gender": "Unisex",
+    "targetAge": 28,
+    "rating": [0],
+    "postDate": "18/02/2025"
+  },
+  {
+    "id": "ff027f66-ec4f-11ef-8bfb-3b1e4f8a312b",
     "name": "New Hoods For Boys With New Print BTS",
     "price": 750,
     'discount': 0,
@@ -56,7 +105,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/01/2025'
   },
   {
-    "id" : "ff016df0-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff016df0-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name':
         'Fashion Women Faux Rabbit Fur Hand Wrist Warmer Winter Fingerless Knitted Gloves',
     'price': 279,
@@ -186,7 +235,8 @@ List<Map<String, dynamic>> productsMaps = [
     'rating': [2, 5, 3, 2, 4, 1],
     'postDate': '24/11/2024'
   },
-  { "id" : "ff025850-ec4f-11ef-8bfb-3b1e4f8a312b",
+  {
+    "id": "ff025850-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
     'discount': 43,
@@ -247,7 +297,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/01/2025'
   },
   {
-    "id" : "ff025851-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff025851-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name':
         'Fashion Women Faux Rabbit Fur Hand Wrist Warmer Winter Fingerless Knitted Gloves',
     'price': 279,
@@ -378,7 +428,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/11/2024'
   },
   {
-    "id" : "ff025852-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff025852-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
     'discount': 0,
@@ -439,7 +489,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/01/2025'
   },
   {
-    "id" : "ff025853-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff025853-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name':
         'Fashion Women Faux Rabbit Fur Hand Wrist Warmer Winter Fingerless Knitted Gloves',
     'price': 279,
@@ -570,7 +620,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/11/2024'
   },
   {
-    "id" : "ff025854-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff025854-ec4f-11ef-8bfb-3b1e4f8a312b",
     'name': 'Unique Style winter track suit for Papa lover kids',
     'price': 999,
     'discount': 0,
@@ -631,7 +681,7 @@ List<Map<String, dynamic>> productsMaps = [
     'postDate': '24/01/2025'
   },
   {
-    "id" : "ff025855-ec4f-11ef-8bfb-3b1e4f8a312b",
+    "id": "ff025855-ec4f-11ef-8bfb-3b1e4f8a312b",
     "name":
         "Zushaam-Hand bag for girls Leather bags for girls Cross body bags for girls and ladies Shoulder bag for girls with adjustable strap",
     "price": 890,

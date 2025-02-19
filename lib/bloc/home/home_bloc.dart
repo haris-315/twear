@@ -43,5 +43,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               isCategorizing:
                   event.query == "" || event.query.isEmpty ? false : true)));
     });
+    on<UpdateProduct>((event, emit) async {
+      emit(HomeLoading());
+       (await repo.updateProduct(event.product)).fold((fail) => emit(HomeError(message: fail.message)), (products) => emit(HomeSuccess(products: products)));
+    });
   }
 }
