@@ -9,6 +9,7 @@ import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
+import 'package:t_wear/screens/home/product_inspection_page.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
@@ -127,6 +128,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               state,
                               swidth,
                               sheight,
+                              state.isCategorizing,
                               themeMode,
                               cartState is CartSuccess
                                   ? cartState.cartedProdcuts
@@ -197,7 +199,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
-      CTheme themeMode, List<Product> cartedProducts) {
+      bool isForCategory, CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
     return Wrap(
         spacing: smallScreen ? 3 : 10,
@@ -208,34 +210,33 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   if (key == "trending")
                     SizedBox()
                   else ...[
-                    SizedBox(
-                      width: swidth,
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: smallScreen ? 12 : 25.0,
-                              bottom: 18,
-                              top: 8),
-                          child: Text(
-                            key.toString().toUpperCase(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 26,
-                                color: themeMode.primTextColor),
+                    if (isForCategory)
+                      SizedBox(
+                        width: swidth,
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: smallScreen ? 12 : 25.0,
+                                bottom: 18,
+                                top: 8),
+                            child: Text(
+                              key.toString().toUpperCase(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26,
+                                  color: themeMode.primTextColor),
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     ...state.products[key]!.map((product) {
                       return ProductCard(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             ProductDetailPage(product: product)));
-                          Navigator.pushNamed(context, "postproduct",
-                              arguments: product);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetailPage(product: product)));
                         },
                         carted: cartedProducts.contains(product),
                         product: product,

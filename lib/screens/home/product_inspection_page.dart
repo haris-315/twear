@@ -33,7 +33,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           (widget.product.price * (widget.product.discount / 100))
       : widget.product.price;
 
-
   quill.QuillController _quillController() => quill.QuillController(
         document: quill.Document.fromDelta(widget.product.details),
         readOnly: true,
@@ -46,110 +45,110 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final [width, height] = getScreenSize(context);
 
-    return BlocBuilder<CartCubit,CartState>(
-      builder: (context,state) {
-        if (state is CartSuccess) {
-          cartedProducts = state.cartedProdcuts;
-        }
-        final bool isCarted  = cartedProducts.contains(widget.product);
+    return BlocBuilder<CartCubit, CartState>(builder: (context, state) {
+      if (state is CartSuccess) {
+        cartedProducts = state.cartedProdcuts;
+      }
+      final bool isCarted = cartedProducts.contains(widget.product);
 
-        return Scaffold(
-          backgroundColor: theme.backgroundColor,
-          appBar: NavBar(
-            themeMode: theme,
-            scrollController: scrollController,
-          ),
-          endDrawer: CustomDrawer(themeMode: theme),
-          body: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildImageCarousel(theme, width),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.product.name,
-                        style: TextStyle(
-                            color: theme.primTextColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Manufacturer: ${widget.product.company}",
-                        style: TextStyle(
-                            color: theme.secondaryTextColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Text('\$${_discountedPrice.toStringAsFixed(2)}',
+      return Scaffold(
+        backgroundColor: theme.backgroundColor,
+        appBar: NavBar(
+          themeMode: theme,
+          scrollController: scrollController,
+        ),
+        endDrawer: CustomDrawer(themeMode: theme),
+        body: SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildImageCarousel(theme, width),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.product.name,
+                      style: TextStyle(
+                          color: theme.primTextColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Manufacturer: ${widget.product.company}",
+                      style: TextStyle(
+                          color: theme.secondaryTextColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Text('\$${_discountedPrice.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                color: theme.primTextColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold)),
+                        if (widget.product.discount != 0)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              '\$${widget.product.price.toStringAsFixed(2)}',
                               style: TextStyle(
-                                  color: theme.primTextColor,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold)),
-                          if (widget.product.discount != 0)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                '\$${widget.product.price.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  color: theme.secondaryTextColor,
-                                  fontSize: 16,
-                                  decoration: TextDecoration.lineThrough,
-                                ),
+                                color: theme.secondaryTextColor,
+                                fontSize: 16,
+                                decoration: TextDecoration.lineThrough,
                               ),
                             ),
-                        ],
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      widget.product.stock > 0
+                          ? 'In Stock (${widget.product.stock})'
+                          : 'Out of Stock',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: widget.product.stock > 0
+                            ? Colors.green
+                            : Colors.red,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        widget.product.stock > 0
-                            ? 'In Stock (${widget.product.stock})'
-                            : 'Out of Stock',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              widget.product.stock > 0 ? Colors.green : Colors.red,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      _buildDetailsSection(theme, textTheme, _quillController()),
-                      const SizedBox(height: 20),
-                      _buildRatingSection(theme),
-                      const SizedBox(height: 20),
-                      _buildProductInfoSection(theme, width),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildDetailsSection(theme, textTheme, _quillController()),
+                    const SizedBox(height: 20),
+                    _buildRatingSection(theme),
+                    const SizedBox(height: 20),
+                    _buildProductInfoSection(theme, width),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              if (isCarted) {
-                Navigator.pushReplacementNamed(context, "cart");
-              }
-              else {
-                context.read<CartCubit>().addToCart(widget.product, cartedProducts);
-              }
-            },
-            icon: Icon(Icons.shopping_cart, color: theme.iconColor),
-            label:
-                Text(isCarted ? 'Go to Cart' :'Add to Cart', style: TextStyle(color: theme.primTextColor)),
-            backgroundColor: theme.buttonColor,
-          ),
-        );
-      }
-    );
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            if (isCarted) {
+              Navigator.pushReplacementNamed(context, "cart");
+            } else {
+              context
+                  .read<CartCubit>()
+                  .addToCart(widget.product, cartedProducts);
+            }
+          },
+          icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+          label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
+              style: TextStyle(color: theme.primTextColor)),
+          backgroundColor: theme.buttonColor,
+        ),
+      );
+    });
   }
 
   Widget _buildImageCarousel(CTheme theme, double width) {
@@ -177,12 +176,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 // TODO: Implement full-screen image view
               },
               child: Container(
+                width: double.infinity,
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
                     image: NetworkImage(url),
-                    fit: width <= 700 ? BoxFit.cover : BoxFit.fill,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),

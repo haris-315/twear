@@ -30,7 +30,7 @@ class DescriptionEditor extends StatelessWidget {
               scrollable: true,
               autoFocus: false,
               expands: false,
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(top: 10),
             ),
           ),
           const SizedBox(
@@ -45,7 +45,8 @@ class DescriptionEditor extends StatelessWidget {
 class ToolBar extends StatelessWidget {
   final QuillController editorController;
   final CTheme themeMode;
-  const ToolBar({super.key, required this.editorController, required this.themeMode});
+  const ToolBar(
+      {super.key, required this.editorController, required this.themeMode});
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +58,13 @@ class ToolBar extends StatelessWidget {
         showUndo: true,
         showRedo: true,
         showListNumbers: true,
-        showCodeBlock: true,
+        showCodeBlock: false,
         showQuote: true,
         showDirection: true,
         showSearchButton: false,
         showFontSize: true,
+        showFontFamily: false,
+        showHeaderStyle: false,
         dialogTheme: QuillDialogTheme(
             labelTextStyle: TextStyle(color: themeMode.primTextColor),
             buttonTextStyle: TextStyle(color: themeMode.primTextColor),
@@ -69,10 +72,12 @@ class ToolBar extends StatelessWidget {
                 textStyle: WidgetStateProperty.resolveWith(
                     (_) => TextStyle(color: themeMode.primTextColor)))),
         buttonOptions: QuillSimpleToolbarButtonOptions(
+          fontSize: QuillToolbarFontSizeButtonOptions(
+              style: TextStyle(color: themeMode.primTextColor)),
           base: QuillToolbarBaseButtonOptions(
             iconTheme: QuillIconTheme(
               iconButtonSelectedData: IconButtonData(
-                  color: themeMode.primTextColor,
+                  color: themeMode.iconColor,
                   style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.resolveWith(
                           (_) => themeMode.primTextColor))),

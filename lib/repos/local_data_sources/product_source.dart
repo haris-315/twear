@@ -1,5 +1,340 @@
 List<Map<String, dynamic>> productsMaps = [
   {
+    "name": "Beautiful Half Sleeves T Shirts For Girls and Women",
+    "id": "903ddf90-f062-11ef-9d03-9d9e930157f6",
+    "price": 390,
+    "discount": 0,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740149158/Beautiful%20Half%20Sleeves%20T%20Shirts%20For%20Girls%20and%20Women/564473d082c496ebd1cb2db444ca6e72.jpg_720x720q80.jpg__gfucnp.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740149159/Beautiful%20Half%20Sleeves%20T%20Shirts%20For%20Girls%20and%20Women/564473d082c496ebd1cb2db444ca6e72.jpg_720x720q80.jpg__-_Copy_iuaxqt.webp"
+    ],
+    "details": [
+      {
+        "insert": "Beautifull",
+        "attributes": {"bold": true}
+      },
+      {"insert": " TShirt for "},
+      {
+        "insert": "girls",
+        "attributes": {"bold": true}
+      },
+      {"insert": " and "},
+      {
+        "insert": "women",
+        "attributes": {"bold": true}
+      },
+      {"insert": " to wear.\n"},
+      {
+        "insert": "silky",
+        "attributes": {"bold": true}
+      },
+      {"insert": " "},
+      {
+        "insert": "soft",
+        "attributes": {"bold": true}
+      },
+      {"insert": " and "},
+      {
+        "insert": "comfortable",
+        "attributes": {"bold": true}
+      },
+      {"insert": ".\n"},
+      {
+        "insert": "modren",
+        "attributes": {"bold": true}
+      },
+      {"insert": " "},
+      {
+        "insert": "design",
+        "attributes": {"bold": true}
+      },
+      {"insert": ".\n"},
+      {
+        "insert": "Trend",
+        "attributes": {"bold": true}
+      },
+      {"insert": " following.\n"},
+      {"insert": "\n"}
+    ],
+    "stock": 12,
+    "delivery": 125,
+    "timesSold": 0,
+    "company": "NoBrand",
+    "category": {
+      "name": "Women",
+      "id": 5,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218252/c5_rtvniw.webp"
+    },
+    "size": "S-M-L-XL",
+    "gender": "Female",
+    "targetAge": "14-25",
+    "rating": [0],
+    "postDate": "21/02/2025"
+  },
+  {
+    "name":
+        "Stylish Collection Stitched Embroidered Flower Gown 3Pc Dress for Women",
+    "id": "08a8f840-f061-11ef-8f39-bfdc70718c33",
+    "price": 3000,
+    "discount": 54,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740148499/Stylish%20Collection%20Stitched%20Embroidered%20Flower%20Gown%203Pc%20Dress%20for%20Women/0634607cfafd869aa667f65efd3565b6.jpg_720x720q80.jpg__evj99d.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740148501/Stylish%20Collection%20Stitched%20Embroidered%20Flower%20Gown%203Pc%20Dress%20for%20Women/adafc75f999c37e5731f2a5d12178242.jpg_720x720q80.jpg__bycnah.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740148502/Stylish%20Collection%20Stitched%20Embroidered%20Flower%20Gown%203Pc%20Dress%20for%20Women/b03a90b18c8cb737b196436915fa3a83.jpg_720x720q80.jpg__zk9ywi.webp"
+    ],
+    "details": [
+      {"insert": "kathaan silk stuff"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "piece count: 3pc"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "gown + inner + trouser"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "gown length: 45 to 48"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "inner length: 35"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "trouser length: 36 to 38"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "chest: 20/21/22"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "available colours"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "black"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "blue"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "mehroon"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "mustard/yellow"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "white"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "\n"}
+    ],
+    "stock": 12,
+    "delivery": 145,
+    "timesSold": 0,
+    "company": "WeTrad",
+    "category": {
+      "name": "Women",
+      "id": 5,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218252/c5_rtvniw.webp"
+    },
+    "size": "L-S",
+    "gender": "Female",
+    "targetAge": "22-35 Y",
+    "rating": [0],
+    "postDate": "21/02/2025"
+  },
+  {
+    "name": "Black Shawl For Men Pashmina Dussa Shawl For Mens",
+    "id": "1e0bc830-f060-11ef-8f39-bfdc70718c33",
+    "price": 788,
+    "discount": 0,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740148106/Black%20Shawl%20For%20Men%20Pashmina%20Dussa%20Shawl%20For%20Mens/Sa20da74fb38846e8bd5cb261f5db219bY.jpg_720x720q80.jpg__wmvbsl.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740148108/Black%20Shawl%20For%20Men%20Pashmina%20Dussa%20Shawl%20For%20Mens/Sc5b6267ffb034e739159d3bc61579002E.jpg_720x720q80.jpg__ri3vjo.webp"
+    ],
+    "details": [
+      {"insert": "Best shawl for menBlack "},
+      {
+        "insert": "Dussa",
+        "attributes": {"bold": true}
+      },
+      {"insert": " "},
+      {
+        "insert": "shawl",
+        "attributes": {"bold": true}
+      },
+      {"insert": " for mens "},
+      {
+        "insert": "Pashmina",
+        "attributes": {"bold": true}
+      },
+      {"insert": " Dussa shawl Fast delivery Asaan Shoppy"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "Black shawl"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "Best "},
+      {
+        "insert": "Quality",
+        "attributes": {"bold": true}
+      },
+      {"insert": " "},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {
+        "insert": "Black",
+        "attributes": {"bold": true}
+      },
+      {"insert": " shawl for "},
+      {
+        "insert": "mens",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "Shawl for mens"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "Best shawl for mens"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "High quality shawl for mens "},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "Fast delivery "},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {
+        "insert": "Soft",
+        "attributes": {"bold": true}
+      },
+      {"insert": " shawl for mens"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      }
+    ],
+    "stock": 12,
+    "delivery": 145,
+    "timesSold": 0,
+    "company": "WeTrad",
+    "category": {
+      "name": "Traditional",
+      "id": 3,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218241/c3_t7toca.webp"
+    },
+    "size": "L",
+    "gender": "Male",
+    "targetAge": "22-45 Y",
+    "rating": [0],
+    "postDate": "21/02/2025",
+  },
+  {
+    "name": "Summer Baby Rompers Short Sleeve",
+    "id": "e1df8910-f05e-11ef-b31f-273a95268467",
+    "price": 650,
+    "discount": 28,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740147570/Summer%20Baby%20Rompers%20Short%20Sleeve/3f2840ba5c427db911b80a0e437b2e10.jpg_720x720q80.jpg__trvuaw.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740147574/Summer%20Baby%20Rompers%20Short%20Sleeve/7556ae4e8f4856e8f529a46d01b406d9.jpg_720x720q80.jpg__lra8nn.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740147578/Summer%20Baby%20Rompers%20Short%20Sleeve/dc139af5d32ceb73f2bd95ca28ff9cb3.jpg_720x720q80.jpg__qaekye.webp"
+    ],
+    "details": [
+      {"insert": "BABY ROMPER"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "SUPERMAN ROMPER"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "COTTON ROMPER"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "BOYS ROMPER"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "BATMAN ROMPER"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "NEWBORN TO 12 MONTH"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      },
+      {"insert": "SOFT AND COMFORTABLE"},
+      {
+        "insert": "\n",
+        "attributes": {"list": "bullet"}
+      }
+    ],
+    "stock": 32,
+    "delivery": 145,
+    "timesSold": 0,
+    "company": "Preeto",
+    "category": {
+      "name": "Kid's",
+      "id": 7,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218227/c7_tyirhd.webp"
+    },
+    "size": "Adjustable",
+    "gender": "Unisex",
+    "targetAge": "6-12 m",
+    "rating": [0],
+    "postDate": "21/02/2025",
+  },
+  {
     "name": "The Lion King Simba kids sweat shirt and pants",
     "id": "8619f600-f046-11ef-9c72-2348cf935ba1",
     "price": 1550,

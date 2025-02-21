@@ -91,6 +91,23 @@ class _PostProductState extends State<PostProduct> {
         setState(() {});
       }
     });
+    _editorController.document.changes.listen((event) {
+      _limitCharacters();
+    });
+  }
+
+  void _limitCharacters() {
+    final plainText = _editorController.document.toPlainText();
+    if (plainText.length > 700) {
+      String truncatedText = plainText.substring(0, 700);
+
+      _editorController.document = Document()..insert(0, truncatedText);
+
+      _editorController.updateSelection(
+        TextSelection.collapsed(offset: truncatedText.length),
+        ChangeSource.local,
+      );
+    }
   }
 
   @override
@@ -305,8 +322,11 @@ class _PostProductState extends State<PostProduct> {
                 const SizedBox(height: 10),
                 PrimeButton(
                     action: () {
-                                            print(products);
-                                            print(_editorController.document.toDelta().toJson().toString());
+                      print(products);
+                      print(_editorController.document
+                          .toDelta()
+                          .toJson()
+                          .toString());
                     },
                     themeMode: themeMode,
                     width: width <= 420
