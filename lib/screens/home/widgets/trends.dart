@@ -8,7 +8,6 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/discount.dart';
-import 'package:t_wear/screens/global_widgets/ratings.dart';
 
 class TrendingPicks extends StatefulWidget {
   final List<Product> trendingProducts;
@@ -20,9 +19,6 @@ class TrendingPicks extends StatefulWidget {
 }
 
 class _TrendingPicksState extends State<TrendingPicks> {
-  final List<GlobalKey> _globalKeys = [];
-  final Map<int, double> _infoBoxHeights = {};
-  bool showRating = false;
   int _currentIndex = 0;
   final CarouselSliderController _carouselController =
       CarouselSliderController();
@@ -30,21 +26,6 @@ class _TrendingPicksState extends State<TrendingPicks> {
   @override
   void initState() {
     super.initState();
-    _globalKeys.addAll(
-        List.generate(widget.trendingProducts.length, (_) => GlobalKey()));
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (int i = 0; i < _globalKeys.length; i++) {
-        final renderBox =
-            _globalKeys[i].currentContext?.findRenderObject() as RenderBox?;
-        if (renderBox != null) {
-          _infoBoxHeights[i] = renderBox.size.height;
-        }
-      }
-      setState(() {
-        showRating = true;
-      });
-    });
   }
 
   @override
@@ -89,7 +70,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
                           color: themeMode.backgroundColor,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.12),
+                              color: Colors.black.withValues(alpha: 0.12),
                               blurRadius: 10,
                               offset: const Offset(0, 6),
                             ),
@@ -117,8 +98,6 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                 ),
                               ),
                               Container(
-                                key: _globalKeys[
-                                    index], // Use unique key for each item
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: themeMode.backgroundColor,
@@ -174,28 +153,6 @@ class _TrendingPicksState extends State<TrendingPicks> {
                           ),
                         ),
                       ),
-                      if (showRating)
-                        Positioned(
-                          right: 9.5,
-                          bottom: _infoBoxHeights[index] ?? 0,
-                          child: ClipPath(
-                            clipper: TrapezoidClipper(),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: themeMode.backgroundColor),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0, top: 3, right: 2, bottom: 3),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: buildStars(
-                                      product: product, themeMode: themeMode),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                 );
@@ -262,18 +219,18 @@ class _TrendingPicksState extends State<TrendingPicks> {
   }
 }
 
-class TrapezoidClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.moveTo(size.width * 0.2, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-    return path;
-  }
+// class TrapezoidClipper extends CustomClipper<Path> {
+//   @override
+//   Path getClip(Size size) {
+//     Path path = Path();
+//     path.moveTo(size.width * 0.2, 0);
+//     path.lineTo(size.width, 0);
+//     path.lineTo(size.width, size.height);
+//     path.lineTo(0, size.height);
+//     path.close();
+//     return path;
+//   }
 
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
+//   @override
+//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+// }
