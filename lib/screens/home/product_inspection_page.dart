@@ -173,7 +173,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           items: widget.product.images.map((url) {
             return GestureDetector(
               onTap: () {
-                // TODO: Implement full-screen image view
+                // Navigator.push(MaterialPageRoute())
               },
               child: Container(
                 width: double.infinity,
@@ -293,45 +293,133 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
         ),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: width * .34,
-          runSpacing: 12,
-          children: [
-            _buildInfoRow('Category:', widget.product.category.name, theme),
-            _buildInfoRow('Size:', widget.product.size, theme),
-            _buildInfoRow('Gender:', widget.product.gender, theme),
-            _buildInfoRow('Target Age:', widget.product.targetAge, theme),
-            _buildInfoRow(
-                'Delivery:', '${widget.product.delivery} days', theme),
-            _buildInfoRow('Times Sold:', '${widget.product.timesSold}', theme),
-            _buildInfoRow('Post Date:', widget.product.postDate, theme),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Use 2 columns on wider screens
+            if (constraints.maxWidth > 600) {
+              return Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(1),
+                  3: FlexColumnWidth(2),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      _buildTableCell(
+                          'Category:', widget.product.category.name, theme),
+                      _buildTableCell('Size:', widget.product.size, theme),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      _buildTableCell('Gender:', widget.product.gender, theme),
+                      _buildTableCell(
+                          'Target Age:', widget.product.targetAge, theme),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      _buildTableCell('Delivery:',
+                          '${widget.product.delivery} days', theme),
+                      _buildTableCell(
+                          'Times Sold:', '${widget.product.timesSold}', theme),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      _buildTableCell(
+                          'Post Date:', widget.product.postDate, theme),
+                      const SizedBox.shrink(),
+                    ],
+                  ),
+                ],
+              );
+            } else {
+              // Single column for mobile
+              return Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(2),
+                },
+                children: [
+                  _buildTableRow(
+                      'Category:', widget.product.category.name, theme),
+                  _buildTableRow('Size:', widget.product.size, theme),
+                  _buildTableRow('Gender:', widget.product.gender, theme),
+                  _buildTableRow(
+                      'Target Age:', widget.product.targetAge, theme),
+                  _buildTableRow(
+                      'Delivery:', '${widget.product.delivery} days', theme),
+                  _buildTableRow(
+                      'Times Sold:', '${widget.product.timesSold}', theme),
+                  _buildTableRow('Post Date:', widget.product.postDate, theme),
+                ],
+              );
+            }
+          },
         ),
       ],
     );
   }
-}
 
-Widget _buildInfoRow(String label, String value, CTheme theme) {
-  return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: RichText(
-        text: TextSpan(
-            text: label,
+  TableRow _buildTableRow(String label, String value, CTheme theme) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            label,
             style: TextStyle(
               color: theme.secondaryTextColor,
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
-            children: [
-              TextSpan(
-                text: "     $value",
-                style: TextStyle(
-                  color: theme.primTextColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ]),
-      ));
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            value,
+            style: TextStyle(
+              color: theme.primTextColor,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTableCell(String label, String value, CTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: theme.secondaryTextColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            value,
+            style: TextStyle(
+              color: theme.primTextColor,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

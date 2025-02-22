@@ -47,7 +47,7 @@ class _CategoryItemState extends State<CategoryItem> {
             height: width <= 500 ? 40 : null,
             decoration: BoxDecoration(
               color: themeMode.buttonColor,
-              borderRadius: BorderRadius.circular(width <= 500 ? 10 : 16),
+              borderRadius: BorderRadius.circular(width <= 500 ? 4 : 16),
               boxShadow: [
                 BoxShadow(
                   color: themeMode.shadowColor ??
@@ -65,7 +65,7 @@ class _CategoryItemState extends State<CategoryItem> {
                 ? widget.skeletonMode
                     ? const SizedBox(
                         width: 80,
-                        height: 40,
+                        height: 50,
                       )
                     : Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),

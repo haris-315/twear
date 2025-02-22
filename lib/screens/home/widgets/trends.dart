@@ -8,6 +8,7 @@ import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/discount.dart';
+import 'package:t_wear/screens/home/product_inspection_page.dart';
 
 class TrendingPicks extends StatefulWidget {
   final List<Product> trendingProducts;
@@ -22,11 +23,6 @@ class _TrendingPicksState extends State<TrendingPicks> {
   int _currentIndex = 0;
   final CarouselSliderController _carouselController =
       CarouselSliderController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,102 +54,157 @@ class _TrendingPicksState extends State<TrendingPicks> {
                 final product = widget.trendingProducts[index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, "inspect-product",
-                        arguments: product);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                ProductDetailPage(product: product)));
                   },
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: themeMode.backgroundColor,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.12),
-                              blurRadius: 10,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: themeMode.backgroundColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 10,
+                          offset: const Offset(0, 6),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: CachedNetworkImage(
-                                  imageUrl: product.images.first,
-                                  fit: BoxFit.fill,
-                                  placeholder: (context, url) => Center(
-                                    child: CircularProgressIndicator(
-                                      color: themeMode.borderColor2,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Icon(
-                                    Icons.image_not_supported,
-                                    size: 50,
-                                    color: themeMode.iconColor,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(12),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: swidth <= 600 ? 270 : 460,
+                            child: CachedNetworkImage(
+                              imageUrl: product.images.first,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
                                 decoration: BoxDecoration(
-                                  color: themeMode.backgroundColor,
-                                  borderRadius: const BorderRadius.vertical(
-                                      bottom: Radius.circular(24)),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      themeMode.backgroundColor!,
+                                      themeMode.backgroundColor!
+                                          .withValues(alpha: 0.5),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: themeMode.primTextColor,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "\$${product.price}",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: themeMode.borderColor2,
-                                          ),
-                                        ),
-                                        SizedBox(width: swidth * .1),
-                                        if (calculateDifference(
-                                                product.postDate) <=
-                                            40)
-                                          const Discount(discount: "New"),
-                                        SizedBox(width: swidth * .1),
-                                        if (product.discount != 0) ...[
-                                          Discount(
-                                              size: 12,
-                                              discount:
-                                                  "-${product.discount.toInt()}%",
-                                              color: Colors.red),
-                                          SizedBox(width: swidth * .1),
-                                        ],
-                                      ],
-                                    ),
-                                  ],
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: themeMode.borderColor2,
+                                  ),
                                 ),
                               ),
-                            ],
+                              errorWidget: (context, url, error) => Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      themeMode.backgroundColor!,
+                                      themeMode.backgroundColor!
+                                          .withValues(alpha: 0.5),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 50,
+                                  color: themeMode.iconColor,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          // Gradient Overlay
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.3),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                          ),
+                          // Product Details
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    tileMode: TileMode.mirror,
+                                    colors: [
+                                      Colors.black.withValues(alpha: .5),
+                                      Colors.black.withValues(alpha: .2)
+                                    ]),
+                                borderRadius: const BorderRadius.vertical(
+                                    bottom: Radius.circular(24)),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "\$${product.price}",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.amberAccent,
+                                        ),
+                                      ),
+                                      SizedBox(width: swidth * .1),
+                                      if (calculateDifference(
+                                              product.postDate) <=
+                                          40)
+                                        const Discount(
+                                          discount: "New",
+                                          size: 13,
+                                        ),
+                                      SizedBox(width: swidth * .1),
+                                      if (product.discount != 0) ...[
+                                        Discount(
+                                            size: 12,
+                                            discount:
+                                                "-${product.discount.toStringAsFixed(0)}%",
+                                            color: Colors.red),
+                                        SizedBox(width: swidth * .1),
+                                      ],
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
@@ -218,19 +269,3 @@ class _TrendingPicksState extends State<TrendingPicks> {
     );
   }
 }
-
-// class TrapezoidClipper extends CustomClipper<Path> {
-//   @override
-//   Path getClip(Size size) {
-//     Path path = Path();
-//     path.moveTo(size.width * 0.2, 0);
-//     path.lineTo(size.width, 0);
-//     path.lineTo(size.width, size.height);
-//     path.lineTo(0, size.height);
-//     path.close();
-//     return path;
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }

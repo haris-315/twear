@@ -4,6 +4,7 @@ import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
@@ -26,30 +27,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  bool isAdmin = true;
+  bool admin = false;
   final ScrollController scrollController = ScrollController();
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotateAnimation;
-
-  void reloadAsAdmin() {
-    Navigator.pushReplacementNamed(context, "home", arguments: true);
-  }
 
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData(context));
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   isAdmin = ModalRoute.of(context)!.settings.arguments as bool? ?? false;
-    //   if (!isAdmin) {
-    //     bool reLoad = await showConfirmationDialog(context);
-    //     if (reLoad) {
-    //       reloadAsAdmin();
-    //     }
-    //   }
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!admin) {
+        bool reLoad = await showConfirmationDialog(context);
+        if (reLoad) {}
+      }
+    });
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
 
@@ -68,13 +62,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final double swidth = MediaQuery.of(context).size.width;
     final double sheight = MediaQuery.of(context).size.height;
     final CTheme themeMode = getThemeMode(context);
+    admin = isAdmin(context);
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(
-            isAdmin: isAdmin,
+
             themeMode: themeMode,
             scrollController: scrollController,
           ),
@@ -132,7 +127,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               themeMode,
                               cartState is CartSuccess
                                   ? cartState.cartedProdcuts
-                                  : [])
+                                  : []),
+                          SizedBox(
+                            height: 20,
+                          ),
                         ],
                       );
                     },
@@ -162,8 +160,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return SizedBox(
       height: swidth <= 500
           ? swidth < 400
-              ? swidth * 0.22
-              : swidth * 0.19
+              ? swidth * 0.24
+              : swidth * 0.21
           : sheight * 0.35,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 18.0, right: 8.0),
@@ -230,21 +228,24 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                       ),
                     ...state.products[key]!.map((product) {
-                      return ProductCard(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductDetailPage(product: product)));
-                        },
-                        carted: cartedProducts.contains(product),
-                        product: product,
-                        cartAction: (cproduct) {
-                          context
-                              .read<CartCubit>()
-                              .addToCart(cproduct, cartedProducts);
-                        },
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: ProductCard(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductDetailPage(product: product)));
+                          },
+                          carted: cartedProducts.contains(product),
+                          product: product,
+                          cartAction: (cproduct) {
+                            context
+                                .read<CartCubit>()
+                                .addToCart(cproduct, cartedProducts);
+                          },
+                        ),
                       );
                     })
                   ],

@@ -190,7 +190,8 @@ class _ProductCardState extends State<ProductCard> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           ...buildStars(
                                               product: widget.product!,
@@ -239,8 +240,8 @@ class _ProductCardState extends State<ProductCard> {
               if (widget.product != null) ...[
                 if (calculateDifference(widget.product!.postDate) <= 40)
                   const Positioned(
-                      top: 13,
-                      right: 13,
+                      top: 1,
+                      right: 1,
                       child: Discount(
                         discount: "New",
                         size: 15,
@@ -248,13 +249,14 @@ class _ProductCardState extends State<ProductCard> {
                 if (widget.product!.discount != 0)
                   Positioned(
                       top: calculateDifference(widget.product!.postDate) <= 40
-                          ? 48
-                          : 13,
-                      right: 13,
+                          ? 37
+                          : 1,
+                      right: 1,
                       child: Discount(
-                        discount: "-${widget.product!.discount}%",
+                        discount:
+                            "-${widget.product!.discount.toStringAsFixed(0)}%",
                         color: Colors.red,
-                        size: 14,
+                        size: 13,
                       )),
               ]
             ],

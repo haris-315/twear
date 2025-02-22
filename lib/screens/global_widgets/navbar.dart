@@ -3,30 +3,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/screens/global_widgets/nav_item.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   final ScrollController scrollController;
-  final bool isAdmin;
+
   const NavBar({
     super.key,
-    this.isAdmin = false,
     required this.themeMode,
     required this.scrollController,
   });
 
   final CTheme themeMode;
 
-  List<NavItem> navItems(CTheme themeMode, BuildContext context) => [
-        NavItem(
-          title: "Home",
-          themeMode: themeMode,
-          action: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, "home");
-          },
-        ),
+  List<NavItem> navItems(
+          CTheme themeMode, BuildContext context, bool isAdmin) =>
+      [
+        if (!(ModalRoute.of(context)?.settings.name == "home") ||
+            !(ModalRoute.of(context)?.settings.name == "/"))
+          NavItem(
+            title: "Home",
+            themeMode: themeMode,
+            action: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "home");
+            },
+          ),
         if (isAdmin)
           NavItem(
             title: "Dashboard",
@@ -35,24 +39,28 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.pushNamed(context, "products");
             },
           ),
-        if (!isAdmin)
-          NavItem(
-            title: "Contact",
-            themeMode: themeMode,
-          )
+        NavItem(
+          title: "Dev Contact",
+          themeMode: themeMode,
+          action: () {
+            Navigator.pushNamed(context, "postproduct");
+          },
+        )
       ];
 
   @override
   Widget build(BuildContext context) {
     final [width, height] = getScreenSize(context);
+    bool admin = isAdmin(context);
     return AppBar(
+      iconTheme: IconThemeData(color: themeMode.iconColor),
       backgroundColor: themeMode.appBarColor,
       title: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () {
             scrollController.animateTo(0,
-                duration: const Duration(milliseconds: 80),
+                duration: const Duration(milliseconds: 800),
                 curve: Curves.easeInOutCirc);
           },
           child: Text(
@@ -94,7 +102,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
           ),
-          ...navItems(themeMode, context)
+          ...navItems(themeMode, context, admin)
         ]
       ],
     );

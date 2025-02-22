@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 
 class CustomDrawer extends StatefulWidget {
   final CTheme themeMode;
@@ -16,7 +17,7 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  List<Widget> drawerItems(CTheme themeMode, BuildContext context) {
+  List<Widget> drawerItems(CTheme themeMode, BuildContext context, bool admin) {
     return [
       ListTile(
         leading: Icon(Icons.home, color: themeMode.iconColor),
@@ -26,19 +27,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Navigator.pushNamed(context, "home");
         },
       ),
-      ListTile(
-        leading: Icon(Icons.dashboard, color: themeMode.iconColor),
-        title:
-            Text("Dashboard", style: TextStyle(color: themeMode.primTextColor)),
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.pushNamed(context, "products",);
-        },
-      ),
+      if (admin)
+        ListTile(
+          leading: Icon(Icons.dashboard, color: themeMode.iconColor),
+          title: Text("Dashboard",
+              style: TextStyle(color: themeMode.primTextColor)),
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(
+              context,
+              "products",
+            );
+          },
+        ),
       ListTile(
         leading: Icon(Icons.contact_page, color: themeMode.iconColor),
-        title:
-            Text("Contact", style: TextStyle(color: themeMode.primTextColor)),
+        title: Text("Dev Contact",
+            style: TextStyle(color: themeMode.primTextColor)),
         onTap: () {
           Navigator.pop(context);
         },
@@ -64,6 +69,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    bool admin = isAdmin(context);
     return Drawer(
       backgroundColor: widget.themeMode.backgroundColor,
       child: Column(
@@ -93,7 +99,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           // Drawer Items
           Expanded(
             child: ListView(
-              children: drawerItems(widget.themeMode, context),
+              children: drawerItems(widget.themeMode, context, admin),
             ),
           ),
         ],

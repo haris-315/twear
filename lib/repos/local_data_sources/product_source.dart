@@ -1,5 +1,199 @@
 List<Map<String, dynamic>> productsMaps = [
   {
+    "name": "Royal Blue Best Perfume For Men 75ml",
+    "id": "e4e5c620-f10c-11ef-8aef-2d5b5888d87e",
+    "price": 1560,
+    "discount": 49,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740222304/Royal%20Blue%20Best%20Perfume%20For%20Men%2075ml/4fde7a193c56d50cbab24622863dc3c6.jpg_720x720q80.jpg__qdeiwj.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740222309/Royal%20Blue%20Best%20Perfume%20For%20Men%2075ml/199882df5afc0e5b6b86b7a75b0b142f.jpg_720x720q80.jpg__v4fzhr.webp"
+    ],
+    "details": [
+      {
+        "insert":
+            "Introducing our Royal Blue Best Perfume For Men 75ml, the perfect addition to any man's grooming routine. This fragrance is designed to leave a lasting impression with its unique blend of scents. The "
+      },
+      {
+        "insert": "top notes",
+        "attributes": {"bold": true}
+      },
+      {"insert": " of this perfume are fresh and invigorating, while the "},
+      {
+        "insert": "heart notes",
+        "attributes": {"bold": true}
+      },
+      {"insert": " are warm and spicy. The "},
+      {
+        "insert": "base notes",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            " are deep and musky, creating a well-rounded fragrance that is perfect for any occasion.\n\nOur perfume is made with "
+      },
+      {
+        "insert": "high-quality ingredients",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            ", ensuring that it lasts all day long. Whether you're heading to work or out for a night on the town, our Royal Blue Best Perfume For Men 75ml is the perfect finishing touch to any outfit."
+      },
+      {"insert": "\n"}
+    ],
+    "stock": 17,
+    "delivery": 135,
+    "timesSold": 0,
+    "company": "Royal",
+    "category": {
+      "name": "Perfumes",
+      "id": 6,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218210/c6_u6xdn4.webp"
+    },
+    "size": "75ml",
+    "gender": "Unisex",
+    "targetAge": "12-45",
+    "rating": [0],
+    "postDate": "22/02/2025"
+  },
+  {
+    "name":
+        "Musk Palace Original Al Munakh by Mahal 6ml Concentrated Perfume Oil",
+    "id": "de4aabd0-f109-11ef-aaef-7f3dd21f39ae",
+    "price": 500,
+    "discount": 25,
+    "images": [
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740221015/Musk%20Palace%20Original%20Al%20Munakh%20by%20Mahal%206ml%20Concentrated%20Perfume%20Oil/2f329e9927ca77474b7e59321971ca42.jpg_720x720q80.jpg__qwiltf.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740221016/Musk%20Palace%20Original%20Al%20Munakh%20by%20Mahal%206ml%20Concentrated%20Perfume%20Oil/ba614f81bdd43a9a3335ac9879020a31.jpg_720x720q80.jpg__we3ltx.webp",
+      "https://res.cloudinary.com/dume7lvn5/image/upload/v1740221017/Musk%20Palace%20Original%20Al%20Munakh%20by%20Mahal%206ml%20Concentrated%20Perfume%20Oil/d51ea0c6cc240c5cb5c2c0185f8297c6.jpg_720x720q80.jpg__jdmooh.webp"
+    ],
+    "details": [
+      {
+        "insert":
+            "AL MUNAKH Perfume by Mushk Mahal Perfumers: Distinction in Every Drop",
+        "attributes": {"bold": true}
+      },
+      {"insert": "\n\n\n"},
+      {
+        "insert": "AL MUNAKH",
+        "attributes": {"bold": true}
+      },
+      {"insert": ", a "},
+      {
+        "insert": "concentrated",
+        "attributes": {"bold": true}
+      },
+      {"insert": " perfume "},
+      {
+        "insert": "crafted",
+        "attributes": {"bold": true}
+      },
+      {"insert": " for the modern man. Its "},
+      {
+        "insert": "unique",
+        "attributes": {"bold": true}
+      },
+      {"insert": " "},
+      {
+        "insert": "blend",
+        "attributes": {"bold": true}
+      },
+      {"insert": " of "},
+      {
+        "insert": "top notes",
+        "attributes": {"bold": true}
+      },
+      {"insert": " — "},
+      {
+        "insert": "lavender",
+        "attributes": {"bold": true}
+      },
+      {"insert": ", "},
+      {
+        "insert": "citrus",
+        "attributes": {"bold": true}
+      },
+      {"insert": ", and "},
+      {
+        "insert": "subtle",
+        "attributes": {"bold": true}
+      },
+      {"insert": " spice—sets the "},
+      {
+        "insert": "stage",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            " with a fresh and vibrant impression.\n\nAs the scent evolves, the heart reveals a rich "
+      },
+      {
+        "insert": "complexity",
+        "attributes": {"bold": true}
+      },
+      {"insert": " with the warm, "},
+      {
+        "insert": "aromatic notes",
+        "attributes": {"bold": true}
+      },
+      {"insert": " of coriander and "},
+      {
+        "insert": "cinnamon",
+        "attributes": {"bold": true}
+      },
+      {
+        "insert":
+            ", perfectly balanced to exude confidence and charisma. The journey concludes with a grounding base of oakmoss, patchouli, and vetiver, leaving a lasting impression of "
+      },
+      {
+        "insert": "refinement",
+        "attributes": {"bold": true}
+      },
+      {"insert": " and "},
+      {
+        "insert": "warmth",
+        "attributes": {"bold": true}
+      },
+      {"insert": ".\n\n"},
+      {
+        "insert": "AL MUNAKH",
+        "attributes": {"bold": true}
+      },
+      {"insert": " is designed to complement your "},
+      {
+        "insert": "professional",
+        "attributes": {"bold": true}
+      },
+      {"insert": " presence, making it an ideal choice for office wear. "},
+      {
+        "insert": "Long-lasting",
+        "attributes": {"bold": true}
+      },
+      {"insert": " and "},
+      {
+        "insert": "captivating.",
+        "attributes": {"bold": true}
+      },
+      {"insert": "\n"}
+    ],
+    "stock": 12,
+    "delivery": 125,
+    "timesSold": 0,
+    "company": "Mahal Al Musk",
+    "category": {
+      "name": "Perfumes",
+      "id": 6,
+      "image":
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218210/c6_u6xdn4.webp"
+    },
+    "size": "6ml",
+    "gender": "Unisex",
+    "targetAge": "12-40",
+    "rating": [0],
+    "postDate": "22/02/2025"
+  },
+  {
     "name": "Beautiful Half Sleeves T Shirts For Girls and Women",
     "id": "903ddf90-f062-11ef-9d03-9d9e930157f6",
     "price": 390,

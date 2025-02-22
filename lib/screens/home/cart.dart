@@ -7,6 +7,7 @@ import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/kpi.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
+import 'package:t_wear/screens/home/widgets/checkout.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -73,12 +74,12 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                       physics: const BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          // Header KPIs
                           Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(10.0),
                             child: Wrap(
+                              alignment: WrapAlignment.center,
                               key: _wrapKey,
-                              spacing: 20,
+                              spacing: 10,
                               runSpacing: 20,
                               children: [
                                 buildKpiCard(
@@ -207,7 +208,24 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                if (state.cartedProdcuts.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      action: SnackBarAction(
+                                          label: "Home",
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }),
+                                      content: Text(
+                                        "Your cart is empty. Please add some products from the home page.",
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  showCheckoutBottomSheet(context);
+                                }
+                              },
                             ),
                           ],
                         ),

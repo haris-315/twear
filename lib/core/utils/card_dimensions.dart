@@ -1,6 +1,6 @@
 double responsiveWidth(double screenWidth) {
   if (screenWidth <= 320) {
-    return screenWidth * 0.93; // Tiny screens (compact phones)
+    return screenWidth * 0.84; // Tiny screens (compact phones)
   } else if (screenWidth <= 480) {
     return screenWidth * 0.48; // Small phones
   } else if (screenWidth <= 600) {

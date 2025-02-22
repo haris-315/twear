@@ -29,7 +29,7 @@ class _DashBoardPgState extends State<DashBoardPg>
     super.initState();
     context.read<DashboardBloc>().add(GetDashboardDetails());
     _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
     _slideAnimation = Tween<Offset>(begin: Offset(0, -2), end: Offset(0, 0))
         .animate(_animationController);
     _slideAnimation2 = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
@@ -91,7 +91,7 @@ class _DashBoardPgState extends State<DashBoardPg>
                     Center(
                       child: Wrap(
                         alignment: WrapAlignment.center,
-                        spacing: 16,
+                        spacing: 10,
                         runSpacing: 16,
                         children: [
                           buildKpiCard(
