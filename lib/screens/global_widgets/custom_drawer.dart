@@ -36,7 +36,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Navigator.pop(context);
             Navigator.pushNamed(
               context,
-              "products",
+              "dashboard",
             );
           },
         ),
@@ -75,7 +75,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drawer Header
           DrawerHeader(
             decoration: BoxDecoration(
               color: widget.themeMode.appBarColor,

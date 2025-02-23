@@ -217,8 +217,8 @@ class _DashBoardPgState extends State<DashBoardPg>
                                     ClipPath(
                                       clipper: WaterMarkClipper(),
                                       child: Container(
+                                        width: responsiveWidth(width) - 20,
                                         color: dbp.color,
-                                        width: responsiveWidth(width),
                                         child: Center(
                                           child: Text(
                                             dbp.name,

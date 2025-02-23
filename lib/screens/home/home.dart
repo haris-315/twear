@@ -69,7 +69,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(
-
             themeMode: themeMode,
             scrollController: scrollController,
           ),
@@ -84,8 +83,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         width: 1, color: themeMode.borderColor ?? Colors.red),
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                     gradient: LinearGradient(colors: [
-                      themeMode.oppositeShimmerColor!.withValues(alpha: .7),
-                      themeMode.oppositeShimmerColor!.withValues(alpha: .2)
+                      themeMode.buttonColor!.withValues(alpha: .7),
+                      themeMode.buttonColor!.withValues(alpha: .2)
                     ])),
                 child: FloatingActionButton(
                   backgroundColor: Colors.transparent,

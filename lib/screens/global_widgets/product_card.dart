@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/date_calculator.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
@@ -37,6 +38,7 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     final themeMode = getThemeMode(context);
     final [screenWidth, screenHeight] = getScreenSize(context);
+    bool admin = isAdmin(context);
 
     return MouseRegion(
       onEnter: (_) {
@@ -143,6 +145,8 @@ class _ProductCardState extends State<ProductCard> {
                                 const SizedBox(height: 3),
                                 Text(
                                   "By ${widget.product?.company} - ${widget.product?.category.name}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: themeMode.secondaryTextColor,
@@ -186,50 +190,58 @@ class _ProductCardState extends State<ProductCard> {
                                   ],
                                 ),
                                 Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                        children: [
-                                          ...buildStars(
-                                              product: widget.product!,
-                                              themeMode: themeMode,
-                                              shrinkMode: true),
-                                          // SizedBox(
-                                          //   width: 3,
-                                          // ),
-                                          // Text(
-                                          //   '(${widget.product!.rating.length})',
-                                          //   style: TextStyle(
-                                          //       color: themeMode
-                                          //           .secondaryTextColor),
-                                          // )
-                                        ],
+                                        children: buildStars(
+                                            product: widget.product!,
+                                            themeMode: themeMode,
+                                            shrinkMode: true),
                                       ),
-                                      const SizedBox(
-                                        width: 3,
-                                      ),
-                                      FittedBox(
-                                        child: widget.carted
-                                            ? IconButton(
-                                                onPressed: () {},
-                                                icon: const Icon(
-                                                  Icons.shopping_cart,
-                                                  color: Colors.lightGreen,
-                                                ),
-                                              )
-                                            : IconButton(
-                                                onPressed: () {
-                                                  widget.cartAction!(
-                                                      widget.product!);
-                                                },
-                                                icon: const Icon(
-                                                  Icons.shopping_cart_outlined,
-                                                  color: Colors.amberAccent,
-                                                )),
-                                      )
+                                      Spacer(),
+                                      if (admin) ...[
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, "postproduct",
+                                                  arguments: widget.product!);
+                                            },
+                                            icon: const Icon(
+                                              Icons.edit_note_rounded,
+                                              color: Colors.amberAccent,
+                                            )),
+                                        IconButton(
+                                            onPressed: () {
+                                              widget
+                                                  .cartAction!(widget.product!);
+                                            },
+                                            icon: const Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.amberAccent,
+                                            )),
+                                      ] else
+                                        FittedBox(
+                                          child: widget.carted
+                                              ? IconButton(
+                                                  onPressed: () {},
+                                                  icon: const Icon(
+                                                    Icons.shopping_cart,
+                                                    color: Colors.lightGreen,
+                                                  ),
+                                                )
+                                              : IconButton(
+                                                  onPressed: () {
+                                                    widget.cartAction!(
+                                                        widget.product!);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .shopping_cart_outlined,
+                                                    color: Colors.amberAccent,
+                                                  )),
+                                        )
                                     ])
                               ],
                             ),

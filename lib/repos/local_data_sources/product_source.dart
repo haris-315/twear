@@ -54,7 +54,7 @@ List<Map<String, dynamic>> productsMaps = [
     "size": "75ml",
     "gender": "Unisex",
     "targetAge": "12-45",
-    "rating": [0],
+    "rating": [5, 5, 5, 5, 5, 5],
     "postDate": "22/02/2025"
   },
   {
@@ -190,7 +190,7 @@ List<Map<String, dynamic>> productsMaps = [
     "size": "6ml",
     "gender": "Unisex",
     "targetAge": "12-40",
-    "rating": [0],
+    "rating": [5, 5, 5, 5, 5, 5],
     "postDate": "22/02/2025"
   },
   {
@@ -263,7 +263,7 @@ List<Map<String, dynamic>> productsMaps = [
     "size": "S-M-L-XL",
     "gender": "Female",
     "targetAge": "14-25",
-    "rating": [0],
+    "rating": [5, 5, 5, 5, 5, 5],
     "postDate": "21/02/2025"
   },
   {

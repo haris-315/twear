@@ -10,7 +10,7 @@ Widget buildKpiCard({
   required Color color,
 }) {
   return Container(
-    width: 160,
+    width: 150,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: themeMode.backgroundColor,
@@ -34,9 +34,7 @@ Widget buildKpiCard({
     ),
     child: Column(
       children: [
-        Icon(icon,
-            size: 32,
-            color: color),
+        Icon(icon, size: 32, color: color),
         const SizedBox(height: 12),
         Text(
           title,
@@ -53,7 +51,6 @@ Widget buildKpiCard({
             overflow: TextOverflow.ellipsis,
             value,
             style: TextStyle(
-
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: themeMode.primTextColor,

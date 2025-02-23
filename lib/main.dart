@@ -34,7 +34,7 @@ void main() async {
                 debugShowCheckedModeBanner: false,
                 home: Home(),
                 routes: {
-                  "products": (context) => const DashBoardPg(),
+                  "dashboard": (context) => const DashBoardPg(),
                   "home": (context) => Home(),
                   "postproduct": (context) => const PostProduct(),
                   "cart": (context) => const Cart(),

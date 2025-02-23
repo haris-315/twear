@@ -172,9 +172,9 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "\$${product.price}",
+                                        "Rs. ${product.price} Only",
                                         style: TextStyle(
-                                          fontSize: 16,
+                                        fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.amberAccent,
                                         ),

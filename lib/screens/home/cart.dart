@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
@@ -26,7 +27,9 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    bool admin = isAdmin(context);
     final CTheme themeMode = getThemeMode(context);
+
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         if (state is CartSuccess) {
@@ -56,7 +59,6 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                 endDrawer: CustomDrawer(themeMode: themeMode),
                 body: Stack(
                   children: [
-                    // Background Gradient
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -200,6 +202,7 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blueAccent,
+                                disabledBackgroundColor: Colors.blueAccent[200],
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 24,
                                   vertical: 16,
@@ -208,24 +211,37 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              onPressed: () {
-                                if (state.cartedProdcuts.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      action: SnackBarAction(
-                                          label: "Home",
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      content: Text(
-                                        "Your cart is empty. Please add some products from the home page.",
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  showCheckoutBottomSheet(context);
-                                }
-                              },
+                              onPressed: admin
+                                  ? () {
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "Admins Cannot Buy From Their Store.")));
+                                    }
+                                  : () {
+                                      if (state.cartedProdcuts.isEmpty) {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentSnackBar();
+ 
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            action: SnackBarAction(
+                                                label: "Home",
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                }),
+                                            content: Text(
+                                              "Your cart is empty. Please add some products from the home page.",
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        showCheckoutBottomSheet(context);
+                                      }
+                                    },
                             ),
                           ],
                         ),

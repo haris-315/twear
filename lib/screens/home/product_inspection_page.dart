@@ -88,7 +88,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        Text('\$${_discountedPrice.toStringAsFixed(2)}',
+                        Text('Rs. ${_discountedPrice.toStringAsFixed(2)}',
                             style: TextStyle(
                                 color: theme.primTextColor,
                                 fontSize: 22,
@@ -97,7 +97,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
-                              '\$${widget.product.price.toStringAsFixed(2)}',
+                              'Rs. ${widget.product.price.toStringAsFixed(2)}',
                               style: TextStyle(
                                 color: theme.secondaryTextColor,
                                 fontSize: 16,
