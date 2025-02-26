@@ -64,6 +64,18 @@ class ProductsRepo {
     }
   }
 
+  Future<Either<Failure, Map<dynamic, List<Product>>>> deleteProduct(
+      Product product) async {
+    await Future.delayed(Duration(seconds: 1));
+    try {
+      int index = products.indexWhere((element) => element.id == product.id);
+      products.removeAt(index);
+      return await getProducts();
+    } catch (e) {
+      return left(Failure(message: e.toString(), st: StackTrace.current));
+    }
+  }
+
   Future<Either<Failure, Map<dynamic, List<Product>>>> getProductsByCategory(
       cat.Category category) async {
     categorizedProducts.removeWhere((key, value) => key != "trending");

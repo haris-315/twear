@@ -9,6 +9,7 @@ import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/discount.dart';
 import 'package:t_wear/screens/home/product_inspection_page.dart';
+import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
 class TrendingPicks extends StatefulWidget {
   final List<Product> trendingProducts;
@@ -80,46 +81,90 @@ class _TrendingPicksState extends State<TrendingPicks> {
                           SizedBox(
                             width: double.infinity,
                             height: swidth <= 600 ? 270 : 460,
-                            child: CachedNetworkImage(
-                              imageUrl: product.images.first,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      themeMode.backgroundColor!,
-                                      themeMode.backgroundColor!
-                                          .withValues(alpha: 0.5),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
+                            child: !isValidUrl(product.images.first.toString())
+                                ? Image(
+                                    image: MemoryImage(product.images.first),
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (context,child, chunk) => Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            themeMode.backgroundColor!,
+                                            themeMode.backgroundColor!
+                                                .withValues(alpha: 0.5),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: themeMode.borderColor2,
+                                          
+                                        ),
+                                      ),
+                                    ),
+                                    errorBuilder: (context, obj, error) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            themeMode.backgroundColor!,
+                                            themeMode.backgroundColor!
+                                                .withValues(alpha: 0.5),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        size: 50,
+                                        color: themeMode.iconColor,
+                                      ),
+                                    ),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: product.images.first,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            themeMode.backgroundColor!,
+                                            themeMode.backgroundColor!
+                                                .withValues(alpha: 0.5),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: themeMode.borderColor2,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            themeMode.backgroundColor!,
+                                            themeMode.backgroundColor!
+                                                .withValues(alpha: 0.5),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        size: 50,
+                                        color: themeMode.iconColor,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: themeMode.borderColor2,
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      themeMode.backgroundColor!,
-                                      themeMode.backgroundColor!
-                                          .withValues(alpha: 0.5),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                ),
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  size: 50,
-                                  color: themeMode.iconColor,
-                                ),
-                              ),
-                            ),
                           ),
                           // Gradient Overlay
                           Container(
@@ -174,7 +219,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
                                       Text(
                                         "Rs. ${product.price} Only",
                                         style: TextStyle(
-                                        fontSize: 16,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.amberAccent,
                                         ),

@@ -30,3 +30,8 @@ final class UpdateProduct extends HomeEvent {
 
   UpdateProduct({required this.product});
 }
+final class DeleteProduct extends HomeEvent {
+  final Product product;
+
+  DeleteProduct({required this.product});
+}

@@ -10,6 +10,7 @@ import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
+import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
@@ -181,7 +182,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: NetworkImage(url),
+                    image: !isValidUrl(url.toString()) ? MemoryImage(url)  : NetworkImage(url),
                     fit: BoxFit.contain,
                   ),
                 ),

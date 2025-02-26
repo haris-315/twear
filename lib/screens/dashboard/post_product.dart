@@ -342,11 +342,14 @@ class _PostProductState extends State<PostProduct> {
                             orElse: () => throw Exception("Invalid category"),
                           );
                           context.read<HomeBloc>().add(UpdateProduct(
-                                  product: product!.copyWith(
+                                  product: Product(
+                                id: product!.id,
+                                rating: product!.rating,
+                                postDate: product!.postDate,
                                 size: sizeController.text,
                                 name: productNameController.text,
                                 price: double.parse(priceController.text),
-                                images: imagePreviews as List<String>,
+                                images: imagePreviews,
                                 stock: int.parse(stockController.text),
                                 details: _editorController.document.toDelta(),
                                 delivery:

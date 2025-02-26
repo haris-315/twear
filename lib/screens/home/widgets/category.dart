@@ -42,7 +42,7 @@ class _CategoryItemState extends State<CategoryItem> {
         child: Transform.scale(
           scale: isHovered ? 1.05 : 1.0, // Scale the widget on hover
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 960),
+            duration: const Duration(milliseconds: 400),
             curve: Curves.easeInOut,
             height: width <= 500 ? 40 : null,
             decoration: BoxDecoration(
@@ -52,8 +52,8 @@ class _CategoryItemState extends State<CategoryItem> {
                 BoxShadow(
                   color: themeMode.shadowColor ??
                       Colors.black.withValues(alpha: isHovered ? 0.4 : 0.2),
-                  blurRadius: isHovered ? 19 : 15,
-                  offset: const Offset(0, 4),
+                  blurRadius: isHovered ? 7 : 4,
+                  offset: const Offset(0, 2),
                 ),
               ],
               // border: Border.all(

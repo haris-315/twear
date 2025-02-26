@@ -7,7 +7,7 @@ class Product {
 
   final double price;
   final double discount;
-  final List<String> images;
+  final List<dynamic> images;
   final Delta details;
   final int stock;
   final int delivery;
@@ -48,7 +48,7 @@ class Product {
       id: map['id'],
       price: (map['price'] as num).toDouble(),
       discount: (map['discount'] as num).toDouble(),
-      images: List<String>.from(map['images'] ?? []),
+      images: List<dynamic>.from(map['images'] ?? []),
       details: map['details'] ?? '',
       stock: map['stock'] ?? 0,
       delivery: map['delivery'] ?? 0,
@@ -88,7 +88,7 @@ class Product {
     String? name,
     double? price,
     double? discount,
-    List<String>? images,
+    List<dynamic>? images,
     Delta? details,
     int? stock,
     int? delivery,

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
+import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_admin_stat.dart';
@@ -8,6 +11,7 @@ import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/discount.dart';
 import 'package:t_wear/screens/global_widgets/ratings.dart';
+import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
 class ProductCard extends StatefulWidget {
   final Product? product;
@@ -87,31 +91,75 @@ class _ProductCardState extends State<ProductCard> {
                             child: widget.product!.images.isNotEmpty
                                 ? AspectRatio(
                                     aspectRatio: screenWidth < 600 ? 1.2 : 1.4,
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.product!.images[0],
-                                      fit: BoxFit.contain,
-                                      progressIndicatorBuilder:
-                                          (context, url, progress) => Center(
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: CircularProgressIndicator(
-                                            color: themeMode.borderColor2,
+                                    child: !isValidUrl(widget.product!.images[0]
+                                            .toString())
+                                        ? Image(
+                                            image: MemoryImage(
+                                                widget.product!.images[0]),
+                                            loadingBuilder:
+                                                (con, child, loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return Center(
+                                                child: SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: loadingProgress
+                                                                .expectedTotalBytes !=
+                                                            null
+                                                        ? loadingProgress
+                                                                .cumulativeBytesLoaded /
+                                                            (loadingProgress
+                                                                    .expectedTotalBytes ??
+                                                                1)
+                                                        : null,
+                                                    color:
+                                                        themeMode.borderColor2,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            errorBuilder: (con, obj, error) =>
+                                                Container(
+                                              color: Colors.grey[300],
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: themeMode.iconColor,
+                                              ),
+                                            ),
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl: widget.product!.images[0],
+                                            fit: BoxFit.contain,
+                                            progressIndicatorBuilder:
+                                                (context, url, progress) =>
+                                                    Center(
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: themeMode.borderColor2,
+                                                ),
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, error, stackTrace) =>
+                                                    Container(
+                                              color: Colors.grey[300],
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 50,
+                                                color: themeMode.iconColor,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      errorWidget:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                        color: Colors.grey[300],
-                                        alignment: Alignment.center,
-                                        child: Icon(
-                                          Icons.image,
-                                          size: 50,
-                                          color: themeMode.iconColor,
-                                        ),
-                                      ),
-                                    ),
                                   )
                                 : Container(
                                     height: 180,
@@ -213,9 +261,19 @@ class _ProductCardState extends State<ProductCard> {
                                               color: Colors.amberAccent,
                                             )),
                                         IconButton(
-                                            onPressed: () {
-                                              widget
-                                                  .cartAction!(widget.product!);
+                                            onPressed: () async {
+                                              bool delete =
+                                                  await showConfirmationDialog(
+                                                      context, themeMode);
+                                              if (delete) {
+                                                WidgetsBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                  context.read<HomeBloc>().add(
+                                                      DeleteProduct(
+                                                          product:
+                                                              widget.product!));
+                                                });
+                                              }
                                             },
                                             icon: const Icon(
                                               Icons.delete_forever,
@@ -277,4 +335,32 @@ class _ProductCardState extends State<ProductCard> {
       ),
     );
   }
+}
+
+Future<bool> showConfirmationDialog(
+    BuildContext context, CTheme themeMode) async {
+  return await showDialog(
+      context: context,
+      builder: (context) => SizedBox(
+            child: AlertDialog(
+              title: Text(
+                "Are you sure?",
+                style: TextStyle(color: themeMode.primTextColor),
+              ),
+              content: Text(
+                "You want to delete this product!",
+                style: TextStyle(color: themeMode.primTextColor),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text("Delete"),
+                ),
+              ],
+            ),
+          ));
 }

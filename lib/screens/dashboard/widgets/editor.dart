@@ -22,15 +22,17 @@ class DescriptionEditor extends StatelessWidget {
       style: TextStyle(color: themeMode.primTextColor),
       child: Column(
         children: [
-          QuillEditor(
-            controller: _editorController,
-            scrollController: _scrollController,
-            focusNode: focusNode,
-            configurations: const QuillEditorConfigurations(
-              scrollable: true,
-              autoFocus: false,
-              expands: false,
-              padding: EdgeInsets.only(top: 10),
+          Expanded(
+            child: QuillEditor(
+              controller: _editorController,
+              scrollController: _scrollController,
+              focusNode: focusNode,
+              configurations: const QuillEditorConfigurations(
+                scrollable: true,
+                autoFocus: false,
+                expands: false,
+                padding: EdgeInsets.only(top: 10),
+              ),
             ),
           ),
           const SizedBox(
