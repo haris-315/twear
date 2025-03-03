@@ -10,6 +10,7 @@ import 'package:t_wear/screens/dashboard/dashboard.dart';
 import 'package:t_wear/screens/dashboard/post_product.dart';
 import 'package:t_wear/screens/home/cart.dart';
 import 'package:t_wear/screens/home/home.dart';
+import 'package:t_wear/screens/home/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,8 @@ void main() async {
               data: themeMode.getTheme(),
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                home: Home(),
+                
+                home: LoginPage(),
                 routes: {
                   "dashboard": (context) => const DashBoardPg(),
                   "home": (context) => Home(),

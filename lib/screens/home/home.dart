@@ -15,7 +15,6 @@ import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
-// ignore: library_private_types_in_public_api
 
 class Home extends StatefulWidget {
   const Home({
@@ -26,7 +25,7 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool admin = false;
   final ScrollController scrollController = ScrollController();
   late AnimationController _controller;
@@ -198,8 +197,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
       bool isForCategory, CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
+    
     return Wrap(
-        spacing: smallScreen ? 3 : 10,
+        spacing: smallScreen ? 3 : 14,
         runSpacing: 14,
         alignment: WrapAlignment.center,
         children: state.products.keys

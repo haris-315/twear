@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
-import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/date_calculator.dart';
 import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/screens/global_widgets/delete_confirm.dart';
 import 'package:t_wear/screens/global_widgets/discount.dart';
 import 'package:t_wear/screens/global_widgets/ratings.dart';
 import 'package:t_wear/screens/home/widgets/url_identifier.dart';
@@ -254,7 +254,7 @@ class _ProductCardState extends State<ProductCard> {
                                             onPressed: () {
                                               Navigator.pushNamed(
                                                   context, "postproduct",
-                                                  arguments: widget.product!);
+                                                  arguments: [widget.product!,null]);
                                             },
                                             icon: const Icon(
                                               Icons.edit_note_rounded,
@@ -337,30 +337,3 @@ class _ProductCardState extends State<ProductCard> {
   }
 }
 
-Future<bool> showConfirmationDialog(
-    BuildContext context, CTheme themeMode) async {
-  return await showDialog(
-      context: context,
-      builder: (context) => SizedBox(
-            child: AlertDialog(
-              title: Text(
-                "Are you sure?",
-                style: TextStyle(color: themeMode.primTextColor),
-              ),
-              content: Text(
-                "You want to delete this product!",
-                style: TextStyle(color: themeMode.primTextColor),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text("Cancel"),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text("Delete"),
-                ),
-              ],
-            ),
-          ));
-}

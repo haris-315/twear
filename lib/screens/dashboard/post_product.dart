@@ -116,7 +116,8 @@ class _PostProductState extends State<PostProduct> {
     final height = getScreenSize(context).elementAt(1);
     final CTheme themeMode = getThemeMode(context);
     Color? quillBorder = themeMode.borderColor;
-    product = ModalRoute.of(context)!.settings.arguments as Product?;
+    var data = (ModalRoute.of(context)!.settings.arguments ?? []) as List;
+    product = data.isEmpty ? null : data.first;
 
     _fNode.addListener(() {
       setState(() {
@@ -360,6 +361,12 @@ class _PostProductState extends State<PostProduct> {
                                 discount: double.parse(discountController.text),
                                 targetAge: ageController.text.toString(),
                               )));
+                              Future.delayed(Duration(seconds: 2)).then((_){
+                                GlobalKey? key = data.last as GlobalKey?;
+                                if (key != null) {
+                                  key.currentState!.setState(() {});
+                                } 
+                              });
                         }
                       : () async {
                           List<XFile> fImages =

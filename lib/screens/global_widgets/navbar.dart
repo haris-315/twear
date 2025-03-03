@@ -21,8 +21,8 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
   List<NavItem> navItems(
           CTheme themeMode, BuildContext context, bool isAdmin) =>
       [
-        if (!(ModalRoute.of(context)?.settings.name == "home") ||
-            !(ModalRoute.of(context)?.settings.name == "/"))
+        if (ModalRoute.of(context)?.settings.name != "home" ||
+            ModalRoute.of(context)?.settings.name != "/")
           NavItem(
             title: "Home",
             themeMode: themeMode,
@@ -36,7 +36,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
             title: "Dashboard",
             themeMode: themeMode,
             action: () {
-              Navigator.pushNamed(context, "products");
+              Navigator.pushNamed(context, "dashboard");
             },
           ),
         NavItem(

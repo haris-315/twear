@@ -87,7 +87,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  "Guest001A",
+                  "guestdemo315@guest.com",
                   style: TextStyle(
                       color: widget.themeMode.primTextColor, fontSize: 18),
                 ),

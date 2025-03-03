@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
+import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/models/product_model.dart';
 import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
+import 'package:t_wear/screens/global_widgets/delete_confirm.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
@@ -21,7 +24,8 @@ class ProductDetailPage extends StatefulWidget {
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
-class _ProductDetailPageState extends State<ProductDetailPage> {
+class _ProductDetailPageState extends State<ProductDetailPage>
+    with TickerProviderStateMixin {
   int _currentImageIndex = 0;
   int rating = -1;
   List<Product> cartedProducts = [];
@@ -40,11 +44,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         selection: const TextSelection.collapsed(offset: 0),
       );
 
+  late AnimationController _fabController;
+  late Animation<double> _fabAnimation;
+  late Animation<double> _menuAnimation;
+  final GlobalKey key = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fabController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..addListener(() {
+        setState(() {});
+      });
+
+    _fabAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _fabController,
+      curve: Curves.easeInOut,
+    ));
+
+    _menuAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _fabController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _fabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final CTheme theme = getThemeMode(context);
     final TextTheme textTheme = Theme.of(context).textTheme;
     final [width, height] = getScreenSize(context);
+    final bool admin = isAdmin(context);
 
     return BlocBuilder<CartCubit, CartState>(builder: (context, state) {
       if (state is CartSuccess) {
@@ -53,6 +91,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       final bool isCarted = cartedProducts.contains(widget.product);
 
       return Scaffold(
+        key: key,
         backgroundColor: theme.backgroundColor,
         appBar: NavBar(
           themeMode: theme,
@@ -133,20 +172,98 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            if (isCarted) {
-              Navigator.pushReplacementNamed(context, "cart");
-            } else {
-              context
-                  .read<CartCubit>()
-                  .addToCart(widget.product, cartedProducts);
-            }
+        floatingActionButton: AnimatedBuilder(
+          animation: _fabController,
+          builder: (context, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (admin)
+                  Transform.translate(
+                    offset: Offset(0, -_menuAnimation.value * 60),
+                    child: Opacity(
+                      opacity: _fabAnimation.value,
+                      child: FloatingActionButton(
+                        heroTag: widget.product.postDate,
+                        onPressed: () async {
+                          bool delete =
+                              await showConfirmationDialog(context, theme);
+                          if (delete) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully deleted ${widget.product.name}")));
+                              context
+                                  .read<HomeBloc>()
+                                  .add(DeleteProduct(product: widget.product));
+                            });
+                          }
+                        },
+                        backgroundColor: theme.buttonColor,
+                        child: Icon(Icons.delete),
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  height: 4,
+                ),
+                if (admin)
+                  Transform.translate(
+                    offset: Offset(0, -_menuAnimation.value * 60),
+                    child: Opacity(
+                      opacity: _fabAnimation.value,
+                      child: FloatingActionButton(
+                        heroTag: widget.product.discount,
+                        onPressed: () {
+                          Navigator.pushNamed(context, "postproduct",
+                              arguments: [widget.product,key]);
+                        },
+                        backgroundColor: theme.buttonColor,
+                        child: Icon(Icons.edit),
+                      ),
+                    ),
+                  ),
+                if (!admin)
+                  Transform.translate(
+                    offset: Offset(0, -_menuAnimation.value * 60),
+                    child: Opacity(
+                      opacity: _fabAnimation.value,
+                      child: FloatingActionButton.extended(
+                        heroTag: widget.product.id,
+                        onPressed: () {
+                          if (isCarted) {
+                            Navigator.pushReplacementNamed(context, "cart");
+                          } else {
+                            context
+                                .read<CartCubit>()
+                                .addToCart(widget.product, cartedProducts);
+                          }
+                        },
+                        icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+                        label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
+                            style: TextStyle(color: theme.primTextColor)),
+                        backgroundColor: theme.buttonColor,
+                      ),
+                    ),
+                  ),
+                FloatingActionButton(
+                  heroTag: widget.product.delivery,
+                  onPressed: () {
+                    if (_fabController.isCompleted) {
+                      _fabController.reverse();
+                    } else {
+                      _fabController.forward();
+                    }
+                  },
+                  backgroundColor: theme.buttonColor,
+                  child: AnimatedIcon(
+                    icon: AnimatedIcons.menu_arrow,
+                    progress: _fabAnimation,
+                    color: theme.iconColor,
+                  ),
+                ),
+              ],
+            );
           },
-          icon: Icon(Icons.shopping_cart, color: theme.iconColor),
-          label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
-              style: TextStyle(color: theme.primTextColor)),
-          backgroundColor: theme.buttonColor,
         ),
       );
     });
@@ -182,7 +299,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: !isValidUrl(url.toString()) ? MemoryImage(url)  : NetworkImage(url),
+                    image: !isValidUrl(url.toString())
+                        ? MemoryImage(url)
+                        : NetworkImage(url),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -296,7 +415,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) {
-            // Use 2 columns on wider screens
             if (constraints.maxWidth > 600) {
               return Table(
                 columnWidths: const {
@@ -338,7 +456,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               );
             } else {
-              // Single column for mobile
               return Table(
                 columnWidths: const {
                   0: FlexColumnWidth(1),
@@ -386,7 +503,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             style: TextStyle(
               color: theme.primTextColor,
               fontSize: 14,
-              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -395,32 +511,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget _buildTableCell(String label, String value, CTheme theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: theme.secondaryTextColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        label + value,
+        style: TextStyle(
+          color: theme.secondaryTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            value,
-            style: TextStyle(
-              color: theme.primTextColor,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
