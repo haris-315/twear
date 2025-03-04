@@ -15,10 +15,11 @@ import 'package:t_wear/screens/global_widgets/delete_confirm.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
+// ignore: must_be_immutable
 class ProductDetailPage extends StatefulWidget {
-  final Product product;
+  Product product;
 
-  const ProductDetailPage({super.key, required this.product});
+  ProductDetailPage({super.key, required this.product});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -33,13 +34,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
-  double get _discountedPrice => widget.product.discount != 0
-      ? widget.product.price -
-          (widget.product.price * (widget.product.discount / 100))
-      : widget.product.price;
+  double _discountedPrice(Product uProduct) => uProduct.discount != 0
+      ? uProduct.price -
+          (uProduct.price * (uProduct.discount / 100))
+      : uProduct.price;
 
-  quill.QuillController _quillController() => quill.QuillController(
-        document: quill.Document.fromDelta(widget.product.details),
+  quill.QuillController _quillController(Product uProduct) => quill.QuillController(
+        document: quill.Document.fromDelta(uProduct.details),
         readOnly: true,
         selection: const TextSelection.collapsed(offset: 0),
       );
@@ -71,6 +72,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     ));
   }
 
+
+  void _updateProduct() {
+    Navigator.pushReplacementNamed(context, "postproduct",
+                              arguments: widget.product);
+    
+  }
+
   @override
   void dispose() {
     _fabController.dispose();
@@ -90,186 +98,189 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       }
       final bool isCarted = cartedProducts.contains(widget.product);
 
-      return Scaffold(
-        key: key,
-        backgroundColor: theme.backgroundColor,
-        appBar: NavBar(
-          themeMode: theme,
-          scrollController: scrollController,
-        ),
-        endDrawer: CustomDrawer(themeMode: theme),
-        body: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildImageCarousel(theme, width),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.product.name,
-                      style: TextStyle(
-                          color: theme.primTextColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Manufacturer: ${widget.product.company}",
-                      style: TextStyle(
-                          color: theme.secondaryTextColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Text('Rs. ${_discountedPrice.toStringAsFixed(2)}',
-                            style: TextStyle(
-                                color: theme.primTextColor,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold)),
-                        if (widget.product.discount != 0)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              'Rs. ${widget.product.price.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: theme.secondaryTextColor,
-                                fontSize: 16,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.product.stock > 0
-                          ? 'In Stock (${widget.product.stock})'
-                          : 'Out of Stock',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: widget.product.stock > 0
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildDetailsSection(theme, textTheme, _quillController()),
-                    const SizedBox(height: 20),
-                    _buildRatingSection(theme),
-                    const SizedBox(height: 20),
-                    _buildProductInfoSection(theme, width),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: AnimatedBuilder(
-          animation: _fabController,
-          builder: (context, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (admin)
-                  Transform.translate(
-                    offset: Offset(0, -_menuAnimation.value * 60),
-                    child: Opacity(
-                      opacity: _fabAnimation.value,
-                      child: FloatingActionButton(
-                        heroTag: widget.product.postDate,
-                        onPressed: () async {
-                          bool delete =
-                              await showConfirmationDialog(context, theme);
-                          if (delete) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully deleted ${widget.product.name}")));
-                              context
-                                  .read<HomeBloc>()
-                                  .add(DeleteProduct(product: widget.product));
-                            });
-                          }
-                        },
-                        backgroundColor: theme.buttonColor,
-                        child: Icon(Icons.delete),
-                      ),
-                    ),
-                  ),
-                SizedBox(
-                  height: 4,
-                ),
-                if (admin)
-                  Transform.translate(
-                    offset: Offset(0, -_menuAnimation.value * 60),
-                    child: Opacity(
-                      opacity: _fabAnimation.value,
-                      child: FloatingActionButton(
-                        heroTag: widget.product.discount,
-                        onPressed: () {
-                          Navigator.pushNamed(context, "postproduct",
-                              arguments: [widget.product,key]);
-                        },
-                        backgroundColor: theme.buttonColor,
-                        child: Icon(Icons.edit),
-                      ),
-                    ),
-                  ),
-                if (!admin)
-                  Transform.translate(
-                    offset: Offset(0, -_menuAnimation.value * 60),
-                    child: Opacity(
-                      opacity: _fabAnimation.value,
-                      child: FloatingActionButton.extended(
-                        heroTag: widget.product.id,
-                        onPressed: () {
-                          if (isCarted) {
-                            Navigator.pushReplacementNamed(context, "cart");
-                          } else {
-                            context
-                                .read<CartCubit>()
-                                .addToCart(widget.product, cartedProducts);
-                          }
-                        },
-                        icon: Icon(Icons.shopping_cart, color: theme.iconColor),
-                        label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
-                            style: TextStyle(color: theme.primTextColor)),
-                        backgroundColor: theme.buttonColor,
-                      ),
-                    ),
-                  ),
-                FloatingActionButton(
-                  heroTag: widget.product.delivery,
-                  onPressed: () {
-                    if (_fabController.isCompleted) {
-                      _fabController.reverse();
-                    } else {
-                      _fabController.forward();
-                    }
-                  },
-                  backgroundColor: theme.buttonColor,
-                  child: AnimatedIcon(
-                    icon: AnimatedIcons.menu_arrow,
-                    progress: _fabAnimation,
-                    color: theme.iconColor,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
+      return uiBuilder(theme, width, textTheme, admin, isCarted,widget.product);
     });
   }
 
-  Widget _buildImageCarousel(CTheme theme, double width) {
+  Scaffold uiBuilder(CTheme theme, width, TextTheme textTheme, bool admin, bool isCarted,Product uProduct) {
+    return Scaffold(
+      key: key,
+      backgroundColor: theme.backgroundColor,
+      appBar: NavBar(
+        themeMode: theme,
+        scrollController: scrollController,
+      ),
+      endDrawer: CustomDrawer(themeMode: theme),
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildImageCarousel(theme, width,uProduct),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    uProduct.name,
+                    style: TextStyle(
+                        color: theme.primTextColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Manufacturer: ${uProduct.company}",
+                    style: TextStyle(
+                        color: theme.secondaryTextColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text('Rs. ${_discountedPrice(uProduct).toStringAsFixed(2)}',
+                          style: TextStyle(
+                              color: theme.primTextColor,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold)),
+                      if (uProduct.discount != 0)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            'Rs. ${uProduct.price.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: theme.secondaryTextColor,
+                              fontSize: 16,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    uProduct.stock > 0
+                        ? 'In Stock (${uProduct.stock})'
+                        : 'Out of Stock',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: uProduct.stock > 0
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildDetailsSection(theme, textTheme, _quillController(uProduct)),
+                  const SizedBox(height: 20),
+                  _buildRatingSection(theme,admin,uProduct.avgRating()),
+                  const SizedBox(height: 20),
+                  _buildProductInfoSection(theme, width,uProduct),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: AnimatedBuilder(
+        animation: _fabController,
+        builder: (context, child) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (admin)
+                Transform.translate(
+                  offset: Offset(0, -_menuAnimation.value * 60),
+                  child: Opacity(
+                    opacity: _fabAnimation.value,
+                    child: FloatingActionButton(
+                      heroTag: uProduct.postDate,
+                      onPressed: () async {
+                        bool delete =
+                            await showConfirmationDialog(context, theme);
+                        if (delete) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully deleted ${uProduct.name}")));
+                            context
+                                .read<HomeBloc>()
+                                .add(DeleteProduct(product: uProduct));
+                          });
+                        }
+                      },
+                      backgroundColor: theme.buttonColor,
+                      child: Icon(Icons.delete),
+                    ),
+                  ),
+                ),
+              SizedBox(
+                height: 4,
+              ),
+              if (admin)
+                Transform.translate(
+                  offset: Offset(0, -_menuAnimation.value * 60),
+                  child: Opacity(
+                    opacity: _fabAnimation.value,
+                    child: FloatingActionButton(
+                      heroTag: uProduct.discount,
+                      onPressed: () {
+                        _updateProduct();
+                      },
+                      backgroundColor: theme.buttonColor,
+                      child: Icon(Icons.edit),
+                    ),
+                  ),
+                ),
+              if (!admin)
+                Transform.translate(
+                  offset: Offset(0, -_menuAnimation.value * 60),
+                  child: Opacity(
+                    opacity: _fabAnimation.value,
+                    child: FloatingActionButton.extended(
+                      heroTag: uProduct.id,
+                      onPressed: () {
+                        if (isCarted) {
+                          Navigator.pushReplacementNamed(context, "cart");
+                        } else {
+                          context
+                              .read<CartCubit>()
+                              .addToCart(uProduct, cartedProducts);
+                        }
+                      },
+                      icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+                      label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
+                          style: TextStyle(color: theme.primTextColor)),
+                      backgroundColor: theme.buttonColor,
+                    ),
+                  ),
+                ),
+              FloatingActionButton(
+                heroTag: uProduct.delivery,
+                onPressed: () {
+                  if (_fabController.isCompleted) {
+                    _fabController.reverse();
+                  } else {
+                    _fabController.forward();
+                  }
+                },
+                backgroundColor: theme.buttonColor,
+                child: AnimatedIcon(
+                  icon: AnimatedIcons.menu_arrow,
+                  progress: _fabAnimation,
+                  color: theme.iconColor,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildImageCarousel(CTheme theme, double width, Product uProduct) {
     return Column(
       children: [
         CarouselSlider(
@@ -288,7 +299,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               setState(() => _currentImageIndex = index);
             },
           ),
-          items: widget.product.images.map((url) {
+          items: uProduct.images.map((url) {
             return GestureDetector(
               onTap: () {
                 // Navigator.push(MaterialPageRoute())
@@ -319,15 +330,15 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     _carouselController.previousPage();
                   } else {
                     _carouselController
-                        .jumpToPage(widget.product.images.length - 1);
+                        .jumpToPage(uProduct.images.length - 1);
                   }
                 },
                 icon: Icon(Icons.arrow_left_outlined, color: theme.iconColor),
               ),
-              _buildDotsIndicator(),
+              _buildDotsIndicator(uProduct),
               IconButton(
                 onPressed: () {
-                  if (_currentImageIndex < widget.product.images.length - 1) {
+                  if (_currentImageIndex < uProduct.images.length - 1) {
                     _carouselController.nextPage();
                   } else {
                     _carouselController.jumpToPage(0);
@@ -342,9 +353,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  Widget _buildDotsIndicator() {
+  Widget _buildDotsIndicator(Product uProduct) {
     return DotsIndicator(
-      dotsCount: widget.product.images.length,
+      dotsCount: uProduct.images.length,
       position: _currentImageIndex,
       decorator: DotsDecorator(
         activeColor: Colors.blueAccent,
@@ -373,12 +384,12 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  Widget _buildRatingSection(CTheme theme) {
+  Widget _buildRatingSection(CTheme theme,bool admin,int avgRating){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Rate this product:',
+          admin ? "Average Rating" :'Rate this product:',
           style: TextStyle(
             color: theme.primTextColor,
             fontSize: 16,
@@ -389,10 +400,10 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         Row(
           children: List.generate(5, (index) {
             return GestureDetector(
-              onTap: () =>
+              onTap: admin ? null : () =>
                   setState(() => rating = rating == index ? -1 : index),
               child: Icon(Icons.star,
-                  color: index <= rating ? Colors.amber : Colors.grey),
+                  color: admin ? index <= avgRating  ? Colors.amber : Colors.grey : index <= rating ? Colors.amber : Colors.grey),
             );
           }),
         ),
@@ -400,7 +411,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  Widget _buildProductInfoSection(CTheme theme, double width) {
+  Widget _buildProductInfoSection(CTheme theme, double width,Product uProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -427,29 +438,29 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   TableRow(
                     children: [
                       _buildTableCell(
-                          'Category:', widget.product.category.name, theme),
-                      _buildTableCell('Size:', widget.product.size, theme),
+                          'Category:', uProduct.category.name, theme),
+                      _buildTableCell('Size:', uProduct.size, theme),
                     ],
                   ),
                   TableRow(
                     children: [
-                      _buildTableCell('Gender:', widget.product.gender, theme),
+                      _buildTableCell('Gender:', uProduct.gender, theme),
                       _buildTableCell(
-                          'Target Age:', widget.product.targetAge, theme),
+                          'Target Age:', uProduct.targetAge, theme),
                     ],
                   ),
                   TableRow(
                     children: [
                       _buildTableCell('Delivery:',
-                          '${widget.product.delivery} days', theme),
+                          '${uProduct.delivery} days', theme),
                       _buildTableCell(
-                          'Times Sold:', '${widget.product.timesSold}', theme),
+                          'Times Sold:', '${uProduct.timesSold}', theme),
                     ],
                   ),
                   TableRow(
                     children: [
                       _buildTableCell(
-                          'Post Date:', widget.product.postDate, theme),
+                          'Post Date:', uProduct.postDate, theme),
                       const SizedBox.shrink(),
                     ],
                   ),
@@ -463,16 +474,16 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 },
                 children: [
                   _buildTableRow(
-                      'Category:', widget.product.category.name, theme),
-                  _buildTableRow('Size:', widget.product.size, theme),
-                  _buildTableRow('Gender:', widget.product.gender, theme),
+                      'Category:', uProduct.category.name, theme),
+                  _buildTableRow('Size:', uProduct.size, theme),
+                  _buildTableRow('Gender:', uProduct.gender, theme),
                   _buildTableRow(
-                      'Target Age:', widget.product.targetAge, theme),
+                      'Target Age:', uProduct.targetAge, theme),
                   _buildTableRow(
-                      'Delivery:', '${widget.product.delivery} days', theme),
+                      'Delivery:', '${uProduct.delivery} days', theme),
                   _buildTableRow(
-                      'Times Sold:', '${widget.product.timesSold}', theme),
-                  _buildTableRow('Post Date:', widget.product.postDate, theme),
+                      'Times Sold:', '${uProduct.timesSold}', theme),
+                  _buildTableRow('Post Date:', uProduct.postDate, theme),
                 ],
               );
             }

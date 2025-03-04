@@ -12,6 +12,7 @@ import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/product_inspection_page.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
+import 'package:t_wear/screens/home/widgets/footer.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
 
@@ -129,6 +130,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           SizedBox(
                             height: 20,
                           ),
+                          Footer()
                         ],
                       );
                     },
@@ -157,9 +159,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     ScrollController controller = ScrollController();
     return SizedBox(
       height: swidth <= 500
-          ? swidth < 400
-              ? swidth * 0.24
-              : swidth * 0.21
+          ? 104
           : sheight * 0.35,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 18.0, right: 8.0),

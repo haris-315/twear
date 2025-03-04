@@ -254,7 +254,7 @@ class _ProductCardState extends State<ProductCard> {
                                             onPressed: () {
                                               Navigator.pushNamed(
                                                   context, "postproduct",
-                                                  arguments: [widget.product!,null]);
+                                                  arguments: widget.product!);
                                             },
                                             icon: const Icon(
                                               Icons.edit_note_rounded,

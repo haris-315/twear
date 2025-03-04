@@ -118,6 +118,12 @@ class ProductsRepo {
     }
   }
 
+  Future<Either<Failure, Map<dynamic,List<Product>>>> addProduct(Product product) async {
+    products.add(product);
+    return await getProducts();
+    
+  }
+
   String deltaToPlainText(Delta delta) {
     return delta.toList().map((op) => op.data.toString()).join();
   }

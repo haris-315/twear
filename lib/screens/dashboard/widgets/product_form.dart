@@ -37,9 +37,6 @@ class _ProductFormState extends State<ProductForm> {
     if (value == null || value.isEmpty) {
       return "$fieldName cannot be empty";
     }
-    if (isAge && int.parse(value) >= 61) {
-      return "Target Age must be between 1-60 years";
-    }
     return null;
   }
 

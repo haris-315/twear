@@ -25,6 +25,11 @@ final class GetBySearch extends HomeEvent {
   GetBySearch({required this.query});
 }
 
+final class AddProduct extends HomeEvent {
+  final Product product;
+
+  AddProduct({required this.product});
+}
 final class UpdateProduct extends HomeEvent {
   final Product product;
 

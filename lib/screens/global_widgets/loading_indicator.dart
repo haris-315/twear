@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class ColorChangingProgressIndicator extends StatefulWidget {
+  const ColorChangingProgressIndicator({super.key});
+
   @override
   _ColorChangingProgressIndicatorState createState() =>
       _ColorChangingProgressIndicatorState();

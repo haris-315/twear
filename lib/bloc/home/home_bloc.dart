@@ -55,5 +55,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           (fail) => emit(HomeError(message: fail.message)),
           (products) => emit(HomeSuccess(products: products)));
     });
+    on<AddProduct>((event,emit) async {
+      emit(HomeLoading());
+      (await repo.addProduct(event.product)).fold(
+          (fail) => emit(HomeError(message: fail.message)),
+          (products) => emit(HomeSuccess(products: products)));
+
+    });
   }
 }

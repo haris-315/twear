@@ -186,12 +186,9 @@ class _LoginPageState extends State<LoginPage>
                               minimumSize: Size(double.infinity, 50),
                             ),
                             onPressed: () {
-                              print("Login button pressed");
                               animationController.reverse();
                               animationController.addStatusListener((status) {
-                                print("Animation status: $status");
                                 if (status == AnimationStatus.dismissed) {
-                                  print("Navigating to home page");
                                   Navigator.pushReplacementNamed(
                                       context, "home");
                                 }

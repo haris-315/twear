@@ -9,11 +9,12 @@ import 'package:t_wear/screens/global_widgets/nav_item.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   final ScrollController scrollController;
-
+  final IconButton? popBtn;
   const NavBar({
     super.key,
     required this.themeMode,
     required this.scrollController,
+    this.popBtn
   });
 
   final CTheme themeMode;
@@ -55,6 +56,7 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       iconTheme: IconThemeData(color: themeMode.iconColor),
       backgroundColor: themeMode.appBarColor,
+      leading: popBtn,
       title: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
