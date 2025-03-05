@@ -1,84 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
-import 'package:t_wear/screens/global_widgets/product_card.dart';
-import 'package:t_wear/screens/home/widgets/category.dart';
 
-class ShimmerEffect extends StatelessWidget {
-  final bool forCategories;
-  const ShimmerEffect({super.key, required this.forCategories});
+class ShimmerLoadingEffect extends StatelessWidget {
+  final bool isCategory;
+  const ShimmerLoadingEffect({super.key, this.isCategory = false});
 
   @override
   Widget build(BuildContext context) {
-    double swidth = getScreenSize(context).first;
-    double sheight = getScreenSize(context).last;
-    CTheme themeMode = getThemeMode(context);
-    return Column(children: [
-      if (forCategories == false)
-        Shimmer.fromColors(
-            baseColor: themeMode.backgroundColor ?? Colors.red,
-            highlightColor: themeMode.oppositeShimmerColor ?? Colors.white,
-            child: SizedBox(
-              height: swidth <= 500
-                  ? swidth < 400
-                      ? swidth * 0.22
-                      : swidth * 0.19
-                  : sheight * 0.35,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: swidth <= 500
-                        ? EdgeInsets.only(
-                            left: swidth <= 400 ? 10 : 19.0,
-                            top: 22,
-                            bottom: 22,
-                            right: swidth <= 400 ? 10 : 19.0)
-                        : const EdgeInsets.only(
-                            left: 19, right: 19, top: 16, bottom: 16),
-                    child: CategoryItem(
-                      skeletonMode: true,
-                      category: categories[index],
-                      themeMode: themeMode,
-                    ),
-                  );
-                },
-              ),
-            )),
-      const SizedBox(
-        height: 20,
+    final themeMode = getThemeMode(context);
+    final width = getScreenSize(context).first;
+    final isLightMode = themeMode.getThemeType() is Light;
+
+    return Shimmer.fromColors(
+      baseColor: isLightMode ? Colors.grey[300]! : Colors.grey[800]!, 
+      highlightColor: isLightMode ? Colors.grey[100]! : Colors.grey[600]!, 
+      child: isCategory
+          ? _buildCategoryShimmer(width, themeMode)
+          : _buildProductShimmer(width, themeMode),
+    );
+  }
+
+  Widget _buildCategoryShimmer(double width, CTheme themeMode) {
+    final isLightMode = themeMode.getThemeType() is Light;
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+    color: isLightMode ? Colors.black.withValues(alpha: 0.06) : Colors.grey[250], 
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+        color: isLightMode ? Colors.grey[400]! : Colors.grey[600]!),
+          ),
+      width: width <= 500 ? 80 : 150,
+      height: width <= 500 ? 50 : 160,
+      child: Column(children: [
+        CircleAvatar(
+        backgroundColor: isLightMode ? Colors.grey[300] : Colors.grey[700], 
+        radius: 58,
+    
+    ),
+    SizedBox(height: 8,),
+    Container(
+          height: 14,
+            width: width < 600 ? 100 : 150,
+            color: isLightMode ? Colors.grey[300] : Colors.black, 
+        )
+      ],),
+    );
+  }
+
+  Widget _buildProductShimmer(double width, CTheme themeMode) {
+    final isLightMode = themeMode.getThemeType() is Light;
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: isLightMode ? Colors.black.withValues(alpha: 0.06) : Colors.grey[250], 
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: isLightMode ? Colors.grey[400]! : Colors.grey[600]!),
       ),
-      Shimmer.fromColors(
-          baseColor: themeMode.backgroundColor ?? Colors.red,
-          highlightColor: themeMode.oppositeShimmerColor ?? Colors.green,
-          child: SizedBox(
-            height: sheight,
-            width: swidth,
-            child: Center(
-              child: GridView.builder(
-                  itemCount: 18,
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: swidth <= 500
-                          ? 2
-                          : swidth <= 750
-                              ? 3
-                              : 4),
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10.0, bottom: 10, left: 4, right: 4),
-                      child: ProductCard(
-                        onTap: () {},
-                        skeletonMode: true,
-                      ),
-                    );
-                  }),
+      width: width < 600 ? 150 : 200,
+      height: 270,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 150,
+            decoration: BoxDecoration(
+              color: isLightMode ? Colors.grey[300] : Colors.black, 
+              borderRadius: BorderRadius.circular(12),
             ),
-          ))
-    ]);
+          ),
+          const SizedBox(height: 8),
+          Container(
+            height: 16,
+            width: width < 600 ? 100 : 150,
+            color: isLightMode ? Colors.grey[300] : Colors.black, 
+          ),
+          const SizedBox(height: 4),
+          Container(
+            height: 16,
+            width: width < 600 ? 80 : 100,
+            color: isLightMode ? Colors.grey[300] : Colors.black, 
+          ),
+          const Spacer(),
+          Container(
+            height: 16,
+            width: 50,
+            color: isLightMode ? Colors.grey[300] : Colors.black, 
+          ),
+        ],
+      ),
+    );
   }
 }

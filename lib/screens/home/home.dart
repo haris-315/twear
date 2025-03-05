@@ -11,11 +11,11 @@ import 'package:t_wear/screens/global_widgets/custom_drawer.dart';
 import 'package:t_wear/screens/global_widgets/navbar.dart';
 import 'package:t_wear/screens/global_widgets/product_card.dart';
 import 'package:t_wear/screens/home/product_inspection_page.dart';
+import 'package:t_wear/screens/home/widgets/carousal_shimmer.dart';
 import 'package:t_wear/screens/home/widgets/category.dart';
 import 'package:t_wear/screens/home/widgets/footer.dart';
 import 'package:t_wear/screens/home/widgets/shimmer_effect.dart';
 import 'package:t_wear/screens/home/widgets/trends.dart';
-
 
 class Home extends StatefulWidget {
   const Home({
@@ -137,11 +137,48 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   )
                 : state is HomeLoading
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (state.byCategory)
-                            _categoryBuilder(swidth, sheight, themeMode),
-                          ShimmerEffect(
-                              forCategories: state.byCategory ? true : false),
+                            _categoryBuilder(swidth, sheight, themeMode)
+                          else
+                            SizedBox(
+                              height: swidth <= 500 ? 104 : sheight * 0.35,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 18.0),
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: categories.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Padding(
+                                        padding: swidth <= 500
+                                            ? EdgeInsets.only(
+                                                left: swidth <= 400 ? 10 : 19.0,
+                                                top: 22,
+                                                bottom: 22,
+                                                right:
+                                                    swidth <= 400 ? 10 : 19.0)
+                                            : const EdgeInsets.only(
+                                                left: 19,
+                                                right: 19,
+                                                top: 16,
+                                                bottom: 16),
+                                        child: ShimmerLoadingEffect(
+                                          isCategory: true,
+                                        ));
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20,),
+                            TrendingPicksShimmer(),
+                            SizedBox(height: 20,),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: List<ShimmerLoadingEffect>.generate(
+                                12, (index) => ShimmerLoadingEffect()),
+                          )
                         ],
                       )
                     : state is HomeError
@@ -158,9 +195,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   SizedBox _categoryBuilder(double swidth, double sheight, CTheme themeMode) {
     ScrollController controller = ScrollController();
     return SizedBox(
-      height: swidth <= 500
-          ? 104
-          : sheight * 0.35,
+      height: swidth <= 500 ? 104 : sheight * 0.35,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 18.0, right: 8.0),
         child: Scrollbar(
@@ -197,7 +232,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
       bool isForCategory, CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
-    
+
     return Wrap(
         spacing: smallScreen ? 3 : 14,
         runSpacing: 14,

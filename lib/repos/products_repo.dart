@@ -31,6 +31,7 @@ class ProductsRepo {
     if (isInit) {
       await _initializeProducts();
     }
+    await Future.delayed(Duration(seconds: 4));
     try {
       for (var category in categories) {
         List<Product> trending =

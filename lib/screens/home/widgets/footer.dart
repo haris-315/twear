@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
+import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatelessWidget {
@@ -10,16 +11,19 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeMode = getThemeMode(context);
-    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final [width, height] = getScreenSize(context);
+    final isSmallScreen = width < 600;
 
     return Container(
       padding: const EdgeInsets.all(20),
       color: themeMode.backgroundColor,
+      width: width,
       child: Column(
+        
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text(
-            'Contact Us',
+            'Developer Contact',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -28,7 +32,7 @@ class Footer extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const Text(
-            'We’d love to hear from you! Reach out to us via email or connect with us on social media.',
+            'I’d love to hear from you! Reach out to me via email or connect to me on social media.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -36,10 +40,10 @@ class Footer extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          _buildContactInfo(),
+          _buildContactInfo(themeMode),
           const SizedBox(height: 20),
           const Text(
-            'Follow Us on Social Media',
+            'Find Me on Social Media',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -50,7 +54,7 @@ class Footer extends StatelessWidget {
           _buildSocialMediaLinks(isSmallScreen,themeMode),
           const SizedBox(height: 20),
           const Text(
-            '© 2023 T-Wear. All rights reserved.',
+            '© 2025 T-Wear. All rights reserved.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey,
@@ -61,31 +65,31 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildContactInfo() {
+  Widget _buildContactInfo(CTheme themeMode) {
     return Column(
       children: [
         ListTile(
           leading: const Icon(Icons.email, color: Colors.blueAccent),
-          title: const Text('Email'),
-          subtitle: const Text('support@twear.com'),
+          title: Text('Email',style: TextStyle(color: themeMode.primTextColor)),
+          subtitle: Text('hkffking@gmail.com',style: TextStyle(color: themeMode.secondaryTextColor)),
           onTap: () {
             _launchEmail('support@twear.com');
           },
         ),
         ListTile(
           leading: const Icon(Icons.phone, color: Colors.blueAccent),
-          title: const Text('Phone'),
-          subtitle: const Text('+1 (123) 456-7890'),
+          title: Text('Phone',style: TextStyle(color: themeMode.primTextColor)),
+          subtitle: Text('+923150907995',style: TextStyle(color: themeMode.secondaryTextColor)),
           onTap: () {
-            _launchPhone('+11234567890');
+            _launchPhone('+923150907995');
           },
         ),
         ListTile(
           leading: const Icon(Icons.location_on, color: Colors.blueAccent),
-          title: const Text('Address'),
-          subtitle: const Text('123 Main St, City, Country'),
+          title: Text('Address',style: TextStyle(color: themeMode.primTextColor),),
+          subtitle: Text('Abdul Khel, Dera Ismail Khan, Pakistan',style: TextStyle(color: themeMode.secondaryTextColor)),
           onTap: () {
-            _launchMaps('123 Main St, City, Country');
+            _launchMaps('Abdul Khel-D.I.K, Pakistan');
           },
         ),
       ],
@@ -100,20 +104,20 @@ class Footer extends StatelessWidget {
       runSpacing: isSmallScreen ? 16 : 24,
       children: [
         _buildSocialMediaIcon(
-          icon: 'icons/facebook.png', // Replace with your Facebook icon
-          url: 'https://www.facebook.com/',
+          icon: 'icons/facebook.png',
+          url: 'https://web.facebook.com/self.taught.programmer.2024',
         ),
         _buildSocialMediaIcon(
-          icon: 'icons/instagram.png', // Replace with your Instagram icon
+          icon: 'icons/instagram.png',
           url: 'https://www.instagram.com/',
         ),
        
         _buildSocialMediaIcon(
-          icon: isDarkMode ? 'icons/github_light.png' : 'icons/github.png', // Replace with your GitHub icon
-          url: 'https://github.com/',
+          icon: isDarkMode ? 'icons/github_light.png' : 'icons/github.png',
+          url: 'https://github.com/haris-315',
         ),
         _buildSocialMediaIcon(
-          icon: 'icons/linkedin.png', // Replace with your LinkedIn icon
+          icon: 'icons/linkedin.png',
           url: 'https://www.linkedin.com/',
         ),
       ],
@@ -134,7 +138,6 @@ class Footer extends StatelessWidget {
     );
   }
 
-  // Helper functions to launch URLs, email, phone, and maps
   Future<void> _launchURL(Uri url) async {
     if (await canLaunchUrl(url)) {
       await launchUrl(url);

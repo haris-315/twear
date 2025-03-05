@@ -40,7 +40,7 @@ class _CategoryItemState extends State<CategoryItem> {
         onExit: (_) => setState(() => isHovered = false),
         cursor: SystemMouseCursors.click,
         child: Transform.scale(
-          scale: isHovered ? 1.05 : 1.0, // Scale the widget on hover
+          scale: isHovered ? 1.05 : 1.0, 
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 400),
             curve: Curves.easeInOut,

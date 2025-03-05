@@ -187,6 +187,7 @@ class _LoginPageState extends State<LoginPage>
                             ),
                             onPressed: () {
                               animationController.reverse();
+                              context.read<AdminCubit>().shiftMode(IsNotAdmin());
                               animationController.addStatusListener((status) {
                                 if (status == AnimationStatus.dismissed) {
                                   Navigator.pushReplacementNamed(
