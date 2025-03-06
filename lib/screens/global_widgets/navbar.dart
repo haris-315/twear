@@ -26,10 +26,18 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
           title: "Home",
           themeMode: themeMode,
           action: () {
-            Navigator.pop(context);
-            Navigator.pushNamed(context, "home");
+            Navigator.pushReplacementNamed(context, "home");
           },
         ),
+      if (!isAdmin)
+        if (routeName != "profile")
+          NavItem(
+            title: "Profile",
+            themeMode: themeMode,
+            action: () {
+              Navigator.pushNamed(context, "profile");
+            },
+          ),
       if (isAdmin)
         if (routeName != "dashboard")
           NavItem(

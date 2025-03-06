@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
+import 'package:t_wear/bloc/cubit/user_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_admin_stat.dart';
@@ -31,6 +32,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotateAnimation;
+  bool isFirstBuild = true;
 
   @override
   void initState() {
@@ -44,9 +46,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _rotateAnimation = Tween<double>(begin: 0.6, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 3));
-      _controller.forward();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(Duration(seconds: 3)).then((_){
+              _controller.forward();
+      });
     });
   }
 
@@ -59,6 +62,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state is HomeSuccess) {
+          if (isFirstBuild) {
+                context.read<UserCubit>().addToPending(state.products.values.first);
+          isFirstBuild = false;
+        }
+        }
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
           appBar: NavBar(

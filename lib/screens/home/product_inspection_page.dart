@@ -35,11 +35,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       CarouselSliderController();
 
   double _discountedPrice(Product uProduct) => uProduct.discount != 0
-      ? uProduct.price -
-          (uProduct.price * (uProduct.discount / 100))
+      ? uProduct.price - (uProduct.price * (uProduct.discount / 100))
       : uProduct.price;
 
-  quill.QuillController _quillController(Product uProduct) => quill.QuillController(
+  quill.QuillController _quillController(Product uProduct) =>
+      quill.QuillController(
         document: quill.Document.fromDelta(uProduct.details),
         readOnly: true,
         selection: const TextSelection.collapsed(offset: 0),
@@ -55,7 +55,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     super.initState();
 
     _fabController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     )..addListener(() {
         setState(() {});
@@ -72,11 +72,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     ));
   }
 
-
   void _updateProduct() {
     Navigator.pushReplacementNamed(context, "postproduct",
-                              arguments: widget.product);
-    
+        arguments: widget.product);
   }
 
   @override
@@ -98,11 +96,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
       }
       final bool isCarted = cartedProducts.contains(widget.product);
 
-      return uiBuilder(theme, width, textTheme, admin, isCarted,widget.product);
+      return uiBuilder(
+          theme, width, textTheme, admin, isCarted, widget.product);
     });
   }
 
-  Scaffold uiBuilder(CTheme theme, width, TextTheme textTheme, bool admin, bool isCarted,Product uProduct) {
+  Scaffold uiBuilder(CTheme theme, width, TextTheme textTheme, bool admin,
+      bool isCarted, Product uProduct) {
     return Scaffold(
       key: key,
       backgroundColor: theme.backgroundColor,
@@ -116,7 +116,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildImageCarousel(theme, width,uProduct),
+            _buildImageCarousel(theme, width, uProduct),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -141,7 +141,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      Text('Rs. ${_discountedPrice(uProduct).toStringAsFixed(2)}',
+                      Text(
+                          'Rs. ${_discountedPrice(uProduct).toStringAsFixed(2)}',
                           style: TextStyle(
                               color: theme.primTextColor,
                               fontSize: 22,
@@ -168,24 +169,38 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: uProduct.stock > 0
-                          ? Colors.green
-                          : Colors.red,
+                      color: uProduct.stock > 0 ? Colors.green : Colors.red,
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildDetailsSection(theme, textTheme, _quillController(uProduct)),
+                  _buildDetailsSection(
+                      theme, textTheme, _quillController(uProduct)),
                   const SizedBox(height: 20),
-                  _buildRatingSection(theme,admin,uProduct.avgRating()),
+                  _buildRatingSection(theme, admin, uProduct.avgRating()),
                   const SizedBox(height: 20),
-                  _buildProductInfoSection(theme, width,uProduct),
+                  _buildProductInfoSection(theme, width, uProduct),
                 ],
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: AnimatedBuilder(
+      floatingActionButton: !admin ? FloatingActionButton.extended(
+                      heroTag: uProduct.id,
+                      onPressed: () {
+                        if (isCarted) {
+                          Navigator.pushReplacementNamed(context, "cart");
+                        } else {
+                          context
+                              .read<CartCubit>()
+                              .addToCart(uProduct, cartedProducts);
+                        }
+                      },
+                      icon: Icon(Icons.shopping_cart, color: theme.iconColor),
+                      label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
+                          style: TextStyle(color: theme.primTextColor)),
+                      backgroundColor: theme.buttonColor,
+                    ) : AnimatedBuilder(
         animation: _fabController,
         builder: (context, child) {
           return Column(
@@ -204,7 +219,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                         if (delete) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully deleted ${uProduct.name}")));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "Successfully deleted ${uProduct.name}")));
                             context
                                 .read<HomeBloc>()
                                 .add(DeleteProduct(product: uProduct));
@@ -234,29 +251,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     ),
                   ),
                 ),
-              if (!admin)
-                Transform.translate(
-                  offset: Offset(0, -_menuAnimation.value * 60),
-                  child: Opacity(
-                    opacity: _fabAnimation.value,
-                    child: FloatingActionButton.extended(
-                      heroTag: uProduct.id,
-                      onPressed: () {
-                        if (isCarted) {
-                          Navigator.pushReplacementNamed(context, "cart");
-                        } else {
-                          context
-                              .read<CartCubit>()
-                              .addToCart(uProduct, cartedProducts);
-                        }
-                      },
-                      icon: Icon(Icons.shopping_cart, color: theme.iconColor),
-                      label: Text(isCarted ? 'Go to Cart' : 'Add to Cart',
-                          style: TextStyle(color: theme.primTextColor)),
-                      backgroundColor: theme.buttonColor,
-                    ),
-                  ),
-                ),
+              
               FloatingActionButton(
                 heroTag: uProduct.delivery,
                 onPressed: () {
@@ -329,8 +324,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   if (_currentImageIndex > 0) {
                     _carouselController.previousPage();
                   } else {
-                    _carouselController
-                        .jumpToPage(uProduct.images.length - 1);
+                    _carouselController.jumpToPage(uProduct.images.length - 1);
                   }
                 },
                 icon: Icon(Icons.arrow_left_outlined, color: theme.iconColor),
@@ -376,6 +370,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         focusNode: FocusNode(),
         scrollController: ScrollController(),
         configurations: quill.QuillEditorConfigurations(
+          showCursor: false,
           customStyles: quill.DefaultStyles(color: theme.primTextColor),
           scrollable: false,
         ),
@@ -384,12 +379,12 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  Widget _buildRatingSection(CTheme theme,bool admin,int avgRating){
+  Widget _buildRatingSection(CTheme theme, bool admin, int avgRating) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          admin ? "Average Rating" :'Rate this product:',
+          admin ? "Average Rating" : 'Rate this product:',
           style: TextStyle(
             color: theme.primTextColor,
             fontSize: 16,
@@ -400,10 +395,17 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         Row(
           children: List.generate(5, (index) {
             return GestureDetector(
-              onTap: admin ? null : () =>
-                  setState(() => rating = rating == index ? -1 : index),
+              onTap: admin
+                  ? null
+                  : () => setState(() => rating = rating == index ? -1 : index),
               child: Icon(Icons.star,
-                  color: admin ? index <= avgRating  ? Colors.amber : Colors.grey : index <= rating ? Colors.amber : Colors.grey),
+                  color: admin
+                      ? index <= avgRating
+                          ? Colors.amber
+                          : Colors.grey
+                      : index <= rating
+                          ? Colors.amber
+                          : Colors.grey),
             );
           }),
         ),
@@ -411,7 +413,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     );
   }
 
-  Widget _buildProductInfoSection(CTheme theme, double width,Product uProduct) {
+  Widget _buildProductInfoSection(
+      CTheme theme, double width, Product uProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -445,22 +448,20 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   TableRow(
                     children: [
                       _buildTableCell('Gender:', uProduct.gender, theme),
-                      _buildTableCell(
-                          'Target Age:', uProduct.targetAge, theme),
+                      _buildTableCell('Target Age:', uProduct.targetAge, theme),
                     ],
                   ),
                   TableRow(
                     children: [
-                      _buildTableCell('Delivery:',
-                          '${uProduct.delivery} days', theme),
+                      _buildTableCell(
+                          'Delivery:', '${uProduct.delivery} days', theme),
                       _buildTableCell(
                           'Times Sold:', '${uProduct.timesSold}', theme),
                     ],
                   ),
                   TableRow(
                     children: [
-                      _buildTableCell(
-                          'Post Date:', uProduct.postDate, theme),
+                      _buildTableCell('Post Date:', uProduct.postDate, theme),
                       const SizedBox.shrink(),
                     ],
                   ),
@@ -473,16 +474,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   1: FlexColumnWidth(2),
                 },
                 children: [
-                  _buildTableRow(
-                      'Category:', uProduct.category.name, theme),
+                  _buildTableRow('Category:', uProduct.category.name, theme),
                   _buildTableRow('Size:', uProduct.size, theme),
                   _buildTableRow('Gender:', uProduct.gender, theme),
-                  _buildTableRow(
-                      'Target Age:', uProduct.targetAge, theme),
+                  _buildTableRow('Target Age:', uProduct.targetAge, theme),
                   _buildTableRow(
                       'Delivery:', '${uProduct.delivery} days', theme),
-                  _buildTableRow(
-                      'Times Sold:', '${uProduct.timesSold}', theme),
+                  _buildTableRow('Times Sold:', '${uProduct.timesSold}', theme),
                   _buildTableRow('Post Date:', uProduct.postDate, theme),
                 ],
               );

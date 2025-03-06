@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:t_wear/bloc/cubit/user_cubit.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_admin_stat.dart';
@@ -24,6 +25,16 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
   late double totalPrice;
   late double totalOriginalPrice;
   late double totalDiscount;
+
+
+  void checkOut() async {
+    await showCheckoutBottomSheet(context);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+       UserState adminState = context.read<UserCubit>().state;
+    if (adminState is Buyer) {
+      context.read<UserCubit>().addToPending([...adminState.orders,...cartedProducts]);
+    }});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +126,6 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                             ),
                           ),
 
-                          // Cart Items
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
@@ -137,7 +147,6 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                       ),
                     ),
 
-                    // Sticky Checkout Bar
                     Positioned(
                       bottom: 0,
                       left: 0,
@@ -239,7 +248,7 @@ class _CartState extends State<Cart> with TickerProviderStateMixin {
                                           ),
                                         );
                                       } else {
-                                        showCheckoutBottomSheet(context);
+                                        checkOut();
                                       }
                                     },
                             ),

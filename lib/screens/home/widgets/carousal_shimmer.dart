@@ -110,21 +110,17 @@ class TrendingPicksShimmer extends StatelessWidget {
               baseColor: !isDarkMode ? Colors.grey[300]! : Colors.grey[800]!,
               highlightColor:
                   !isDarkMode ? Colors.grey[100]! : Colors.grey[600]!,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: swidth * 0.8,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.white,
+              child: Center(
+                child: Container(
+                      width: swidth * 0.8,
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.white,
+                      ),
+                
                     ),
-
-                  );
-                },
-              ),
+              )
             ),
           ),
         const SizedBox(height: 16),

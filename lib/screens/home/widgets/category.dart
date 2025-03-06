@@ -80,6 +80,7 @@ class _CategoryItemState extends State<CategoryItem> {
                           CircleAvatar(
                             radius: height * .09,
                             foregroundImage: CachedNetworkImageProvider(
+                              
                                     errorListener: (_) => Icon(
                                           Icons.error,
                                           color: themeMode.iconColor,

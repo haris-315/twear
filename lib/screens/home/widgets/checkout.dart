@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-
-void showCheckoutBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+Future<int> showCheckoutBottomSheet(BuildContext context) async {
+    return await showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows the sheet to take up more screen space
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Container(
             padding: EdgeInsets.all(20),
@@ -40,8 +39,7 @@ void showCheckoutBottomSheet(BuildContext context) {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle order placement logic
-                    Navigator.pop(context); // Close the bottom sheet
+                    Navigator.pop(context,0); 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Order Placed Successfully!')),
                     );

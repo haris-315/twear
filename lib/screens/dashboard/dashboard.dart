@@ -149,39 +149,12 @@ class _DashBoardPgState extends State<DashBoardPg>
                   //   child: const WeeklySalesChart(),
                   // ),
                   const SizedBox(height: 40),
-                  // Wrap(
-                  //   spacing: width * .2,
-                  //   children: [
-                  //     PrimeButton(
-                  //       width: width <= 500 ? width * .3 : width * .2,
-                  //       action: () {
-                  //         Navigator.pushNamed(context, "postproduct");
-                  //       },
-                  //       themeMode: themeMode,
-                  //       child: FittedBox(
-                  //         child: Text(
-                  //           'Post Product',
-                  //           style: TextStyle(color: themeMode.primTextColor),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     PrimeButton(
-                  //       width: width <= 500 ? width * .3 : width * .2,
-                  //       action: () {
-                  //         print("Viewing analytics...");
-                  //       },
-                  //       themeMode: themeMode,
-                  //       child: FittedBox(
-                  //         child: Text(
-                  //           'View Analytics',
-                  //           style: TextStyle(color: themeMode.primTextColor),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  
                   const SizedBox(height: 30),
-                    PendingOrders(products: state.dashboardDetails['products']),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: PendingOrders(products: state.dashboardDetails['products']),
+                    ),
                     SizedBox(
                       height: 24,
                     ),

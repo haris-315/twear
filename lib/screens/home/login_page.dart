@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:t_wear/bloc/cubit/admin_cubit.dart';
+import 'package:t_wear/bloc/cubit/user_cubit.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 import 'package:t_wear/screens/global_widgets/loading_indicator.dart';
@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage>
   late AnimationController animationController;
   late Animation<Offset> slideAnim;
   TextEditingController emailController =
-      TextEditingController(text: "guestdemo315@guest.com");
+      TextEditingController(text: "johndoe@example.com");
   TextEditingController passController =
       TextEditingController(text: "password1234");
   bool showPass = false;
@@ -194,7 +194,7 @@ class _LoginPageState extends State<LoginPage>
                             ),
                             onPressed: () {
                               animationController.reverse();
-                              context.read<AdminCubit>().shiftMode(IsNotAdmin());
+                              context.read<UserCubit>().shiftMode(Buyer(orders: []));
                               animationController.addStatusListener((status) {
                                 if (status == AnimationStatus.dismissed) {
                                   Navigator.pushReplacementNamed(
@@ -235,8 +235,8 @@ class _LoginPageState extends State<LoginPage>
                                   name: "Admin Account",
                                   ontap: () {
                                     context
-                                        .read<AdminCubit>()
-                                        .shiftMode(IsAdmin());
+                                        .read<UserCubit>()
+                                        .shiftMode(Admin());
                                     fakeFetch();
                                   }),
                             ],

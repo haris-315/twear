@@ -33,6 +33,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
           Navigator.pushNamed(context, "home");
         },
       ),
+      if (!admin)
+      ListTile(
+        selectedTileColor: themeMode.borderColor2!.withValues(alpha: .2),
+        enabled: currentRoute == "profile" ? false : true,
+        leading: Icon(Icons.person, color: themeMode.iconColor),
+        selected: currentRoute == "profile" ? true : false,
+        title: Text("Profile", style: TextStyle(color: themeMode.primTextColor)),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, "profile");
+        },
+      ),
       if (admin)
         ListTile(
           selectedTileColor: themeMode.borderColor2!.withValues(alpha: .2),
@@ -89,42 +101,47 @@ class _CustomDrawerState extends State<CustomDrawer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: widget.themeMode.appBarColor,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Guest315",
-                        style: TextStyle(
-                          color: widget.themeMode.primTextColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, "profile");
+            },
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: widget.themeMode.appBarColor,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Jhon Doe",
+                          style: TextStyle(
+                            color: widget.themeMode.primTextColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "guestdemo315@guest.com",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: widget.themeMode.borderColor2,
-                          fontSize: 14,
+                        const SizedBox(height: 8),
+                        Text(
+                          "johndoe@example.com",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: widget.themeMode.borderColor2,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const CircleAvatar(
-                  radius: 36,
-                  foregroundImage: AssetImage("assets/images/hero.jpg"),
-                ),
-              ],
+                  const CircleAvatar(
+                    radius: 36,
+                    foregroundImage: AssetImage("assets/images/hero.jpg"),
+                  ),
+                ],
+              ),
             ),
           ),
           Expanded(

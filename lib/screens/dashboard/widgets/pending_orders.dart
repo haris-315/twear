@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:t_wear/bloc/dashboard/dashboard_bloc.dart';
-import 'package:t_wear/models/product_model.dart';
+import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/screens/home/widgets/url_identifier.dart';
 
 class PendingOrders extends StatelessWidget {
   final List<DBP> products;
 
-  const PendingOrders({Key? key, required this.products}) : super(key: key);
+  const PendingOrders({super.key, required this.products});
 
   @override
   Widget build(BuildContext context) {
+    CTheme themeMode = getThemeMode(context);
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -22,11 +24,11 @@ class PendingOrders extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Card(
             elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            color: Colors.white,
-            shadowColor: Colors.grey.withOpacity(0.2),
+                          shape:  RoundedRectangleBorder(side: BorderSide(color: Colors.indigoAccent, width: 1),borderRadius: BorderRadius.zero),
+
+            color: Colors.pinkAccent[150],
+            shadowColor: Colors.grey.withValues(alpha: 0.2),
+            borderOnForeground: true,
             child: ListTile(
               contentPadding: const EdgeInsets.all(12.0),
               leading: ClipRRect(
@@ -62,25 +64,25 @@ class PendingOrders extends StatelessWidget {
                       color: Colors.black54,
                     ),
                     children: [
-                      const TextSpan(
+                      TextSpan(
                         text: "Ordered By: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold,color: themeMode.borderColor2),
                       ),
                       TextSpan(
                         text: "mail$index@mail.com\n",
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      const TextSpan(
+                       TextSpan(
                         text: "Address: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold,color: themeMode.borderColor2),
                       ),
                       TextSpan(
                         text: "DemoAddress$index\n",
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      const TextSpan(
+                       TextSpan(
                         text: "Date: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold,color: themeMode.borderColor2),
                       ),
                       TextSpan(
                         text: "$index/02/2025",
@@ -90,11 +92,7 @@ class PendingOrders extends StatelessWidget {
                   ),
                 ),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey[400],
-                size: 20,
-              ),
+              
             ),
           ),
         );
