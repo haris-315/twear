@@ -10,29 +10,28 @@ import 'package:t_wear/screens/global_widgets/nav_item.dart';
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   final ScrollController scrollController;
   final IconButton? popBtn;
-  const NavBar({
-    super.key,
-    required this.themeMode,
-    required this.scrollController,
-    this.popBtn
-  });
+  const NavBar(
+      {super.key,
+      required this.themeMode,
+      required this.scrollController,
+      this.popBtn});
 
   final CTheme themeMode;
 
-  List<NavItem> navItems(
-          CTheme themeMode, BuildContext context, bool isAdmin) =>
-      [
-        if (ModalRoute.of(context)?.settings.name != "home" ||
-            ModalRoute.of(context)?.settings.name != "/")
-          NavItem(
-            title: "Home",
-            themeMode: themeMode,
-            action: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, "home");
-            },
-          ),
-        if (isAdmin)
+  List<NavItem> navItems(CTheme themeMode, BuildContext context, bool isAdmin) {
+    String? routeName = ModalRoute.of(context)!.settings.name;
+    return [
+      if (routeName != "home")
+        NavItem(
+          title: "Home",
+          themeMode: themeMode,
+          action: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, "home");
+          },
+        ),
+      if (isAdmin)
+        if (routeName != "dashboard")
           NavItem(
             title: "Dashboard",
             themeMode: themeMode,
@@ -40,14 +39,17 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.pushNamed(context, "dashboard");
             },
           ),
+      if (routeName == "home")
         NavItem(
           title: "Dev Contact",
           themeMode: themeMode,
           action: () {
-            Navigator.pushNamed(context, "postproduct");
+            scrollController.animateTo(scrollController.position.extentTotal,
+                duration: Duration(milliseconds: 1200), curve: Curves.easeIn);
           },
         )
-      ];
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

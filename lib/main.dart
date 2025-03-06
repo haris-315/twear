@@ -25,6 +25,8 @@ void main() async {
       ],
       child: BlocBuilder<ThemeCubit, CTheme>(
         builder: (context, themeMode) {
+              precacheImage(const AssetImage('assets/images/bg.webp'), context);
+
           return DefaultTextStyle(
             style: TextStyle(color: themeMode.primTextColor),
             child: AnimatedTheme(

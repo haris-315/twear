@@ -121,6 +121,7 @@ class TrendingPicksShimmer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
                     ),
+
                   );
                 },
               ),

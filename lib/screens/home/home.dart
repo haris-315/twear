@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
-import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
 import 'package:t_wear/core/utils/get_admin_stat.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
@@ -38,12 +37,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.initState();
     context.read<HomeBloc>().add(LoadHomeData(context));
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!admin) {
-        bool reLoad = await showConfirmationDialog(context);
-        if (reLoad) {}
-      }
-    });
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
 
@@ -72,7 +65,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             themeMode: themeMode,
             scrollController: scrollController,
           ),
-          endDrawer: CustomDrawer(themeMode: themeMode),
+          endDrawer: CustomDrawer(themeMode: themeMode,scrollController: scrollController,),
           floatingActionButton: ScaleTransition(
             scale: _scaleAnimation,
             child: RotationTransition(
@@ -286,58 +279,5 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 ])
             .toList());
   }
-
-  Future<bool> showConfirmationDialog(BuildContext context) async {
-    double width = MediaQuery.of(context).size.width;
-    CTheme themeMode = context.read<ThemeCubit>().state;
-    return await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return SizedBox(
-              width: width <= 600 ? width * .7 : width * .3,
-              child: AlertDialog(
-                title: Text(
-                  "Admin Access",
-                  style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700),
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.waving_hand,
-                      color: Colors.yellowAccent,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Hello visitor, since this is just a showcase project everyone is allowed to visit it as admin. Would you like to visit the site as admin?",
-                      maxLines: 5,
-                      style: TextStyle(
-                          color: themeMode.primTextColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text("No"),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text("Yes"),
-                  ),
-                ],
-              ),
-            );
-          },
-        ) ??
-        false;
-  }
 }
+  

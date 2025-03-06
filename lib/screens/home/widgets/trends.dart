@@ -66,14 +66,14 @@ class _TrendingPicksState extends State<TrendingPicks> {
         ),
         const SizedBox(height: 16),
         if (isLargeScreen)
-          // Large Screen Layout: Compact Custom Layout
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: SizedBox(
-              height: 320, // Reduced height for compactness
+              height: 320, 
               child: Row(
                 children: [
-                  // Left Side: Big Card
+                  
                   Expanded(
                     flex: 2,
                     child: AnimatedSwitcher(
@@ -87,12 +87,12 @@ class _TrendingPicksState extends State<TrendingPicks> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  // Right Side: Two Small Cards
+                  
                   Expanded(
                     flex: 1,
                     child: Column(
                       children: [
-                        // Top Small Card
+                        
                         Expanded(
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 800),
@@ -124,7 +124,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
             ),
           )
         else
-          // Small Screen Layout: Simple Carousel
+          
           CarouselSlider.builder(
             itemCount: widget.trendingProducts.length,
             itemBuilder: (context, index, realIndex) {
@@ -296,6 +296,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
                               fontSize: isBig ? 16 : 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.amberAccent,
+                              overflow: TextOverflow.ellipsis
                             ),
                           ),
                           const Spacer(),

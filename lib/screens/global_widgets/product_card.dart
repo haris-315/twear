@@ -68,7 +68,7 @@ class _ProductCardState extends State<ProductCard> {
                     BoxShadow(
                       color: themeMode.shadowColor ??
                           Colors.black.withValues(alpha: isHovered ? 0.4 : 0.2),
-                      blurRadius: isHovered ? 16 : 8,
+                      blurRadius: isHovered ? 8 : 4,
                       offset: const Offset(0, 4),
                     ),
                   ],

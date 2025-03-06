@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:t_wear/core/theme/cubit/theme_cubit.dart';
 import 'package:t_wear/core/theme/theme.dart';
+import 'package:t_wear/core/utils/card_dimensions.dart';
 import 'package:t_wear/core/utils/get_theme_state.dart';
 import 'package:t_wear/core/utils/screen_size.dart';
 
@@ -26,7 +27,17 @@ class ShimmerLoadingEffect extends StatelessWidget {
 
   Widget _buildCategoryShimmer(double width, CTheme themeMode) {
     final isLightMode = themeMode.getThemeType() is Light;
-    return Container(
+    return width <= 500 ? Container(
+      decoration: BoxDecoration(
+    color: isLightMode ? Colors.grey[300] : Colors.grey[700], 
+    borderRadius: BorderRadius.circular(4),
+    border: Border.all(
+        color: isLightMode ? Colors.grey[400]! : Colors.grey[600]!),
+          ),
+          width: 85,
+          height: 35,
+
+    ) : Container(
       margin: const EdgeInsets.all(8.0),
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -35,18 +46,18 @@ class ShimmerLoadingEffect extends StatelessWidget {
     border: Border.all(
         color: isLightMode ? Colors.grey[400]! : Colors.grey[600]!),
           ),
-      width: width <= 500 ? 80 : 150,
-      height: width <= 500 ? 50 : 160,
+      width: 150,
+      
       child: Column(children: [
         CircleAvatar(
         backgroundColor: isLightMode ? Colors.grey[300] : Colors.grey[700], 
         radius: 58,
     
     ),
-    SizedBox(height: 8,),
+    SizedBox(height: 6,),
     Container(
-          height: 14,
-            width: width < 600 ? 100 : 150,
+          height: 12,
+            width: 90,
             color: isLightMode ? Colors.grey[300] : Colors.black, 
         )
       ],),
@@ -64,7 +75,7 @@ class ShimmerLoadingEffect extends StatelessWidget {
         border: Border.all(
             color: isLightMode ? Colors.grey[400]! : Colors.grey[600]!),
       ),
-      width: width < 600 ? 150 : 200,
+      width: responsiveWidth(width),
       height: 270,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

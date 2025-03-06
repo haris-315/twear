@@ -28,8 +28,15 @@ class _LoginPageState extends State<LoginPage>
   double boxHeight = 400;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+  }
+
+  @override
   void initState() {
     super.initState();
+
     animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
     slideAnim = Tween<Offset>(begin: Offset(0, -1), end: Offset(0, 0))

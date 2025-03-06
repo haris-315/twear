@@ -89,7 +89,7 @@ class Footer extends StatelessWidget {
           title: Text('Address',style: TextStyle(color: themeMode.primTextColor),),
           subtitle: Text('Abdul Khel, Dera Ismail Khan, Pakistan',style: TextStyle(color: themeMode.secondaryTextColor)),
           onTap: () {
-            _launchMaps('Abdul Khel-D.I.K, Pakistan');
+            _launchMaps();
           },
         ),
       ],
@@ -104,20 +104,20 @@ class Footer extends StatelessWidget {
       runSpacing: isSmallScreen ? 16 : 24,
       children: [
         _buildSocialMediaIcon(
-          icon: 'icons/facebook.png',
+          icon: 'assets/icons/facebook.png',
           url: 'https://web.facebook.com/self.taught.programmer.2024',
         ),
         _buildSocialMediaIcon(
-          icon: 'icons/instagram.png',
+          icon: 'assets/icons/instagram.png',
           url: 'https://www.instagram.com/',
         ),
        
         _buildSocialMediaIcon(
-          icon: isDarkMode ? 'icons/github_light.png' : 'icons/github.png',
+          icon: isDarkMode ? 'assets/icons/github_light.png' : 'assets/icons/github.png',
           url: 'https://github.com/haris-315',
         ),
         _buildSocialMediaIcon(
-          icon: 'icons/linkedin.png',
+          icon: 'assets/icons/linkedin.png',
           url: 'https://www.linkedin.com/',
         ),
       ],
@@ -170,12 +170,11 @@ class Footer extends StatelessWidget {
     }
   }
 
-  Future<void> _launchMaps(String address) async {
+  Future<void> _launchMaps() async {
     final Uri mapsUri = Uri(
       scheme: 'https',
-      host: 'www.google.com',
-      path: '/maps/search/',
-      queryParameters: {'query': address},
+      host: 'maps.app.goo.gl',
+      path: '/kdRSzGffnmdDv44i6',
     );
     if (await canLaunchUrl(mapsUri)) {
       await launchUrl(mapsUri);

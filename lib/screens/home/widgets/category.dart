@@ -10,12 +10,10 @@ import 'package:t_wear/models/category.dart';
 class CategoryItem extends StatefulWidget {
   final CTheme themeMode;
   final Category category;
-  final bool skeletonMode;
 
   const CategoryItem({
     super.key,
     required this.themeMode,
-    this.skeletonMode = false,
     required this.category,
   });
 
@@ -62,12 +60,7 @@ class _CategoryItemState extends State<CategoryItem> {
               // ),
             ),
             child: width <= 500
-                ? widget.skeletonMode
-                    ? const SizedBox(
-                        width: 80,
-                        height: 50,
-                      )
-                    : Padding(
+                ? Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: Center(
                           child: Text(
@@ -86,20 +79,14 @@ class _CategoryItemState extends State<CategoryItem> {
                         children: [
                           CircleAvatar(
                             radius: height * .09,
-                            foregroundImage: widget.skeletonMode
-                                ? null
-                                : CachedNetworkImageProvider(
+                            foregroundImage: CachedNetworkImageProvider(
                                     errorListener: (_) => Icon(
                                           Icons.error,
                                           color: themeMode.iconColor,
                                         ),
                                     widget.category.image),
                             backgroundColor: Colors.grey[300],
-                            child: widget.skeletonMode
-                                ? Icon(Icons.category,
-                                    size: height * 0.05,
-                                    color: Colors.grey[600])
-                                : null,
+                         
                           ),
                           const SizedBox(height: 2),
                           Text(
