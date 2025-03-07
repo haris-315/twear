@@ -13,9 +13,10 @@ class BuyerProfilePage extends StatelessWidget {
   final ScrollController scrollController = ScrollController();
   BuyerProfilePage({super.key});
 
-
-  void cancelOrder(Product product, List<Product> orders,BuildContext context,CTheme themeMode) async {
-    final bool decision = await showConfirmationDialog(context, themeMode, msg: "Do you want to cancel the Order.",b1: "No",b2: "Yes");
+  void cancelOrder(Product product, List<Product> orders, BuildContext context,
+      CTheme themeMode) async {
+    final bool decision = await showConfirmationDialog(context, themeMode,
+        msg: "Do you want to cancel the Order.", b1: "No", b2: "Yes");
     if (decision) {
       orders.remove(product);
       // ignore: use_build_context_synchronously
@@ -86,6 +87,14 @@ class BuyerProfilePage extends StatelessWidget {
                   height: 30,
                 ),
                 if (state is Buyer)
+                if (state.orders.isNotEmpty)
+                ...[
+                  Padding(padding: EdgeInsets.all(12.0)),
+                Text("Recent Orders",style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  overflow: TextOverflow.ellipsis
+                ),),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -189,16 +198,22 @@ class BuyerProfilePage extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              
                             ),
-                            trailing: IconButton(onPressed: (){
-                              cancelOrder(product, state.orders, context, themeMode);
-                            }, icon: Icon(Icons.close,),tooltip: "Cancel Order",),
+                            trailing: IconButton(
+                              onPressed: () {
+                                cancelOrder(
+                                    product, state.orders, context, themeMode);
+                              },
+                              icon: Icon(
+                                Icons.close,
+                              ),
+                              tooltip: "Cancel Order",
+                            ),
                           ),
                         ),
                       );
                     },
-                  )
+                  )]
               ],
             ),
           );

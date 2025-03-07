@@ -47,8 +47,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     _rotateAnimation = Tween<double>(begin: 0.6, end: 1.0)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(Duration(seconds: 3)).then((_){
-              _controller.forward();
+      Future.delayed(Duration(seconds: 3)).then((_) {
+        _controller.forward();
       });
     });
   }
@@ -63,10 +63,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeSuccess) {
-          if (isFirstBuild) {
-                context.read<UserCubit>().addToPending(state.products.values.first);
-          isFirstBuild = false;
-        }
+          if (context.read<UserCubit>().state is Buyer && isFirstBuild) {
+            context
+                .read<UserCubit>()
+                .addToPending([...state.products.values.last]);
+            isFirstBuild = false;
+          }
         }
         return Scaffold(
           backgroundColor: themeMode.backgroundColor,
@@ -74,7 +76,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             themeMode: themeMode,
             scrollController: scrollController,
           ),
-          endDrawer: CustomDrawer(themeMode: themeMode,scrollController: scrollController,),
+          endDrawer: CustomDrawer(
+            themeMode: themeMode,
+            scrollController: scrollController,
+          ),
           floatingActionButton: ScaleTransition(
             scale: _scaleAnimation,
             child: RotationTransition(
@@ -173,9 +178,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20,),
-                            TrendingPicksShimmer(),
-                            SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TrendingPicksShimmer(),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Wrap(
                             alignment: WrapAlignment.center,
                             children: List<ShimmerLoadingEffect>.generate(
@@ -289,4 +298,3 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             .toList());
   }
 }
-  

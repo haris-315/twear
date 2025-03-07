@@ -30,6 +30,7 @@ class PostProduct extends StatefulWidget {
 
 class _PostProductState extends State<PostProduct> {
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _pgScrollController = ScrollController();
   QuillController _editorController = QuillController(
       document: Document(),
       selection: const TextSelection.collapsed(offset: 0));
@@ -57,6 +58,16 @@ class _PostProductState extends State<PostProduct> {
 
   @override
   void dispose() {
+    _pgScrollController.dispose();
+    _editorController.dispose();
+    priceController.dispose();
+    productNameController.dispose();
+    discountController.dispose();
+    stockController.dispose();
+    deliveryChargesController.dispose();
+    brandNameController.dispose();
+    ageController.dispose();
+    sizeController.dispose();
     super.dispose();
   }
 
@@ -108,7 +119,7 @@ class _PostProductState extends State<PostProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final [width,height] = getScreenSize(context);
+    final [width, height] = getScreenSize(context);
     final CTheme themeMode = getThemeMode(context);
     Color? quillBorder = themeMode.borderColor;
     product = ModalRoute.of(context)!.settings.arguments as Product?;
@@ -123,24 +134,32 @@ class _PostProductState extends State<PostProduct> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeSuccess && btnClicked) {
-          WidgetsBinding.instance.addPostFrameCallback((_){
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (isUpdating) {
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ProductDetailPage(product: products.first)));
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isUpdating ? "Product updated Successfully you can now review changes" : "New Product Addition Successfull.")));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) =>
+                          ProductDetailPage(product: products.first)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(isUpdating
+                      ? "Product updated Successfully you can now review changes"
+                      : "New Product Addition Successfull.")));
             } else {
-            Navigator.pop(context);}
+              Navigator.pop(context);
+            }
           });
         }
-        return Scaffold(
-          endDrawer: CustomDrawer(themeMode: themeMode),
-          backgroundColor: themeMode.backgroundColor,
-          appBar: NavBar(
-             
-              themeMode: themeMode, scrollController: ScrollController()),
-          body: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Center(
+        return Stack(
+          children: [
+            Scaffold(
+              endDrawer: CustomDrawer(themeMode: themeMode),
+              backgroundColor: themeMode.backgroundColor,
+              appBar: NavBar(
+                  themeMode: themeMode, scrollController: ScrollController()),
+              body: SingleChildScrollView(
+                controller: _pgScrollController,
+                child: Center(
                   child: Container(
                     padding: const EdgeInsets.all(18),
                     child: Column(
@@ -161,7 +180,8 @@ class _PostProductState extends State<PostProduct> {
                             priceController: priceController,
                             discountController: discountController,
                             stockController: stockController,
-                            deliveryChargesController: deliveryChargesController,
+                            deliveryChargesController:
+                                deliveryChargesController,
                             brandNameController: brandNameController,
                             sizeController: sizeController,
                             ageController: ageController,
@@ -184,7 +204,8 @@ class _PostProductState extends State<PostProduct> {
                                       value: gender,
                                       child: Text(gender,
                                           style: TextStyle(
-                                              color: themeMode.oppositeTextColor)),
+                                              color:
+                                                  themeMode.oppositeTextColor)),
                                     ))
                                 .toList(),
                             onChanged: (value) {
@@ -248,9 +269,11 @@ class _PostProductState extends State<PostProduct> {
                                   bottomLeft: Radius.circular(8),
                                   bottomRight: Radius.circular(8)),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: DefaultTextStyle(
-                                style: TextStyle(color: themeMode.primTextColor),
+                                style:
+                                    TextStyle(color: themeMode.primTextColor),
                                 child: DescriptionEditor(
                                     editorController: _editorController,
                                     scrollController: _scrollController,
@@ -280,11 +303,11 @@ class _PostProductState extends State<PostProduct> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(9),
                                     child: Container(
-                                      // decoration: BoxDecoration(
-                                      //     border: Border.all(
-                                      //         width: 1,
-                                      //         color:
-                                      //             themeMode.borderColor ?? Colors.red)),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1,
+                                              color:
+                                                  themeMode.borderColor2 ?? Colors.red)),
                                       child: isValidUrl(image.toString())
                                           ? Image.network(
                                               image,
@@ -326,26 +349,11 @@ class _PostProductState extends State<PostProduct> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        // PrimeButton(soon to be removed!
-                        //     action: () {
-                        //       print(products);
-                        //       print(_editorController.document
-                        //           .toDelta()
-                        //           .toJson()
-                        //           .toString());
-                        //     },
-                        //     themeMode: themeMode,
-                        //     width: width <= 420
-                        //         ? responsiveWidth(width) * .85
-                        //         : responsiveWidth(width) * .65,
-                        //     child: const Text("Print Products")),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
+                        
                         ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: 70,
-                            maxWidth: 200
-                          ),
+                          constraints:
+                              BoxConstraints(maxHeight: 70, maxWidth: 200),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -356,77 +364,93 @@ class _PostProductState extends State<PostProduct> {
                             ),
                             onPressed: isUpdating
                                 ? () async {
-                                  if (formKey.currentState!.validate()){
-                                    if (imagePreviews.isEmpty){
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please Select Atleast One Image.")));
-                                      return;
-                                    }
-                                    final category = categories.firstWhere(
-                                      (cat) => cat.id == selectedCategory,
-                                      orElse: () =>
-                                          throw Exception("Invalid category"),
-                                    );
-                                    btnClicked = !btnClicked;
-                                    var updatedProduct = Product(
-                                          id: product!.id,
-                                          rating: product!.rating,
-                                          postDate: product!.postDate,
-                                          size: sizeController.text,
-                                          name: productNameController.text,
-                                          price: double.parse(priceController.text),
-                                          images: imagePreviews,
-                                          stock: int.parse(stockController.text),
-                                          details:
-                                              _editorController.document.toDelta(),
-                                          delivery: int.parse(
-                                              deliveryChargesController.text),
-                                          company: brandNameController.text,
-                                          category: category,
-                                          gender: selectedGender,
-                                          discount:
-                                              double.parse(discountController.text),
-                                          targetAge: ageController.text.toString(),
-                                        );
-                                        products.add(updatedProduct);
-                                    context.read<HomeBloc>().add(UpdateProduct(
-                                            product: updatedProduct));
-                                           
-                                  }
-                                  }
-                                : () async {
-                                    try {
-                                     if (formKey.currentState!.validate()){ 
-                                      if (imagePreviews.isEmpty){
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please Select Atleast One Image.")));
-                                      return;
-                                    }
+                                    if (formKey.currentState!.validate()) {
+                                      if (imagePreviews.isEmpty) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    "Please Select Atleast One Image.")));
+                                        return;
+                                      }
                                       final category = categories.firstWhere(
                                         (cat) => cat.id == selectedCategory,
                                         orElse: () =>
                                             throw Exception("Invalid category"),
                                       );
                                       btnClicked = !btnClicked;
-
-                                      context.read<HomeBloc>().add(AddProduct(product: Product(
-                                        id: Uuid().v1(),
+                                      var updatedProduct = Product(
+                                        id: product!.id,
+                                        rating: product!.rating,
+                                        postDate: product!.postDate,
                                         size: sizeController.text,
                                         name: productNameController.text,
-                                        price: double.parse(priceController.text),
+                                        price:
+                                            double.parse(priceController.text),
                                         images: imagePreviews,
                                         stock: int.parse(stockController.text),
-                                        details: _editorController.document.toDelta(),
-                                        delivery:
-                                            int.parse(deliveryChargesController.text),
+                                        details: _editorController.document
+                                            .toDelta(),
+                                        delivery: int.parse(
+                                            deliveryChargesController.text),
                                         company: brandNameController.text,
                                         category: category,
                                         gender: selectedGender,
-                                        discount:
-                                            double.parse(discountController.text),
-                                        targetAge: ageController.text.toString(),
-                                        postDate: DateFormat('dd/MM/yyyy')
-                                            .format(DateTime.now())
-                                            .toString(),
-                                      )));}
+                                        discount: double.parse(
+                                            discountController.text),
+                                        targetAge:
+                                            ageController.text.toString(),
+                                      );
+                                      products.add(updatedProduct);
+                                      context.read<HomeBloc>().add(
+                                          UpdateProduct(
+                                              product: updatedProduct));
+                                    }
+                                  }
+                                : () async {
+                                    try {
+                                      if (formKey.currentState!.validate()) {
+                                        if (imagePreviews.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "Please Select Atleast One Image.")));
+                                          return;
+                                        }
+                                        final category = categories.firstWhere(
+                                          (cat) => cat.id == selectedCategory,
+                                          orElse: () => throw Exception(
+                                              "Invalid category"),
+                                        );
+                                        btnClicked = !btnClicked;
+                
+                                        context.read<HomeBloc>().add(AddProduct(
+                                                product: Product(
+                                              id: Uuid().v1(),
+                                              size: sizeController.text,
+                                              name: productNameController.text,
+                                              price: double.parse(
+                                                  priceController.text),
+                                              images: imagePreviews,
+                                              stock: int.parse(
+                                                  stockController.text),
+                                              details: _editorController
+                                                  .document
+                                                  .toDelta(),
+                                              delivery: int.parse(
+                                                  deliveryChargesController
+                                                      .text),
+                                              company: brandNameController.text,
+                                              category: category,
+                                              gender: selectedGender,
+                                              discount: double.parse(
+                                                  discountController.text),
+                                              targetAge:
+                                                  ageController.text.toString(),
+                                              postDate: DateFormat('dd/MM/yyyy')
+                                                  .format(DateTime.now())
+                                                  .toString(),
+                                            )));
+                                      }
                                     } catch (e) {
                                       print("Error: $e");
                                     }
@@ -443,11 +467,12 @@ class _PostProductState extends State<PostProduct> {
                     ),
                   ),
                 ),
-                                if (state is HomeLoading) SizedBox(height: 8,child: ColorChangingProgressIndicator()),
-
-              ],
+              ),
             ),
-          ),
+            if (state is HomeLoading)
+                  ...[Container(color: Colors.black.withValues(alpha: .3),width: width, height: height,),
+                  SizedBox(height: 4, child: ColorChangingProgressIndicator()),]
+          ],
         );
       },
     );
