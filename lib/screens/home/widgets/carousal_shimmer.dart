@@ -11,7 +11,7 @@ class TrendingPicksShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final [swidth, sheight] = getScreenSize(context);
-    final bool isLargeScreen = swidth > 600;
+    final bool isLargeScreen = swidth > 800;
     final CTheme themeMode = getThemeMode(context);
     final isDarkMode = themeMode.getThemeType() is Dark;
 
@@ -78,7 +78,6 @@ class TrendingPicksShimmer extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // Bottom Small Card
                         Expanded(
                           child: Shimmer.fromColors(
                             baseColor: !isDarkMode

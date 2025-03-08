@@ -39,6 +39,10 @@ class LightTheme extends CTheme {
     return ThemeData.light().copyWith(
         scaffoldBackgroundColor: backgroundColor,
         appBarTheme: AppBarTheme(backgroundColor: appBarColor),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateProperty.all(Colors.black.withValues(alpha: .7)),
+          trackBorderColor: WidgetStateProperty.all(Colors.blue[100]),
+        ),
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: const EdgeInsets.all(8),
           helperStyle: TextStyle(color: primTextColor),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fpdart/fpdart.dart' as fpdart;
 import 'package:t_wear/bloc/cubit/cart_cubit.dart';
 import 'package:t_wear/bloc/cubit/user_cubit.dart';
 import 'package:t_wear/bloc/home/home_bloc.dart';
@@ -116,7 +117,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         children: [
                           _categoryBuilder(swidth, sheight, themeMode),
                           const SizedBox(
-                            height: 40,
+                            height: 3,
                           ),
                           if (!state.isCategorizing)
                             TrendingPicks(
@@ -146,9 +147,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          if (state.byCategory)
-                            _categoryBuilder(swidth, sheight, themeMode)
-                          else
+                          if (!state.byCategory)
                             SizedBox(
                               height: swidth <= 500 ? 104 : sheight * 0.35,
                               child: Padding(
@@ -181,9 +180,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           SizedBox(
                             height: 20,
                           ),
-                          TrendingPicksShimmer(),
+                          if (!state.byCategory) TrendingPicksShimmer(),
                           SizedBox(
                             height: 20,
+                            width: swidth,
                           ),
                           Wrap(
                             alignment: WrapAlignment.center,
@@ -243,57 +243,52 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   Widget _buildProducts(HomeSuccess state, double swidth, double sheight,
       bool isForCategory, CTheme themeMode, List<Product> cartedProducts) {
     bool smallScreen = swidth <= 500;
+    Map<dynamic, List<Product>> products =
+        state.products.filterWithKey((key, value) => key != "trending");
 
     return Wrap(
-        spacing: smallScreen ? 3 : 14,
-        runSpacing: 14,
+        spacing: smallScreen ? 3 : 12.0,
+        runSpacing: 26,
         alignment: WrapAlignment.center,
-        children: state.products.keys
+        children: products.keys
             .expand((key) => [
-                  if (key == "trending")
-                    SizedBox()
-                  else ...[
-                    if (isForCategory)
-                      SizedBox(
-                        width: swidth,
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                left: smallScreen ? 12 : 25.0,
-                                bottom: 18,
-                                top: 8),
-                            child: Text(
-                              key.toString().toUpperCase(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 26,
-                                  color: themeMode.primTextColor),
-                            ),
+                  if (isForCategory)
+                    SizedBox(
+                      width: swidth,
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: smallScreen ? 12 : 25.0,
+                              bottom: 18,
+                              top: 8),
+                          child: Text(
+                            key.toString().toUpperCase(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                                color: themeMode.primTextColor),
                           ),
                         ),
                       ),
-                    ...state.products[key]!.map((product) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: ProductCard(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductDetailPage(product: product)));
-                          },
-                          carted: cartedProducts.contains(product),
-                          product: product,
-                          cartAction: (cproduct) {
-                            context
-                                .read<CartCubit>()
-                                .addToCart(cproduct, cartedProducts);
-                          },
-                        ),
-                      );
-                    })
-                  ],
+                    ),
+                  ...state.products[key]!.map((product) {
+                    return ProductCard(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailPage(product: product)));
+                      },
+                      carted: cartedProducts.contains(product),
+                      product: product,
+                      cartAction: (cproduct) {
+                        context
+                            .read<CartCubit>()
+                            .addToCart(cproduct, cartedProducts);
+                      },
+                    );
+                  }),
                 ])
             .toList());
   }

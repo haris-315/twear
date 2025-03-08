@@ -39,7 +39,13 @@ class DarkTheme extends CTheme {
         scaffoldBackgroundColor: backgroundColor,
         appBarTheme: AppBarTheme(backgroundColor: appBarColor),
         textTheme: TextTheme(
-            bodyMedium: TextStyle(color: primTextColor, fontFamily: "arial")));
+            bodyMedium: TextStyle(color: primTextColor, fontFamily: "arial")),
+            scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateProperty.all(Colors.white.withValues(alpha: .7)),
+          trackColor:WidgetStateProperty.all(Colors.white.withValues(alpha: .7)),
+          trackBorderColor: WidgetStateProperty.all(Colors.blue[100]),
+        ),
+            );
   }
 
   @override

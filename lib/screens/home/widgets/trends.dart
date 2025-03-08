@@ -25,6 +25,7 @@ class TrendingPicks extends StatefulWidget {
 class _TrendingPicksState extends State<TrendingPicks> {
   int _currentIndex = 0;
   late Timer _timer;
+  final CarouselSliderController _carouselController = CarouselSliderController(); 
 
   @override
   void initState() {
@@ -33,6 +34,10 @@ class _TrendingPicksState extends State<TrendingPicks> {
       setState(() {
         _currentIndex = (_currentIndex + 1) % widget.trendingProducts.length;
       });
+      
+      if (!isLargeScreen) {
+        _carouselController.animateToPage(_currentIndex);
+      }
     });
   }
 
@@ -42,12 +47,15 @@ class _TrendingPicksState extends State<TrendingPicks> {
     super.dispose();
   }
 
+  bool get isLargeScreen {
+    final [swidth, _] = getScreenSize(context);
+    return swidth > 800;
+  }
+
   @override
   Widget build(BuildContext context) {
     final CTheme themeMode = getThemeMode(context);
     final [swidth, sheight] = getScreenSize(context);
-
-    final bool isLargeScreen = swidth > 800;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,9 +76,9 @@ class _TrendingPicksState extends State<TrendingPicks> {
         if (isLargeScreen)
           
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: SizedBox(
-              height: 320, 
+              height: 320,
               child: Row(
                 children: [
                   
@@ -105,6 +113,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        
                         Expanded(
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 800),
@@ -126,6 +135,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
         else
           
           CarouselSlider.builder(
+            carouselController: _carouselController, 
             itemCount: widget.trendingProducts.length,
             itemBuilder: (context, index, realIndex) {
               final product = widget.trendingProducts[index];
@@ -158,6 +168,10 @@ class _TrendingPicksState extends State<TrendingPicks> {
                 setState(() {
                   _currentIndex = (_currentIndex - 1 + widget.trendingProducts.length) % widget.trendingProducts.length;
                 });
+                
+                if (!isLargeScreen) {
+                  _carouselController.animateToPage(_currentIndex);
+                }
               },
               icon: Icon(Icons.arrow_left_outlined, color: themeMode.iconColor),
             ),
@@ -178,6 +192,10 @@ class _TrendingPicksState extends State<TrendingPicks> {
                 setState(() {
                   _currentIndex = (_currentIndex + 1) % widget.trendingProducts.length;
                 });
+                
+                if (!isLargeScreen) {
+                  _carouselController.animateToPage(_currentIndex);
+                }
               },
               icon: Icon(Icons.arrow_right_outlined, color: themeMode.iconColor),
             ),
@@ -296,7 +314,7 @@ class _TrendingPicksState extends State<TrendingPicks> {
                               fontSize: isBig ? 16 : 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.amberAccent,
-                              overflow: TextOverflow.ellipsis
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const Spacer(),

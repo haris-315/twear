@@ -48,7 +48,7 @@ class _DashBoardPgState extends State<DashBoardPg>
       builder: (context, state) =>
           LayoutBuilder(builder: (context, constraints) {
         double width = constraints.maxWidth;
-        // ignore: unused_local_variable
+        
         double height = constraints.maxWidth;
         return Scaffold(
           endDrawer: CustomDrawer(themeMode: themeMode),
@@ -131,30 +131,19 @@ class _DashBoardPgState extends State<DashBoardPg>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Container(
-                  //   // duration: const Duration(milliseconds: 950),
-                  //   // curve: Curves.easeIn,
-                  //   decoration: BoxDecoration(
-                  //     color: themeMode.backgroundColor,
-                  //     borderRadius: BorderRadius.circular(16),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: themeMode.shadowColor ?? Colors.black12,
-                  //         blurRadius: 4,
-                  //         offset: const Offset(0, 4),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   height: 300,
-                  //   child: const WeeklySalesChart(),
-                  // ),
-                  const SizedBox(height: 40),
-                  
+                  if (state.dashboardDetails['products'] != null &&
+                      (state.dashboardDetails['products'] as List?)!
+                          .cast<DBP>()
+                          .isNotEmpty)
+                  ...[Text("Pending Orders",style: TextStyle(
+                          color: themeMode.primTextColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600),),
                   const SizedBox(height: 30),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 26.0),
                       child: PendingOrders(products: state.dashboardDetails['products']),
-                    ),
+                    ),],
                     SizedBox(
                       height: 24,
                     ),
@@ -195,6 +184,16 @@ class _DashBoardPgState extends State<DashBoardPg>
               ],
             ),
           ),
+
+          floatingActionButton: FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "postproduct");
+                        },
+                      icon: Icon(Icons.add, color: themeMode.iconColor),
+                      label: Text('Add New Product',
+                          style: TextStyle(color: themeMode.primTextColor)),
+                      backgroundColor: themeMode.buttonColor,
+                    ),
         );
       }),
     );
@@ -256,19 +255,19 @@ class WaterMarkClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
 
-    // Start at top-left
+    
     path.lineTo(0, 0);
-    path.lineTo(size.width, 0); // Top-right corner
+    path.lineTo(size.width, 0); 
     path.lineTo(size.width - 20, size.height / 2);
     path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height); // Bottom-right corner
-    path.lineTo(20, size.height / 2); // Bottom-left after the cut
+    path.lineTo(0, size.height); 
+    path.lineTo(20, size.height / 2); 
 
-    // Diagonal cut
+    
     path.lineTo(0, 0);
-    // Back to start
+    
 
-    path.close(); // Close the path
+    path.close(); 
 
     return path;
   }

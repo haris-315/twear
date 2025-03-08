@@ -30,22 +30,18 @@ void main() async {
 
           return DefaultTextStyle(
             style: TextStyle(color: themeMode.primTextColor),
-            child: AnimatedTheme(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-              data: themeMode.getTheme(),
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                
-                home: LoginPage(),
-                routes: {
-                  "dashboard": (context) => const DashBoardPg(),
-                  "home": (context) => Home(),
-                  "postproduct": (context) => const PostProduct(),
-                  "cart": (context) => const Cart(),
-                  "profile" : (context) => BuyerProfilePage()
-                },
-              ),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: "TWear",
+              theme: themeMode.getTheme(),
+              home: LoginPage(),
+              routes: {
+                "dashboard": (context) => const DashBoardPg(),
+                "home": (context) => Home(),
+                "postproduct": (context) => const PostProduct(),
+                "cart": (context) => const Cart(),
+                "profile" : (context) => BuyerProfilePage()
+              },
             ),
           );
         },

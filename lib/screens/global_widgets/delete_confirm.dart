@@ -7,6 +7,7 @@ Future<bool> showConfirmationDialog(
       context: context,
       builder: (context) => SizedBox(
             child: AlertDialog(
+              backgroundColor: themeMode.backgroundColor,
               title: Text(
                 "Are you sure?",
                 style: TextStyle(color: themeMode.primTextColor),

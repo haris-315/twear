@@ -126,12 +126,12 @@ List<Category> categories = [
       name: "Women",
       id: 5,
       image:
-          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218252/c5_rtvniw.webp"),
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1741443080/c5_wde7am.webp"),
   Category(
       name: "Traditional",
       id: 3,
       image:
-          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218241/c3_t7toca.webp"),
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1741438883/c3_qesf7x.webp"),
   Category(
       name: "Winter",
       id: 4,
@@ -146,5 +146,5 @@ List<Category> categories = [
       name: "Kid's",
       id: 7,
       image:
-          "https://res.cloudinary.com/dume7lvn5/image/upload/v1737218227/c7_tyirhd.webp"),
+          "https://res.cloudinary.com/dume7lvn5/image/upload/v1741439017/c7_udyxhf.webp"),
 ];
