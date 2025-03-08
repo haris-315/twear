@@ -3,7 +3,7 @@
 **Twear** is a fully responsive and interactive wearables showcase simulator built using **Flutter**. This project is a front-end-only demo with all data stored statically within the app, except for images, which are hosted on **Cloudinary**.
 
 ### 🌐 **Live Demo**: [twear-web.surge.sh](https://twear-web.surge.sh)
-
+[preview alt](assets/preview/preview.png)
 ---
 
 ## 📑 **Features**
