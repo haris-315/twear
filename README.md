@@ -8,6 +8,7 @@
 
 ## 📑 **Features**
 
+- 🖥 **Theme Switch**: One can switch theme based on their preference from **light mode** and **dark mode**.
 - 💎 **Product Showcase**: Browse a variety of wearable products with smooth animations.
 - 📱 **Responsive Design**: Optimized for desktop, tablet, and mobile views.
 - 🚀 **Loading**: This site may **lack fast loading** because it is **developed in flutter** which is **primarily an app development framework**.
