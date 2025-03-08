@@ -43,33 +43,6 @@ class LightTheme extends CTheme {
           thumbColor: WidgetStateProperty.all(Colors.black.withValues(alpha: .7)),
           trackBorderColor: WidgetStateProperty.all(Colors.blue[100]),
         ),
-        inputDecorationTheme: InputDecorationTheme(
-          contentPadding: const EdgeInsets.all(8),
-          helperStyle: TextStyle(color: primTextColor),
-          labelStyle: TextStyle(
-            color: primTextColor,
-            fontSize: 12,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
-              color: borderColor ?? Colors.red,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
-              color: borderColor2 ?? Colors.red,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              width: 2,
-              color: borderColor ?? Colors.red,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
         textTheme: TextTheme(
             bodyMedium: TextStyle(color: primTextColor, fontFamily: "arial")));
   }
