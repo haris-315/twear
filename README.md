@@ -26,10 +26,14 @@
 
 ## 🛠️ **How to Run Locally**
 
-1. **Clone the Repository**:
+1. **Go to you terminal**:
+
+   
+2. **Paste below commands one by one**:
 ```bash
   git clone https://github.com/haris-315/T-wear
   cd twear
   flutter pub get
   flutter run -d chrome
+
 
