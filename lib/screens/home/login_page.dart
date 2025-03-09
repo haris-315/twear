@@ -193,14 +193,8 @@ class _LoginPageState extends State<LoginPage>
                               minimumSize: Size(double.infinity, 50),
                             ),
                             onPressed: () {
-                              animationController.reverse();
                               context.read<UserCubit>().shiftMode(Buyer(orders: []));
-                              animationController.addStatusListener((status) {
-                                if (status == AnimationStatus.dismissed) {
-                                  Navigator.pushReplacementNamed(
-                                      context, "home");
-                                }
-                              });
+                              fakeFetch();
                             },
                             child: Text(
                               'Sign in as Guest',
@@ -257,7 +251,7 @@ class _LoginPageState extends State<LoginPage>
                         top: .9,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              left: (isSmallScreen ? width : 400) * .06),
+                              left: isSmallScreen ? width * .055 : 400 * .1),
                           child: SizedBox(
                               width: (isSmallScreen ? width : 400) * 0.8,
                               child: ColorChangingProgressIndicator()),

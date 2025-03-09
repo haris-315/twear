@@ -107,19 +107,19 @@ class Footer extends StatelessWidget {
           icon: 'assets/icons/facebook.png',
           url: 'https://web.facebook.com/self.taught.programmer.2024',
         ),
-        _buildSocialMediaIcon(
-          icon: 'assets/icons/instagram.png',
-          url: 'https://www.instagram.com/',
-        ),
+        // _buildSocialMediaIcon(
+        //   icon: 'assets/icons/instagram.png',
+        //   url: 'https://www.instagram.com/',
+        // ),
        
         _buildSocialMediaIcon(
           icon: isDarkMode ? 'assets/icons/github_light.png' : 'assets/icons/github.png',
           url: 'https://github.com/haris-315',
         ),
-        _buildSocialMediaIcon(
-          icon: 'assets/icons/linkedin.png',
-          url: 'https://www.linkedin.com/',
-        ),
+        // _buildSocialMediaIcon(
+        //   icon: 'assets/icons/linkedin.png',
+        //   url: 'https://www.linkedin.com/',
+        // ),
       ],
     );
   }

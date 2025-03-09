@@ -48,7 +48,7 @@ class _DashBoardPgState extends State<DashBoardPg>
       builder: (context, state) =>
           LayoutBuilder(builder: (context, constraints) {
         double width = constraints.maxWidth;
-        
+
         double height = constraints.maxWidth;
         return Scaffold(
           endDrawer: CustomDrawer(themeMode: themeMode),
@@ -85,7 +85,8 @@ class _DashBoardPgState extends State<DashBoardPg>
                       position: _slideAnimation2,
                       child: Text(
                         "Here's an overview of your store's performance.",
-                        textAlign: width <= 500 ? TextAlign.center : TextAlign.left,
+                        textAlign:
+                            width <= 500 ? TextAlign.center : TextAlign.left,
                         style: TextStyle(
                           fontSize: 16,
                           color: themeMode.secondaryTextColor,
@@ -134,19 +135,24 @@ class _DashBoardPgState extends State<DashBoardPg>
                   if (state.dashboardDetails['products'] != null &&
                       (state.dashboardDetails['products'] as List?)!
                           .cast<DBP>()
-                          .isNotEmpty)
-                  ...[Text("Pending Orders",style: TextStyle(
+                          .isNotEmpty) ...[
+                    Text(
+                      "Pending Orders",
+                      style: TextStyle(
                           color: themeMode.primTextColor,
                           fontSize: 22,
-                          fontWeight: FontWeight.w600),),
-                  const SizedBox(height: 30),
+                          fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 30),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26.0),
-                      child: PendingOrders(products: state.dashboardDetails['products']),
-                    ),],
-                    SizedBox(
-                      height: 24,
+                      child: PendingOrders(
+                          products: state.dashboardDetails['products']),
                     ),
+                  ],
+                  SizedBox(
+                    height: 24,
+                  ),
                   if (state.dashboardDetails['products'] != null &&
                       (state.dashboardDetails['products'] as List?)!
                           .cast<DBP>()
@@ -161,9 +167,8 @@ class _DashBoardPgState extends State<DashBoardPg>
                     SizedBox(
                       height: 24,
                     ),
-
-                    _buildProducts(width, height, themeMode, state.dashboardDetails['products'])
-                    
+                    _buildProducts(width, height, themeMode,
+                        state.dashboardDetails['products'])
                   ] else
                     Center(
                       child: Text(
@@ -184,24 +189,22 @@ class _DashBoardPgState extends State<DashBoardPg>
               ],
             ),
           ),
-
           floatingActionButton: FloatingActionButton.extended(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "postproduct");
-                        },
-                      icon: Icon(Icons.add, color: themeMode.iconColor),
-                      label: Text('Add New Product',
-                          style: TextStyle(color: themeMode.primTextColor)),
-                      backgroundColor: themeMode.buttonColor,
-                    ),
+            onPressed: () {
+              Navigator.pushNamed(context, "postproduct");
+            },
+            icon: Icon(Icons.add, color: themeMode.iconColor),
+            label: Text('Add New Product',
+                style: TextStyle(color: themeMode.primTextColor)),
+            backgroundColor: themeMode.buttonColor,
+          ),
         );
       }),
     );
   }
 
-
-
-  Widget _buildProducts(double swidth, double sheight, CTheme themeMode, List<DBP> dbps) {
+  Widget _buildProducts(
+      double swidth, double sheight, CTheme themeMode, List<DBP> dbps) {
     bool smallScreen = swidth <= 500;
 
     return Wrap(
@@ -209,44 +212,42 @@ class _DashBoardPgState extends State<DashBoardPg>
         runSpacing: 14,
         alignment: WrapAlignment.center,
         children: dbps.map((dbp) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: Column(
-                          children: [
-                            ProductCard(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProductDetailPage(product: dbp.product)));
-                              },
-                              carted: true,
-                              product: dbp.product,
-                              cartAction: (cproduct) {},
-                            ),
-                            SizedBox(
-                                      height: 9,
-                                    ),
-                                    ClipPath(
-                                      clipper: WaterMarkClipper(),
-                                      child: Container(
-                                        width: responsiveWidth(swidth) - 20,
-                                        color: dbp.color,
-                                        child: Center(
-                                          child: Text(
-                                            dbp.name,
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                          ],
-                        ),
-                      );
-                    })
-            .toList());
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Column(
+              children: [
+                ProductCard(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetailPage(product: dbp.product)));
+                  },
+                  carted: true,
+                  product: dbp.product,
+                  cartAction: (cproduct) {},
+                ),
+                SizedBox(
+                  height: 9,
+                ),
+                ClipPath(
+                  clipper: WaterMarkClipper(),
+                  child: Container(
+                    width: responsiveWidth(swidth) - 20,
+                    color: dbp.color,
+                    child: Center(
+                      child: Text(
+                        dbp.name,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }).toList());
   }
 }
 
@@ -255,19 +256,16 @@ class WaterMarkClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
 
-    
     path.lineTo(0, 0);
-    path.lineTo(size.width, 0); 
+    path.lineTo(size.width, 0);
     path.lineTo(size.width - 20, size.height / 2);
     path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height); 
-    path.lineTo(20, size.height / 2); 
+    path.lineTo(0, size.height);
+    path.lineTo(20, size.height / 2);
 
-    
     path.lineTo(0, 0);
-    
 
-    path.close(); 
+    path.close();
 
     return path;
   }

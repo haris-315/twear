@@ -87,133 +87,139 @@ class BuyerProfilePage extends StatelessWidget {
                   height: 30,
                 ),
                 if (state is Buyer)
-                if (state.orders.isNotEmpty)
-                ...[
-                  Padding(padding: EdgeInsets.all(12.0)),
-                Text("Recent Orders",style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  overflow: TextOverflow.ellipsis
-                ),),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.orders.length,
-                    itemBuilder: (context, index) {
-                      final product = state.orders[index];
-                      final image = product.images.first;
+                  if (state.orders.isNotEmpty) ...[
+                    Padding(padding: EdgeInsets.all(12.0)),
+                    Text(
+                      "Recent Orders",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.orders.length,
+                      itemBuilder: (context, index) {
+                        final product = state.orders[index];
+                        final image = product.images.first;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Card(
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.indigoAccent, width: 1),
-                              borderRadius: BorderRadius.zero),
-                          color: Colors.pinkAccent[150],
-                          shadowColor: Colors.grey.withValues(alpha: 0.2),
-                          borderOnForeground: true,
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(12.0),
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: isValidUrl(image.toString())
-                                  ? Image.network(
-                                      image,
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.memory(
-                                      image,
-                                      width: 60,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                            title: Text(
-                              product.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.black87,
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.indigoAccent, width: 1),
+                                borderRadius: BorderRadius.zero),
+                            color: Colors.pinkAccent[150],
+                            shadowColor: Colors.grey.withValues(alpha: 0.2),
+                            borderOnForeground: true,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(12.0),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: isValidUrl(image.toString())
+                                    ? Image.network(
+                                        image,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.memory(
+                                        image,
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: "Ordered On: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: themeMode.borderColor2),
-                                    ),
-                                    TextSpan(
-                                      text: "$index/011/2024    ",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    TextSpan(
-                                      text: "Price: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: themeMode.borderColor2),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "Rs. ${product.price.toStringAsFixed(2)}    ",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    TextSpan(
-                                      text: "Delivery Charges: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: themeMode.borderColor2),
-                                    ),
-                                    TextSpan(
-                                      text: "Rs. ${product.delivery}    ",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    TextSpan(
-                                      text: "Status: ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: themeMode.borderColor2),
-                                    ),
-                                    TextSpan(
-                                      text: "Pending    ",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
+                              title: Text(
+                                product.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: themeMode.primTextColor,
                                 ),
                               ),
-                            ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                cancelOrder(
-                                    product, state.orders, context, themeMode);
-                              },
-                              icon: Icon(
-                                Icons.close,
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: "Ordered On: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: themeMode.borderColor2),
+                                      ),
+                                      TextSpan(
+                                        text: " $index/011/2024    ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: themeMode.primTextColor),
+                                      ),
+                                      TextSpan(
+                                        text: "Price: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: themeMode.borderColor2),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            " Rs. ${product.price.toStringAsFixed(2)}    ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: themeMode.primTextColor),
+                                      ),
+                                      TextSpan(
+                                        text: "Delivery Charges: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: themeMode.borderColor2),
+                                      ),
+                                      TextSpan(
+                                        text: " Rs. ${product.delivery}    ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: themeMode.primTextColor),
+                                      ),
+                                      TextSpan(
+                                        text: "Status: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: themeMode.borderColor2),
+                                      ),
+                                      TextSpan(
+                                        text: " Pending",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: themeMode.primTextColor),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              tooltip: "Cancel Order",
+                              trailing: IconButton(
+                                onPressed: () {
+                                  cancelOrder(product, state.orders, context,
+                                      themeMode);
+                                },
+                                icon: Icon(
+                                  Icons.close,
+                                ),
+                                tooltip: "Cancel Order",
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )]
+                        );
+                      },
+                    )
+                  ]
               ],
             ),
           );

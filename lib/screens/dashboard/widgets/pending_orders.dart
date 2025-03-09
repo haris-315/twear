@@ -49,19 +49,19 @@ class PendingOrders extends StatelessWidget {
               ),
               title: Text(
                 product.product.name,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black87,
+                  color: themeMode.primTextColor,
                 ),
               ),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: RichText(
                   text: TextSpan(
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Colors.black54,
+                      color: themeMode.primTextColor,
                     ),
                     children: [
                       TextSpan(
@@ -70,7 +70,7 @@ class PendingOrders extends StatelessWidget {
                       ),
                       TextSpan(
                         text: "mail$index@mail.com\n",
-                        style: const TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(fontWeight: FontWeight.w500,color: themeMode.primTextColor),
                       ),
                        TextSpan(
                         text: "Address: ",
@@ -78,7 +78,7 @@ class PendingOrders extends StatelessWidget {
                       ),
                       TextSpan(
                         text: "DemoAddress$index\n",
-                        style: const TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(fontWeight: FontWeight.w500,color: themeMode.primTextColor),
                       ),
                        TextSpan(
                         text: "Date: ",
@@ -86,7 +86,7 @@ class PendingOrders extends StatelessWidget {
                       ),
                       TextSpan(
                         text: "$index/02/2025",
-                        style: const TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(fontWeight: FontWeight.w500,color: themeMode.primTextColor),
                       ),
                     ],
                   ),
