@@ -14,7 +14,7 @@
 - 📱 **Responsive Design**: Optimized for desktop, tablet, and mobile views.
 - 🚀 **Loading**: This site may **lack fast loading** because it is **developed in flutter** which is **primarily an app development framework**.
 - 🧮 **Simulator Only**: No backend; all interactions are simulated with static data.
-- 📝 **Products CRUD**: You can **add, update and delete the products products**. 
+- 📝 **Products CRUD**: You can **add, update and delete the products**. 
 - 🔑 **Simulated SignIn**
 - 📃 **Basic DashBoard**
 
@@ -33,10 +33,10 @@
 
 ## 🛠️ **How to Run Locally**
 
-1. **Go to you terminal**:
+1. **Go to your terminal**:
 
    
-2. **Paste below commands one by one**:
+2. **Copy & Paste below commands one by one**:
 ```bash
   git clone https://github.com/haris-315/T-wear
   cd twear
