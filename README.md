@@ -38,7 +38,7 @@
    
 2. **Copy & Paste below commands one by one**:
 ```bash
-  git clone https://github.com/haris-315/T-wear
+  git clone https://github.com/haris-315/twear
   cd twear
   flutter pub get
   flutter run -d chrome
