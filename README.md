@@ -33,7 +33,7 @@
 
 ## 🛠️ **How to Run Locally**
 
-1. **Go to your terminal**:
+1. **Go to your terminal**
 
    
 2. **Copy & Paste below commands one by one**:
